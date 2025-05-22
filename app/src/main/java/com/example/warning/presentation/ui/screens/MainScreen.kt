@@ -1,4 +1,4 @@
-package com.example.warning.ui.screens
+package com.example.warning.presentation.ui.screens
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -35,12 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.ui.text.font.FontVariation.Settings
 import androidx.navigation.NavController
-import com.example.warning.ui.theme.*
-import com.example.warning.ui.screens.screenUtils.*
+import com.example.warning.presentation.ui.theme.DrawerBackground
+import com.example.warning.presentation.ui.theme.DrawerItemText
 
 @Composable
 fun WarningButton(

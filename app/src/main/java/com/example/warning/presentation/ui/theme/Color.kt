@@ -1,4 +1,4 @@
-package com.example.warning.ui.theme
+package com.example.warning.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

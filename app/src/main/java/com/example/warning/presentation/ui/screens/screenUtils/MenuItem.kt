@@ -1,4 +1,4 @@
-package com.example.warning.ui.screens.screenUtils
+package com.example.warning.presentation.ui.screens.screenUtils
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

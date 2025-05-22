@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android") version "2.48" apply false
 }
 
 android {
@@ -42,6 +44,13 @@ android {
 
 dependencies {
 
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    implementation(libs.androidx.room.runtime.android)
+    kapt(libs.room.compiler)
+
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-compiler:2.48")
     // build.gradle(:app)
 
     // Jetpack Compose BOM (tavsiye edilen)

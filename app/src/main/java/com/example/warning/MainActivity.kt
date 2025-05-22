@@ -12,11 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.warning.ui.screens.MainScreen
-import com.example.warning.ui.screens.MenuContent
-import com.example.warning.ui.screens.SettingsScreen
-import com.example.warning.ui.screens.screenUtils.ProfileScreen
-import com.example.warning.ui.theme.WarningTheme
+import com.example.warning.presentation.ui.screens.MainScreen
+import com.example.warning.presentation.ui.screens.SettingsScreen
+import com.example.warning.presentation.ui.profile.screen.ProfileScreen
+import com.example.warning.presentation.ui.theme.WarningTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,9 +47,55 @@ fun AppNavigation() {
             composable("settings") {
                 SettingsScreen()
             }
-            composable("profile") {
-                ProfileScreen()
-            }
         }
     }
 }
+
+
+/*
+📁 app
+└── 📁 src
+    └── 📁 main
+        └── 📁 java
+            └── 📁 com
+                └── 📁 hakan
+                    └── 📁 emergencyapp
+                        ├── 📁 presentation
+                        │   ├── 📁 profile
+                        │   │   ├── 📁 screen
+                        │   │   ├── 📁 state
+                        │   │   ├── 📁 event
+                        │   │   └── 📁 component
+                        │   ├── 📁 addcontact
+                        │   │   ├── 📁 screen
+                        │   │   ├── 📁 event
+                        │   │   └── 📁 state
+                        │   ├── 📁 requests
+                        │   │   ├── 📁 screen
+                        │   │   ├── 📁 state
+                        │   │   └── 📁 event
+                        │   └── 📁 emergency
+                        │       ├── 📁 screen
+                        │       ├── 📁 state
+                        │       └── 📁 event
+                        │
+                        ├── 📁 domain
+                        │   ├── 📁 model
+                        │   ├── 📁 usecase
+                        │   │   └── 📁 contact
+                        │   └── 📁 repository
+                        │
+                        ├── 📁 data
+                        │   ├── 📁 local
+                        │   │   ├── 📁 dao
+                        │   │   └── 📁 entity
+                        │   ├── 📁 remote
+                        │   │   ├── 📁 dto
+                        │   │   └── 📁 api
+                        │   ├── 📁 repository
+                        │   └── 📁 mapper
+                        │
+                        └── 📁 di
+
+
+*/
