@@ -2,6 +2,7 @@ package com.example.warning.data.repository
 
 import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.ProfileDao
+import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.data.mapper.toDomain
 import com.example.warning.data.mapper.toEntity
 import com.example.warning.domain.model.Contact
@@ -14,33 +15,23 @@ class ProfileRepositoryImpl(
 ) : ProfileRepository {
 
     override suspend fun getProfile(): Profile? {
-        return profileDao.getProfile()?.toDomain()?.copy(
-            contacts = contactDao.getAllContacts().map { it.toDomain() }
-        )
+        return profileDao.getProfile()?.toDomain()
     }
 
     override suspend fun updateProfile(profile: Profile) {
         profileDao.insertProfile(profile.toEntity())
-        contactDao.deleteAllContacts()
-        contactDao.insertContacts(profile.contacts.map { it.toEntity() })
     }
 
     override suspend fun deleteProfile() {
         profileDao.deleteProfile()
-        contactDao.deleteAllContacts()
     }
 
-    override suspend fun getApprovedContacts(): List<Contact> =
-        contactDao.getAllContacts().map { it.toDomain() }
+    override suspend fun getAllContacts(): List<ContactEntity?> {
+        return contactDao.getAllContacts()
+    }
 
-    override suspend fun insertContact(contact: Contact) =
-        contactDao.insertContact(contact.toEntity())
-
-    override suspend fun insertContacts(contacts: List<Contact>) =
-        contactDao.insertContacts(contacts.map { it.toEntity() })
-
-    override suspend fun deleteContact(contact: Contact) =
-        contactDao.deleteContact(contact.toEntity())
-
-    override suspend fun deleteAllContacts() = contactDao.deleteAllContacts()
+    override suspend fun getContactByPhone(phone: String): Contact? {
+        return contactDao.getContactByPhoneNumber(phone)?.toDomain()
+    }
+    override suspend fun deleteAllContact(){}
 }

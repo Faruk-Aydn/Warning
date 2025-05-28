@@ -14,7 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.warning.presentation.ui.screens.MainScreen
 import com.example.warning.presentation.ui.screens.SettingsScreen
-import com.example.warning.presentation.ui.profile.screen.ProfileScreen
 import com.example.warning.presentation.ui.theme.WarningTheme
 
 class MainActivity : ComponentActivity() {

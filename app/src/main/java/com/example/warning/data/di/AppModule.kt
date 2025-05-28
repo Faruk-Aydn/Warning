@@ -3,7 +3,6 @@ package com.example.warning.data.di
 import android.content.Context
 import androidx.room.Room
 import com.example.warning.data.local.AppDatabase
-import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.repository.ProfileRepositoryImpl
 import com.example.warning.domain.repository.ProfileRepository

@@ -1,5 +1,6 @@
 package com.example.warning.domain.repository
 
+import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.domain.model.Contact
 
 // domain/repository/ProfileRepository.kt
@@ -13,13 +14,6 @@ interface ProfileRepository {
 
     suspend fun deleteProfile()
 
-    suspend fun getApprovedContacts(): List<Contact>
-
-    suspend fun insertContact(contact: Contact)
-
-    suspend fun insertContacts(contacts: List<Contact>)
-
-    suspend fun deleteContact(contact: Contact)
-
-    suspend fun deleteAllContacts()
+    suspend fun getAllContacts(): List<ContactEntity?>
+    suspend fun getContactByPhone(phone: String): Contact?
 }

@@ -2,10 +2,23 @@ package com.example.warning.data.mapper
 
 import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.data.local.entity.ProfileEntity
+import com.example.warning.data.local.entity.ProfileWithContacts
 import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Profile
-import com.example.warning.domain.model.ProfileUiState
 
+fun ProfileWithContacts.toDomain(): Profile {
+    return Profile(
+        phoneNumber = profile.phoneNumber,
+        name = profile.name,
+        emergencyMessage = profile.emergencyMessage,
+        contacts = contacts.map {
+            Contact(
+                phoneNumber = it.phoneNumber,
+                name = it.name
+            )
+        }
+    )
+}
 // ENTITY -> DOMAIN
 
 fun ProfileEntity.toDomain(): Profile {
@@ -40,22 +53,9 @@ fun Profile.toEntity(): ProfileEntity {
 fun Contact.toEntity(): ContactEntity {
     return ContactEntity(
         phoneNumber = this.phoneNumber,
-        name = this.name
+        name = this.name,
+        ownerPhoneNumber = this.ownerPhoneNumber
     )
 }
 
 // DOMAIN -> UI STATE
-
-fun Profile.toUiState(): ProfileUiState {
-    return ProfileUiState(
-        phoneNumber = this.phoneNumber,
-        name = this.name,
-        emergencyMessage = this.emergencyMessage,
-        approvedContacts = this.contacts.map { contact ->
-            Contact(
-                phoneNumber = contact.phoneNumber,
-                name = contact.name
-            )
-        }
-    )
-}

@@ -19,25 +19,4 @@ class ProfileUseCases(private val repository: ProfileRepository) {
     suspend fun deleteProfile() {
         repository.deleteProfile()
     }
-
-    // Contact işlemleri
-    suspend fun getApprovedContacts(): List<Contact> {
-        return repository.getApprovedContacts()
-    }
-
-    suspend fun insertContact(contact: Contact) {
-        repository.insertContact(contact)
-    }
-
-    suspend fun insertContacts(contacts: List<Contact>) {
-        repository.insertContacts(contacts)
-    }
-
-    suspend fun deleteContact(contact: Contact) {
-        repository.deleteContact(contact)
-    }
-
-    suspend fun deleteAllContacts() {
-        repository.deleteAllContacts()
-    }
 }
