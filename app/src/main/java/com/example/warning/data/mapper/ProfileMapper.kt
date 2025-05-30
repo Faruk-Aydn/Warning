@@ -14,7 +14,8 @@ fun ProfileWithContacts.toDomain(): Profile {
         contacts = contacts.map {
             Contact(
                 phoneNumber = it.phoneNumber,
-                name = it.name
+                name = it.name,
+                ownerPhoneNumber = it.ownerPhoneNumber
             )
         }
     )
@@ -35,7 +36,8 @@ fun ProfileEntity.toDomain(): Profile {
 fun ContactEntity.toDomain(): Contact {
     return Contact(
         phoneNumber = this.phoneNumber,
-        name = this.name
+        name = this.name,
+        ownerPhoneNumber = this.ownerPhoneNumber
     )
 }
 

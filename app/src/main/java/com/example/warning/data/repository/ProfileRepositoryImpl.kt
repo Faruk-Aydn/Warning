@@ -2,7 +2,6 @@ package com.example.warning.data.repository
 
 import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.ProfileDao
-import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.data.mapper.toDomain
 import com.example.warning.data.mapper.toEntity
 import com.example.warning.domain.model.Contact
@@ -26,12 +25,19 @@ class ProfileRepositoryImpl(
         profileDao.deleteProfile()
     }
 
-    override suspend fun getAllContacts(): List<ContactEntity?> {
-        return contactDao.getAllContacts()
+    override suspend fun getAllContacts(): List<Contact?> {
+        return  contactDao.getAllContacts().map { it?.toDomain() }
     }
 
     override suspend fun getContactByPhone(phone: String): Contact? {
         return contactDao.getContactByPhoneNumber(phone)?.toDomain()
     }
-    override suspend fun deleteAllContact(){}
+    override suspend fun deleteAllContact(){
+        contactDao.deleteAllContacts()
+    }
+
+    override suspend fun deleteContact(contact: Contact) {
+        contactDao.deleteContact(contact.toEntity())
+    }
+
 }

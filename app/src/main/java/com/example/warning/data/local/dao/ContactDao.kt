@@ -19,7 +19,7 @@ interface ContactDao {
     suspend fun insertContact(contact: ContactEntity)
 
     // Tek bir Contact sil
-    @Delete
+    @Delete()
     suspend fun deleteContact(contact: ContactEntity)
 
     // Tüm Contact'ları sil
