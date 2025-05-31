@@ -2,9 +2,11 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services)
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android") version "2.48" apply false
+    id("com.google.dagger.hilt.android")
 }
+
 
 android {
     namespace = "com.example.warning"
@@ -49,23 +51,30 @@ dependencies {
     implementation(libs.androidx.room.runtime.android)
     kapt(libs.room.compiler)
 
-    implementation("com.google.dagger:hilt-android:2.48")
-    kapt("com.google.dagger:hilt-compiler:2.48")
+    //firebase auth
+    implementation(platform("com.google.firebase:firebase-bom:32.1.1"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-analytics")
+
+    // hilt
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
     // build.gradle(:app)
 
     // Jetpack Compose BOM (tavsiye edilen)
-    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
 
     // Compose UI
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation(libs.ui)
+    implementation(libs.material3)
+    implementation(libs.ui.tooling.preview)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
     // Diğer
-    implementation("androidx.activity:activity-compose:1.8.2")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    //implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

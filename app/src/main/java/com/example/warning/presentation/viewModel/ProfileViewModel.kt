@@ -12,11 +12,13 @@ import com.example.warning.domain.model.toUiState
 import com.example.warning.domain.usecase.ProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel(
-    private val profileUseCases: ProfileUseCases) : ViewModel()
-{
+class ProfileViewModel @Inject constructor(
+    private val profileUseCases: ProfileUseCases)
+    : ViewModel() {
+
     var uiState by mutableStateOf(ProfileUiState())
         private set
 

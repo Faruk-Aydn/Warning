@@ -14,8 +14,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.warning.presentation.ui.screens.MainScreen
 import com.example.warning.presentation.ui.screens.SettingsScreen
+import com.example.warning.presentation.ui.signup.RegisterScreen
 import com.example.warning.presentation.ui.theme.WarningTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +40,12 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "main",
+            startDestination = "register", // Şu anlık başlangıcı signup yapıyoruz
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable("register") {
+                RegisterScreen(navController =navController)
+            }
             composable("main") {
                 MainScreen(navController =navController)
             }

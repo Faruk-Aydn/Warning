@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "353579772135",
+    "project_id": "warning-19ea0",
+    "storage_bucket": "warning-19ea0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353579772135:android:96b70ac3a1e344aabf5a42",
+        "android_client_info": {
+          "package_name": "com.example.warning"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTiKywdFIb-hvdTZUEfpdJRk1_uNy-UhM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

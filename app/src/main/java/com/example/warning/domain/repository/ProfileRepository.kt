@@ -3,7 +3,8 @@ package com.example.warning.domain.repository
 import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Profile
 
-interface ProfileRepository {
+
+interface ProfileRepository{
     suspend fun getProfile(): Profile?
     suspend fun updateProfile(profile: Profile)
     suspend fun deleteProfile()

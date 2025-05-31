@@ -3,6 +3,7 @@ package com.example.warning.data.di
 import android.content.Context
 import androidx.room.Room
 import com.example.warning.data.local.AppDatabase
+import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.repository.ProfileRepositoryImpl
 import com.example.warning.domain.repository.ProfileRepository
@@ -10,6 +11,7 @@ import com.example.warning.domain.usecase.ProfileUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -20,7 +22,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(appContext: Context): AppDatabase {
+    fun provideAppDatabase(
+        @ApplicationContext appContext: Context
+    ): AppDatabase {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
