@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.warning.presentation.ui.screens.MainScreen
 import com.example.warning.presentation.ui.screens.SettingsScreen
+import com.example.warning.presentation.ui.screens.VerificationProcess
 import com.example.warning.presentation.ui.signup.RegisterScreen
 import com.example.warning.presentation.ui.theme.WarningTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +41,7 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "register", // Şu anlık başlangıcı signup yapıyoruz
+            startDestination = "verification", // Şu anlık başlangıcı signup yapıyoruz
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("register") {
@@ -51,6 +52,9 @@ fun AppNavigation() {
             }
             composable("settings") {
                 SettingsScreen()
+            }
+            composable("verification") {
+                VerificationProcess()
             }
         }
     }

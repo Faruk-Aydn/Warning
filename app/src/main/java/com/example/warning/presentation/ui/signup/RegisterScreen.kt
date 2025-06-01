@@ -49,15 +49,11 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = phone,
-            onValueChange = { phone = it },
-            label = { Text("Telefon Numarası") },
-            modifier = Modifier.fillMaxWidth()
-        )
+
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
-            if (name.isNotBlank() && phone.isNotBlank()) {
+            if (name.isNotBlank()) {
+                navController.navigate("verification")
                 val profile = Profile(
                     phoneNumber = phone, name = name,
                     emergencyMessage = null,
