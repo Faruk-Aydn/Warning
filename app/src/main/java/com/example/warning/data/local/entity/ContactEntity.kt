@@ -19,6 +19,6 @@ import androidx.room.PrimaryKey
 )
 data class ContactEntity(
     @PrimaryKey val phoneNumber: String,  // İletişim kişisinin numarası
-    val name: String,
-    val ownerPhoneNumber: String // Hangi profile ait olduğunu belirtir
+    val name: String?,
+    val ownerPhoneNumber: String? // Hangi profile ait olduğunu belirtir
 )

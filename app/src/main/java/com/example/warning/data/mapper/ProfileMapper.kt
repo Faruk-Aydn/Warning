@@ -1,5 +1,7 @@
 package com.example.warning.data.mapper
 
+import com.example.warning.data.Dto.ContactDto
+import com.example.warning.data.Dto.UserDto
 import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.data.local.entity.ProfileEntity
 import com.example.warning.data.local.entity.ProfileWithContacts
@@ -14,10 +16,43 @@ fun ProfileWithContacts.toDomain(): Profile {
         contacts = contacts.map {
             Contact(
                 phoneNumber = it.phoneNumber,
-                name = it.name,
-                ownerPhoneNumber = it.ownerPhoneNumber
+                name = it.name.toString(),
+                ownerPhoneNumber = it.ownerPhoneNumber.toString()
             )
         }
+    )
+}
+fun UserDto.toEntity() :ProfileEntity{
+    return ProfileEntity(
+        name = this.name,
+        phoneNumber = this.phoneNumber,
+        emergencyMessage = this.emergencyMessage,
+    )
+}
+
+fun ContactDto.toEntity(): ContactEntity{
+    return ContactEntity(
+        name = this.name.toString(),
+        phoneNumber = this.phoneNumber,
+        ownerPhoneNumber = this.ownerPhoneNumber.toString()
+    )
+}
+
+// Entity -> DTO
+fun ProfileEntity.toDTO(contact: List<ContactEntity>?): UserDto {
+    return UserDto(
+        name = this.name,
+        phoneNumber = this.phoneNumber,
+        emergencyMessage = this.emergencyMessage,
+        contact = contact?.map {it.toDTO() }
+    )
+}
+
+fun ContactEntity.toDTO(): ContactDto {
+    return ContactDto(
+        name = this.name,
+        phoneNumber = this.phoneNumber,
+        ownerPhoneNumber = this.ownerPhoneNumber
     )
 }
 // ENTITY -> DOMAIN
@@ -36,8 +71,8 @@ fun ProfileEntity.toDomain(): Profile {
 fun ContactEntity.toDomain(): Contact {
     return Contact(
         phoneNumber = this.phoneNumber,
-        name = this.name,
-        ownerPhoneNumber = this.ownerPhoneNumber
+        name = this.name.toString(),
+        ownerPhoneNumber = this.ownerPhoneNumber.toString()
     )
 }
 

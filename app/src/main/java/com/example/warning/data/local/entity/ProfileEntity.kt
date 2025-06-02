@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "profile")
 data class ProfileEntity(
     @PrimaryKey
-    val phoneNumber: String, // unique id olarak kullanıyoruz
-    val name: String,
-    val emergencyMessage: String?
+    var phoneNumber: String, // unique id olarak kullanıyoruz
+    var name: String,
+    var emergencyMessage: String?
 )
