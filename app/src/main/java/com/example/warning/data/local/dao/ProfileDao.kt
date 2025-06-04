@@ -18,5 +18,5 @@ interface ProfileDao {
     suspend fun insertProfile(profile: ProfileEntity)
 
     @Query("DELETE FROM profile")
-    suspend fun deleteProfile()
+    suspend fun deleteProfile(profile: ProfileEntity)
 }

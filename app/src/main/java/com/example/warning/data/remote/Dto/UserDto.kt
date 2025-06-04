@@ -1,6 +1,4 @@
-package com.example.warning.data.Dto
-
-import com.example.warning.data.local.entity.ContactEntity
+package com.example.warning.data.remote.Dto
 
 data class UserDto(
     val phoneNumber: String,

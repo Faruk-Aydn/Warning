@@ -1,7 +1,7 @@
 package com.example.warning.data.mapper
 
-import com.example.warning.data.Dto.ContactDto
-import com.example.warning.data.Dto.UserDto
+import com.example.warning.data.remote.Dto.ContactDto
+import com.example.warning.data.remote.Dto.UserDto
 import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.data.local.entity.ProfileEntity
 import com.example.warning.data.local.entity.ProfileWithContacts
@@ -22,6 +22,7 @@ fun ProfileWithContacts.toDomain(): Profile {
         }
     )
 }
+
 fun UserDto.toEntity() :ProfileEntity{
     return ProfileEntity(
         name = this.name,

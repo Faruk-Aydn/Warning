@@ -1,17 +1,25 @@
 package com.example.warning.data.repository
 
 import com.example.warning.data.local.dao.ContactDao
+import com.example.warning.data.local.dao.PendingSyncDao
 import com.example.warning.data.local.dao.ProfileDao
+import com.example.warning.data.local.entity.PendingSyncEntity
+import com.example.warning.data.local.entity.SyncType
 import com.example.warning.data.mapper.toDomain
 import com.example.warning.data.mapper.toEntity
 import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Profile
 import com.example.warning.domain.repository.ProfileRepository
+import kotlin.text.insert
 
 class ProfileRepositoryImpl(
     private val profileDao: ProfileDao,
-    private val contactDao: ContactDao
+    private val contactDao: ContactDao,
+    private val pendingSyncDao: PendingSyncDao
 ) : ProfileRepository {
+
+    val timestamp: Long = System.currentTimeMillis()
+
 
     override suspend fun getProfile(): Profile? {
         return profileDao.getProfile()?.toDomain()
@@ -19,10 +27,25 @@ class ProfileRepositoryImpl(
 
     override suspend fun updateProfile(profile: Profile) {
         profileDao.insertProfile(profile.toEntity())
+        pendingSyncDao.insertSyncRequest(PendingSyncEntity(
+            syncType = SyncType.PROFILE_UPDATE,
+            timestamp = timestamp
+        ))
+        
     }
 
-    override suspend fun deleteProfile() {
-        profileDao.deleteProfile()
+    override suspend fun deleteProfile(profile: Profile) {
+        profileDao.deleteProfile(profile.toEntity())
+
+        // Sync listesine ekle
+        if (profileDao != null) {
+            pendingSyncDao.insertSyncRequest(
+                PendingSyncEntity(
+                    syncType = SyncType.PROFILE_UPDATE,
+                    timestamp = timestamp
+                )
+            )
+        }
     }
 
     override suspend fun getAllContacts(): List<Contact?> {
@@ -34,10 +57,28 @@ class ProfileRepositoryImpl(
     }
     override suspend fun deleteAllContact(){
         contactDao.deleteAllContacts()
+
+        pendingSyncDao.insertSyncRequest(
+            PendingSyncEntity(
+                syncType = SyncType.PROFILE_UPDATE,
+                timestamp = timestamp
+            )
+        )
     }
 
     override suspend fun deleteContact(contact: Contact) {
         contactDao.deleteContact(contact.toEntity())
-    }
 
+        // Sync listesine ekle
+        if (contact != null) {
+            pendingSyncDao.insertSyncRequest(
+                PendingSyncEntity(
+                    syncType = SyncType.PROFILE_UPDATE,
+                    timestamp = timestamp
+                )
+            )
+        }
+
+    }
 }
+
