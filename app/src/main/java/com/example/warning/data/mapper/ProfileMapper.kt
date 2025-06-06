@@ -1,5 +1,6 @@
 package com.example.warning.data.mapper
 
+import android.R.attr.phoneNumber
 import com.example.warning.data.remote.Dto.ContactDto
 import com.example.warning.data.remote.Dto.UserDto
 import com.example.warning.data.local.entity.ContactEntity
@@ -49,6 +50,14 @@ fun ProfileEntity.toDTO(contact: List<ContactEntity>?): UserDto {
     )
 }
 
+fun ProfileWithContacts.toDto(): UserDto {
+    return UserDto(
+        name = profile.name,
+        phoneNumber = profile.phoneNumber,
+        contact = contacts.map { it.toDTO() },
+        emergencyMessage = profile.emergencyMessage,
+    )
+}
 fun ContactEntity.toDTO(): ContactDto {
     return ContactDto(
         name = this.name,

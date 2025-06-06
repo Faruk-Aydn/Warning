@@ -11,6 +11,7 @@ import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Profile
 import com.example.warning.domain.repository.ProfileRepository
 import kotlin.text.insert
+import android.util.Log
 
 class ProfileRepositoryImpl(
     private val profileDao: ProfileDao,
@@ -27,15 +28,17 @@ class ProfileRepositoryImpl(
 
     override suspend fun updateProfile(profile: Profile) {
         profileDao.insertProfile(profile.toEntity())
+        Log.d("RegisterViewModel", "Kayıt başarılı: $profile")
         pendingSyncDao.insertSyncRequest(PendingSyncEntity(
             syncType = SyncType.PROFILE_UPDATE,
             timestamp = timestamp
         ))
+        Log.d("RegisterViewModel", "Kayıt başarılı: $profile")
         
     }
 
-    override suspend fun deleteProfile(profile: Profile) {
-        profileDao.deleteProfile(profile.toEntity())
+    override suspend fun deleteProfile() {
+        profileDao.deleteProfile()
 
         // Sync listesine ekle
         if (profileDao != null) {

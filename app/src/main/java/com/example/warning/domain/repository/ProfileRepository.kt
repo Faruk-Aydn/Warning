@@ -7,7 +7,7 @@ import com.example.warning.domain.model.Profile
 interface ProfileRepository{
     suspend fun getProfile(): Profile?
     suspend fun updateProfile(profile: Profile)
-    suspend fun deleteProfile(profile: Profile)
+    suspend fun deleteProfile()
     suspend fun getAllContacts(): List<Contact?>
     suspend fun getContactByPhone(phone: String): Contact?
     suspend fun deleteAllContact()

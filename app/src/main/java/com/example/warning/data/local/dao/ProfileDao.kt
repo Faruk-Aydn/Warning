@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.warning.data.local.entity.ProfileEntity
+import com.example.warning.data.local.entity.ProfileWithContacts
 
 @Dao
 interface ProfileDao {
@@ -18,5 +19,9 @@ interface ProfileDao {
     suspend fun insertProfile(profile: ProfileEntity)
 
     @Query("DELETE FROM profile")
-    suspend fun deleteProfile(profile: ProfileEntity)
+    suspend fun deleteProfile()
+
+    @Transaction
+    @Query("SELECT * FROM profile LIMIT 1") // ya da hangi user ise
+    suspend fun getProfileWithContacts(): ProfileWithContacts
 }

@@ -8,7 +8,7 @@ class FirestoreService {
     private val firestore = FirebaseFirestore.getInstance()
 
     fun uploadUser(userDto: UserDto, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
-        firestore.collection("users")
+        firestore.collection("profile")
             .document(userDto.phoneNumber)
             .set(userDto)
             .addOnSuccessListener { onSuccess() }

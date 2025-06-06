@@ -2,8 +2,10 @@ package com.example.warning.data.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.warning.data.MIGRATION_2
 import com.example.warning.data.local.AppDatabase
 import com.example.warning.data.local.dao.ContactDao
+import com.example.warning.data.local.dao.PendingSyncDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.repository.ProfileRepositoryImpl
 import com.example.warning.domain.repository.ProfileRepository
@@ -29,7 +31,8 @@ object AppModule {
             appContext,
             AppDatabase::class.java,
             "profile_database"
-        ).build()
+        ).addMigrations(MIGRATION_2)
+            .build()
     }
 
     @Provides
@@ -42,9 +45,10 @@ object AppModule {
     @Singleton
     fun provideProfileRepository(
         profileDao: ProfileDao,
-        contactDao: ContactDao
+        contactDao: ContactDao,
+        syncDao: PendingSyncDao
     ): ProfileRepository {
-        return ProfileRepositoryImpl(profileDao, contactDao)
+        return ProfileRepositoryImpl(profileDao, contactDao, syncDao)
     }
 
     @Provides
@@ -52,4 +56,7 @@ object AppModule {
     fun provideProfileUseCases(repository: ProfileRepository): ProfileUseCases {
         return ProfileUseCases(repository)
     }
+
+    @Provides
+    fun providesPendingSyncDao( db: AppDatabase): PendingSyncDao = db.pendingSyncDao()
 }
