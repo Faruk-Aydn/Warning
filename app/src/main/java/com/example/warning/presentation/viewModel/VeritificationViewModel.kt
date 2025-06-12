@@ -38,7 +38,12 @@ class VerificationViewModel @Inject constructor(
 
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
 
-    fun sendVerificationCode(phoneNumber: String, activity: Activity) {
+    fun sendVerificationCode(
+        phoneNumber: String,
+        activity: Activity,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
         isLoading = true
         errorMessage = null
         isVerified = null
@@ -55,6 +60,7 @@ class VerificationViewModel @Inject constructor(
 
                 override fun onVerificationFailed(e: FirebaseException) {
                     Log.e("FirebaseAuth", "Hata: 2 ${e.message}")
+                    onFailure
                     isLoading = false
                     errorMessage = e.localizedMessage ?: "Doğrulama başarısız"
                 }
@@ -64,10 +70,11 @@ class VerificationViewModel @Inject constructor(
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
                     super.onCodeSent(id, token)
+                    onSuccess()
                     verificationId = id
                     resendToken = token
                     Log.e("FirebaseAuth", "Hata: yok")
-                    isLoading = false
+                    isLoading = true
                 }
             })
             .build()
@@ -79,7 +86,6 @@ class VerificationViewModel @Inject constructor(
         if (id == null) {
             Log.e("FirebaseAuth", "Hata: Doğrulama kodu alınamadı")
             errorMessage = "Doğrulama kodu alınamadı"
-
             return
         }
 

@@ -14,13 +14,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.warning.presentation.ui.screens.MainScreen
 import com.example.warning.presentation.ui.screens.SettingsScreen
-import com.example.warning.presentation.ui.screens.VerificationProcess
+import com.example.warning.presentation.ui.screens.SplashScreen
+import com.example.warning.presentation.ui.signup.LoginScreen
 import com.example.warning.presentation.ui.signup.RegisterScreen
 import com.example.warning.presentation.ui.theme.WarningTheme
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val db = FirebaseFirestore.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,11 +45,13 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "verification", // Şu anlık başlangıcı signup yapıyoruz
+            startDestination = "register", // Şu anlık başlangıcı signup yapıyoruz
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("register") {
-                RegisterScreen(navController =navController)
+                RegisterScreen(
+                    navController = navController
+                )
             }
             composable("main") {
                 MainScreen(navController =navController)
@@ -54,7 +60,22 @@ fun AppNavigation() {
                 SettingsScreen()
             }
             composable("verification") {
-                VerificationProcess()
+                LoginScreen(navController= navController)
+            }
+            composable ("splash"){
+                SplashScreen(navController)
+            }
+            composable("login"){
+                LoginScreen(navController= navController)
+            }
+            composable("profile") {
+
+            }
+            composable("help") {
+
+            }
+            composable("contacts") {
+
             }
         }
     }

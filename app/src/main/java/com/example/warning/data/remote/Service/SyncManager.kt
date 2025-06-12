@@ -1,40 +1,41 @@
 package com.example.warning.data.remote.Service
 
-import android.content.ContentValues.TAG
-import android.util.Log
+import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.PendingSyncDao
 import com.example.warning.data.local.dao.ProfileDao
-import com.example.warning.data.mapper.toDto
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.warning.data.local.entity.ContactEntity
+import com.example.warning.data.local.entity.SyncType
+import com.example.warning.data.mapper.toDTO
+import com.example.warning.data.network.ConnectivityObserver
+import com.example.warning.data.remote.Dto.UserDto
+import kotlinx.coroutines.runBlocking
 
 class SyncManager(
     private val dao: ProfileDao,
+    private val contactDao: ContactDao,
     private val syncDao: PendingSyncDao,
-    private val firestoreService: FirestoreService
+    private val firestoreService: FirestoreService,
+    private val connectivityObserver: ConnectivityObserver
 ) {
 
-    suspend fun syncPendingItems() {
-        val pendingItems = syncDao.getAllSyncRequests()
+    suspend fun startSync() {
+        if (connectivityObserver.isOnline()) {
+            val c_dao: List<ContactEntity?>   = contactDao.getAllContacts().map { it }
+            val userDto : UserDto? = dao.getProfile()?.toDTO(c_dao)
+            val pendingList = syncDao.getAllSyncRequests()
+            for (item in pendingList) {
+                when (item.syncType) {
+                    SyncType.PROFILE_UPDATE -> {
 
-        for (item in pendingItems) {
-            val profileWithContacts = dao.getProfileWithContacts()
-            val userDto = profileWithContacts.toDto()
-
-            firestoreService.uploadUser(
-                userDto,
-                onSuccess = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        syncDao.deleteSyncRequest(id = item.id)
-                        Log.d(TAG, "Sync success for item id: ${item.id}")
+                        firestoreService.uploadUser(
+                            userDto = userDto,
+                            onSuccess = { runBlocking { syncDao.deleteSyncRequest(item.id) } },
+                            onError = { /* logla ama silme */ }
+                        )
                     }
-                },
-                onError = {
-                    Log.e(TAG, "Sync failed for item id: ${item.id}, error: $it")
-                    // isteğe bağlı: loglama
+                    // Diğer senkron türleri buraya
                 }
-            )
+            }
         }
     }
 }

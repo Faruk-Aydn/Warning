@@ -1,12 +1,6 @@
 package com.example.warning.presentation.ui.signup
 
-import android.R.attr.onClick
 import android.app.Activity
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.EaseOutBack
-import androidx.compose.animation.core.EaseOutCubic
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,12 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -36,32 +26,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.warning.presentation.viewModel.ProfileViewModel
 import com.example.warning.presentation.viewModel.VerificationViewModel
 
-
 @Composable
-fun RegisterScreen(
+fun LoginScreen(
     navController: NavHostController,
-    viewModel: VerificationViewModel = hiltViewModel(),
-    pViewModel: ProfileViewModel = hiltViewModel()
+    viewModel: VerificationViewModel = hiltViewModel()
 ) {
-    var name by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
     var isPhoneValid by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
     var codeSent by remember { mutableStateOf(false) }
     var verificationCode by remember { mutableStateOf("") }
-    var success by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
 
-    // Telefon numarası validasyon kontrolü (örnek: 10 haneli mi?)
+    // Telefon numarasının geçerli olup olmadığını kontrol et
     LaunchedEffect(phoneNumber) {
         isPhoneValid = phoneNumber.length == 10 && phoneNumber.all { it.isDigit() }
     }
@@ -72,19 +57,10 @@ fun RegisterScreen(
             .padding(16.dp)
     ) {
         Text(
-            text = "Kayıt Ol",
+            text = "Giriş Yap",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("İsim") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -93,7 +69,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = phoneNumber,
                 onValueChange = { phoneNumber = it },
-                label = { Text("Telefon Numarası (+90)") },
+                label = { Text("Telefon Numarası") },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.weight(1f)
             )
@@ -104,12 +80,11 @@ fun RegisterScreen(
                 onClick = {
                     isLoading = true
                     viewModel.sendVerificationCode(
-                        "+90$phoneNumber",  // ülke koduyla birlikte gönder
+                        "+90$phoneNumber",
                         context as Activity,
                         onSuccess = {
                             isLoading = false
                             codeSent = true
-                            success = true
                         },
                         onFailure = {
                             isLoading = false
@@ -123,23 +98,15 @@ fun RegisterScreen(
                         modifier = Modifier.size(20.dp),
                         strokeWidth = 2.dp
                     )
-                } else if (success){
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Success",
-                        tint = Color.Green,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                else {
+                } else {
                     Text("Doğrula")
                 }
             }
         }
 
-        // Kod gönderildiyse doğrulama kodu alanını göster
         if (codeSent) {
             Spacer(modifier = Modifier.height(16.dp))
+
             OutlinedTextField(
                 value = verificationCode,
                 onValueChange = { verificationCode = it },
@@ -147,33 +114,30 @@ fun RegisterScreen(
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
+            viewModel.verifyCode(verificationCode)
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Sağ altta ileri butonu
-        if (codeSent) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(
+                onClick = {
+                    // örneğin doğrulama kodunu kontrol ettikten sonra ana ekrana geçilebilir
+                    navController.navigate("home_screen")
+                },
+                enabled = verificationCode.isNotBlank()
             ) {
-                Button(
-                    onClick = {
-
-                        // örnek olarak navController ile doğrulama ekranına geçebilir
-                        navController.navigate("")
-                    },
-                    enabled = verificationCode.isNotBlank()
-                ) {
-                    Text("İleri")
-                }
+                Text("Giriş Yap")
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextButton(onClick = { navController.navigate("login") }) {
-            Text("Zaten hesabınız var mı? Giriş yapın")
+        TextButton(onClick = { navController.navigate("register") }) {
+            Text("Hesabınız yok mu? Kayıt olun")
         }
     }
 }

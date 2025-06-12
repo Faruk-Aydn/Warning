@@ -35,15 +35,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
+import androidx.compose.ui.layout.ContentScale
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.warning.presentation.ui.theme.DrawerBackground
 import com.example.warning.presentation.ui.theme.DrawerItemText
+import com.example.warning.presentation.viewModel.ProfileViewModel
 
 @Composable
 fun WarningButton(
-    buttonSize: Int
+    buttonSize: Int,
+    viewModel: ProfileViewModel = hiltViewModel()
 ){
+    viewModel.loadProfile()
     Canvas(modifier = Modifier.size((buttonSize+15).dp)) {
         drawCircle(
             color = Color.Red.copy(alpha = 0.3f),
@@ -56,7 +62,6 @@ fun WarningButton(
             style = Stroke(width = 2.dp.toPx())
         )
     }
-
 
     Button(
         onClick = { /* TODO: Acil durum işlemi */ },
@@ -72,7 +77,7 @@ fun WarningButton(
 @Composable
 fun MenuContent(
     onClose: ()-> Unit,
-    onNavigateToSettings: () -> Unit
+    navController: NavController
 ){
     Box(modifier = Modifier.fillMaxSize()) {
         // Arka plan tıklaması ile menüyü kapat
@@ -109,10 +114,12 @@ fun MenuContent(
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Text("Ayarlar", modifier = Modifier.clickable {
-                    onNavigateToSettings()
+                    onClose()
+                    navController.navigate("settings")
                 }.padding(vertical = 8.dp), color = DrawerItemText)
                 Text("Yardım", modifier = Modifier.clickable {
-
+                    onClose()
+                    navController.navigate("help")
                 }.padding(vertical = 8.dp), color = DrawerItemText)
                 Spacer(modifier = Modifier.weight(1f))
                 Text("v1.0.0", color = Color.Gray, style = MaterialTheme.typography.labelSmall)
@@ -121,12 +128,7 @@ fun MenuContent(
     }
 }
 
-@Composable
-fun Profile(
-    onClose: () -> Unit
-){
 
-}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
@@ -136,67 +138,63 @@ fun MainScreen(
     var isProfileDialogOpen by remember { mutableStateOf(false) }
     val buttonSize: Int = 150
 
-    Box(modifier = Modifier
+    Box(
+        modifier = Modifier
             .fillMaxSize().background(
-            Brush.verticalGradient(colors = listOf(Color(0xFF0D1B2A), Color(0xFF1B263B))))
+                Brush.verticalGradient(colors = listOf(Color(0xFF0D1B2A), Color(0xFF1B263B)))
             )
-            {
-                // Üst bar
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Profil butonu
-                    IconButton(onClick = { isProfileDialogOpen = true }) {
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(Color.Gray)
-                        ) {
-                            // Profil foto
-                        }
-                    }
-
-                    // Menü butonu
-                    IconButton(onClick = { isMenuExpanded = true }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
-                            tint = Color.White
-                        )
-                    }
-                }
+    )
+    {
+        // Üst bar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Profil butonu
+            IconButton(onClick = { navController.navigate("profile") }) {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color.Gray)
                 ) {
-                    WarningButton(buttonSize =buttonSize)
-                }
-                // Menü içeriği
-                if (isMenuExpanded) {
-                    MenuContent(
-                        onClose = { isMenuExpanded = false },
-                        onNavigateToSettings = {
-                            navController.navigate("settings")
-                            isMenuExpanded = false
-                        }
-                    )
-                }
-
-                // Kalan orijinal kodlar (Acil durum butonu ve profil dialog)
-
-
-                if (isProfileDialogOpen) {
-                    // Profil dialog içeriği
-                    Profile(
-                        onClose = {isProfileDialogOpen =false}
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Varsayılan Profil İkonu",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
+            // Menü butonu
+            IconButton(onClick = { isMenuExpanded = true }) {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Menu",
+                    tint = Color.White
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            WarningButton(buttonSize = buttonSize)
+        }
+        // Menü içeriği
+        if (isMenuExpanded) {
+            MenuContent(
+                onClose = { isMenuExpanded = false },
+                navController= navController
+            )
+        }
+
+    }
 }
+
 
 @Preview(showBackground = true)
 @Composable

@@ -10,13 +10,18 @@ import com.example.warning.data.mapper.toEntity
 import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Profile
 import com.example.warning.domain.repository.ProfileRepository
-import kotlin.text.insert
 import android.util.Log
+import com.example.warning.data.local.entity.ContactEntity
+import com.example.warning.data.local.entity.ProfileEntity
+import com.example.warning.data.mapper.toDTO
+import com.example.warning.data.remote.Dto.UserDto
+import com.example.warning.data.remote.Service.FirestoreService
 
 class ProfileRepositoryImpl(
     private val profileDao: ProfileDao,
     private val contactDao: ContactDao,
-    private val pendingSyncDao: PendingSyncDao
+    private val pendingSyncDao: PendingSyncDao,
+    private val firestoreService: FirestoreService
 ) : ProfileRepository {
 
     val timestamp: Long = System.currentTimeMillis()
@@ -82,6 +87,31 @@ class ProfileRepositoryImpl(
             )
         }
 
+    }
+
+    //firebase
+    override suspend fun isUserRegistered(phoneNumber: String): Boolean {
+        return firestoreService.isUserRegistered(phoneNumber)
+    }
+
+    override suspend fun registerUser(profile: ProfileEntity, contact: ContactEntity) {
+        // Room'a kaydet
+        profileDao.insertProfile(profile)
+
+        // Firestore'a kaydet
+        val contacts = contactDao.getAllContacts().map { it }
+        val user = profileDao.getProfile()!!.toDTO(contacts)
+        firestoreService.registerUser(user)
+    }
+
+    override suspend fun getLocalUserDto(): UserDto? {
+        val contacts = contactDao.getAllContacts().map { it }
+        val user = profileDao.getProfile()!!.toDTO(contacts)
+        return user
+    }
+
+    override suspend fun getRemoteProfile(phoneNumber: String): UserDto? {
+        return firestoreService.getProfile(phoneNumber)
     }
 }
 

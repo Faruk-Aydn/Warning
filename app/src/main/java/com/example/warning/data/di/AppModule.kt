@@ -31,7 +31,8 @@ object AppModule {
             appContext,
             AppDatabase::class.java,
             "profile_database"
-        ).addMigrations(MIGRATION_2)
+        ).fallbackToDestructiveMigration()
+            .addMigrations(MIGRATION_2)
             .build()
     }
 
@@ -48,7 +49,10 @@ object AppModule {
         contactDao: ContactDao,
         syncDao: PendingSyncDao
     ): ProfileRepository {
-        return ProfileRepositoryImpl(profileDao, contactDao, syncDao)
+        return ProfileRepositoryImpl(
+            profileDao, contactDao, syncDao,
+            firestoreService = TODO()
+        )
     }
 
     @Provides

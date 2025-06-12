@@ -34,4 +34,5 @@ class ProfileUseCases @Inject constructor(
     suspend fun deleteAllContact(){
         repository.deleteAllContact()
     }
+
 }

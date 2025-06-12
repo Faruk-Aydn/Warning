@@ -61,4 +61,9 @@ class ProfileViewModel @Inject constructor(
             profileUseCases.updateProfile(profile)
         }
     }
+    fun getProfile(){
+        viewModelScope.launch {
+            profileUseCases.getProfile()
+        }
+    }
 }

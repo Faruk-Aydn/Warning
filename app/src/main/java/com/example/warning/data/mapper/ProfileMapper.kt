@@ -41,24 +41,16 @@ fun ContactDto.toEntity(): ContactEntity{
 }
 
 // Entity -> DTO
-fun ProfileEntity.toDTO(contact: List<ContactEntity>?): UserDto {
+fun ProfileEntity.toDTO(contact: List<ContactEntity?>): UserDto {
     return UserDto(
         name = this.name,
         phoneNumber = this.phoneNumber,
         emergencyMessage = this.emergencyMessage,
-        contact = contact?.map {it.toDTO() }
+        contact = contact.map { it?.toDTO() }
     )
 }
 
-fun ProfileWithContacts.toDto(): UserDto {
-    return UserDto(
-        name = profile.name,
-        phoneNumber = profile.phoneNumber,
-        contact = contacts.map { it.toDTO() },
-        emergencyMessage = profile.emergencyMessage,
-    )
-}
-fun ContactEntity.toDTO(): ContactDto {
+fun ContactEntity.toDTO(): ContactDto{
     return ContactDto(
         name = this.name,
         phoneNumber = this.phoneNumber,

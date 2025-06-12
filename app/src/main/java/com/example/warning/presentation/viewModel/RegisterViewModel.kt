@@ -13,6 +13,9 @@ class RegisterViewModel @Inject constructor(
     private val profileUseCases: ProfileUseCases
 ) : ViewModel() {
 
+    suspend fun isRegistered(){
+        return
+    }
     // Kayıt işlemi (basit doğrulama ile)
     fun register(profile: Profile, onResult: (success: Boolean) -> Unit) {
         viewModelScope.launch {
