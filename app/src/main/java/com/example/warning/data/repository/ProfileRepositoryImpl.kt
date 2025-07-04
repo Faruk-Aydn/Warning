@@ -11,16 +11,19 @@ import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Profile
 import com.example.warning.domain.repository.ProfileRepository
 import android.util.Log
+import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.data.local.entity.ProfileEntity
 import com.example.warning.data.mapper.toDTO
 import com.example.warning.data.remote.Dto.UserDto
 import com.example.warning.data.remote.Service.FirestoreService
+import com.example.warning.domain.model.Linked
 
 class ProfileRepositoryImpl(
     private val profileDao: ProfileDao,
     private val contactDao: ContactDao,
     private val pendingSyncDao: PendingSyncDao,
+    private val linkedDao: LinkedDao,
     private val firestoreService: FirestoreService
 ) : ProfileRepository {
 
@@ -112,6 +115,26 @@ class ProfileRepositoryImpl(
 
     override suspend fun getRemoteProfile(phoneNumber: String): UserDto? {
         return firestoreService.getProfile(phoneNumber)
+    }
+
+    override suspend fun getAllLinked(): List<Linked?> {
+
+    }
+
+    override suspend fun deleteAllLinked() {
+
+    }
+
+    override suspend fun deleteLinked(linked: Linked) {
+
+    }
+
+    override suspend fun insertLinked(linked: Linked) {
+
+    }
+
+    override suspend fun insertContact(contact: Contact) {
+
     }
 }
 

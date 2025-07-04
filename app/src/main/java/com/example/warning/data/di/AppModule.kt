@@ -2,9 +2,10 @@ package com.example.warning.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.warning.data.MIGRATION_2
+import com.example.warning.data.MIGRATION_2_3
 import com.example.warning.data.local.AppDatabase
 import com.example.warning.data.local.dao.ContactDao
+import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.PendingSyncDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.repository.ProfileRepositoryImpl
@@ -32,7 +33,7 @@ object AppModule {
             AppDatabase::class.java,
             "profile_database"
         ).fallbackToDestructiveMigration()
-            .addMigrations(MIGRATION_2)
+            .addMigrations(MIGRATION_2_3)
             .build()
     }
 
@@ -40,17 +41,24 @@ object AppModule {
     fun provideProfileDao(db: AppDatabase): ProfileDao = db.profileDao()
 
     @Provides
+    fun providesPendingSyncDao( db: AppDatabase): PendingSyncDao = db.pendingSyncDao()
+
+    @Provides
     fun provideContactDao(db: AppDatabase): ContactDao = db.contactDao()
+
+    @Provides
+    fun provideLinkedDao(db: AppDatabase): LinkedDao = db.linkedDao()
 
     @Provides
     @Singleton
     fun provideProfileRepository(
         profileDao: ProfileDao,
         contactDao: ContactDao,
-        syncDao: PendingSyncDao
+        syncDao: PendingSyncDao,
+        linkedDao: LinkedDao
     ): ProfileRepository {
         return ProfileRepositoryImpl(
-            profileDao, contactDao, syncDao,
+            profileDao, contactDao, syncDao,linkedDao,
             firestoreService = TODO()
         )
     }
@@ -61,6 +69,4 @@ object AppModule {
         return ProfileUseCases(repository)
     }
 
-    @Provides
-    fun providesPendingSyncDao( db: AppDatabase): PendingSyncDao = db.pendingSyncDao()
 }
