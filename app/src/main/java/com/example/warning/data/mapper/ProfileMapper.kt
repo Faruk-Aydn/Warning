@@ -1,100 +1,124 @@
 package com.example.warning.data.mapper
 
-import android.R.attr.phoneNumber
 import com.example.warning.data.remote.Dto.ContactDto
 import com.example.warning.data.remote.Dto.UserDto
 import com.example.warning.data.local.entity.ContactEntity
+import com.example.warning.data.local.entity.LinkedEntity
 import com.example.warning.data.local.entity.ProfileEntity
-import com.example.warning.data.local.entity.ProfileWithContacts
+import com.example.warning.data.remote.Dto.LinkedDto
 import com.example.warning.domain.model.Contact
+import com.example.warning.domain.model.Linked
 import com.example.warning.domain.model.Profile
-
-fun ProfileWithContacts.toDomain(): Profile {
-    return Profile(
-        phoneNumber = profile.phoneNumber,
-        name = profile.name,
-        emergencyMessage = profile.emergencyMessage,
-        contacts = contacts.map {
-            Contact(
-                phoneNumber = it.phoneNumber,
-                name = it.name.toString(),
-                ownerPhoneNumber = it.ownerPhoneNumber.toString()
-            )
-        }
-    )
-}
-
-fun UserDto.toEntity() :ProfileEntity{
-    return ProfileEntity(
-        name = this.name,
-        phoneNumber = this.phoneNumber,
-        emergencyMessage = this.emergencyMessage,
-    )
-}
-
-fun ContactDto.toEntity(): ContactEntity{
-    return ContactEntity(
-        name = this.name.toString(),
-        phoneNumber = this.phoneNumber,
-        ownerPhoneNumber = this.ownerPhoneNumber.toString()
-    )
-}
+import com.google.android.play.integrity.internal.n
 
 // Entity -> DTO
-fun ProfileEntity.toDTO(contact: List<ContactEntity?>): UserDto {
+fun ProfileEntity.toDTO(
+    contact: List<ContactEntity?>,
+    linkeds: List<LinkedEntity?>
+): UserDto {
     return UserDto(
-        name = this.name,
-        phoneNumber = this.phoneNumber,
-        emergencyMessage = this.emergencyMessage,
-        contact = contact.map { it?.toDTO() }
+        name = name,
+        phoneNumber = phoneNumber,
+        emergencyMessage = emergencyMessage,
+        contact = contact.map { it?.toDTO() },
+        isLocationPermission = locationPermission,
+        ContactPermission = contactPermission,
+        linked = linkeds.map { it?.toDto() }
+    )
+}
+
+fun LinkedEntity.toDto(): LinkedDto{
+    return LinkedDto(
+        phoneNumber = phoneNumber,
+        name = name,
+        nickName = nickName,
+        ownerPhoneNumber = ownerPhoneNumber,
+        date = date
     )
 }
 
 fun ContactEntity.toDTO(): ContactDto{
     return ContactDto(
-        name = this.name,
-        phoneNumber = this.phoneNumber,
-        ownerPhoneNumber = this.ownerPhoneNumber
+        name = name,
+        phoneNumber = phoneNumber,
+        ownerPhoneNumber = ownerPhoneNumber,
+        nickName = nickName,
+        isActiveUser = isActiveUser,
+        specielMessage = specielMessage,
+        isLocationSend = isLocationSend,
+        tag = tag,
+        isTop = isTop
     )
 }
 // ENTITY -> DOMAIN
 
+fun LinkedEntity.toDomain(): Linked{
+    return Linked(
+        phoneNumber = phoneNumber,
+        name = name,
+        nickName = nickName,
+        ownerPhoneNumber = ownerPhoneNumber,
+        date = date
+    )
+}
+
 fun ProfileEntity.toDomain(): Profile {
     return Profile(
-        phoneNumber = this.phoneNumber,
-        name = this.name,
-        emergencyMessage = this.emergencyMessage,
-        // contacts ayrı tutulduğu için burada boş liste bırakıyoruz,
-        // Repository katmanında contacts set edilecek
-        contacts = emptyList()
+        phoneNumber = phoneNumber,
+        name = name,
+        emergencyMessage = emergencyMessage,
+        contactPermission =contactPermission,
+        locationPermission = locationPermission
     )
 }
 
 fun ContactEntity.toDomain(): Contact {
     return Contact(
-        phoneNumber = this.phoneNumber,
-        name = this.name.toString(),
-        ownerPhoneNumber = this.ownerPhoneNumber.toString()
+        phoneNumber = phoneNumber,
+        name = name,
+        ownerPhoneNumber = ownerPhoneNumber.toString(),
+        nickname = nickName,
+        isActiveUser = isActiveUser,
+        specielMessage = specielMessage,
+        isLocationSend = isLocationSend,
+        tag = tag,
+        isTop = isTop
     )
 }
 
 // DOMAIN -> ENTITY
 
+fun Linked.toEntity(): LinkedEntity{
+    return LinkedEntity(
+        phoneNumber = phoneNumber,
+        name = name,
+        nickName = nickName,
+        ownerPhoneNumber = ownerPhoneNumber,
+        date = date
+    )
+}
+
 fun Profile.toEntity(): ProfileEntity {
     return ProfileEntity(
-        phoneNumber = this.phoneNumber,
-        name = this.name,
-        emergencyMessage = this.emergencyMessage
+        phoneNumber = phoneNumber,
+        name = name,
+        emergencyMessage = emergencyMessage,
+        locationPermission= locationPermission,
+        contactPermission= contactPermission
         // contacts entity'leri ayrı olarak insert edilecek
     )
 }
 
 fun Contact.toEntity(): ContactEntity {
     return ContactEntity(
-        phoneNumber = this.phoneNumber,
-        name = this.name,
-        ownerPhoneNumber = this.ownerPhoneNumber
+        phoneNumber = phoneNumber,
+        name = name,
+        ownerPhoneNumber = ownerPhoneNumber,
+        nickName = nickname,
+        isActiveUser = isActiveUser,
+        specielMessage = specielMessage,
+        isLocationSend = isLocationSend,
+        tag = tag,
+        isTop = isTop
     )
 }
-
-// DOMAIN -> UI STATE

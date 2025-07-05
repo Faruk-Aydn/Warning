@@ -10,5 +10,5 @@ data class ProfileWithContacts(
         parentColumn = "phoneNumber",
         entityColumn = "ownerPhoneNumber"
     )
-    val contacts: List<ContactEntity>
+    val contacts: List<ContactEntity>?
 )

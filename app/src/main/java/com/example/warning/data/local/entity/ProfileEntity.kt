@@ -10,5 +10,5 @@ data class ProfileEntity(
     var name: String,
     var emergencyMessage: String? = null,
     var locationPermission: Boolean = false,
-    var ContactPermission: Boolean = false
+    var contactPermission: Boolean = false
 )

@@ -23,8 +23,8 @@ class ProfileRepositoryImpl(
     private val profileDao: ProfileDao,
     private val contactDao: ContactDao,
     private val pendingSyncDao: PendingSyncDao,
-    private val linkedDao: LinkedDao,
-    private val firestoreService: FirestoreService
+    private val firestoreService: FirestoreService,
+    private val linkedDao: LinkedDao
 ) : ProfileRepository {
 
     val timestamp: Long = System.currentTimeMillis()
@@ -102,14 +102,16 @@ class ProfileRepositoryImpl(
         profileDao.insertProfile(profile)
 
         // Firestore'a kaydet
+        val linkeds = linkedDao.getAllLinked().map { it }
         val contacts = contactDao.getAllContacts().map { it }
-        val user = profileDao.getProfile()!!.toDTO(contacts)
+        val user = profileDao.getProfile()!!.toDTO(contacts, linkeds)
         firestoreService.registerUser(user)
     }
 
     override suspend fun getLocalUserDto(): UserDto? {
+        val linkeds = linkedDao.getAllLinked().map { it }
         val contacts = contactDao.getAllContacts().map { it }
-        val user = profileDao.getProfile()!!.toDTO(contacts)
+        val user = profileDao.getProfile()!!.toDTO(contacts, linkeds)
         return user
     }
 
@@ -118,7 +120,7 @@ class ProfileRepositoryImpl(
     }
 
     override suspend fun getAllLinked(): List<Linked?> {
-
+        return linkedDao.getAllLinked().map { it.toDomain() }
     }
 
     override suspend fun deleteAllLinked() {
