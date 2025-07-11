@@ -5,26 +5,20 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "contacts",
-    foreignKeys = [
-        ForeignKey(
-            entity = ProfileEntity::class,
-            parentColumns = ["phoneNumber"],
-            childColumns = ["ownerPhoneNumber"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [Index("ownerPhoneNumber")]
-)
+@Entity(tableName = "contacts")
 data class ContactEntity(
-    @PrimaryKey val phoneNumber: String,  // İletişim kişisinin numarası
-    var name: String? =null,
-    var nickName: String?= null,
-    val ownerPhoneNumber: String, // Hangi profile ait olduğunu belirtir
-    var isActiveUser: Boolean,
-    var specielMessage: String?= null,
-    var isLocationSend: Boolean = false,
-    var tag: String? = null,
-    var isTop: Boolean= false
+    @PrimaryKey val id: String,
+    val ownerName: String,
+    val ownerPhone: String, // Hangi profile ait olduğunu belirtir //*
+    val ownerCountry: String,
+    var ownerPhoto: String?,                                    //  *
+    var profilePhoto: String?,
+    var name: String,                                           //      *
+    val country: String,                                        //          *
+    val phone: String,    // İletişim kişisinin numarası           //              *      owner ekleyen kişi - mmesaj gönderecek olan
+                              //              *      default eklenen kişi - kime gidecek
+    var specielMessage: String?= null,                          //          *
+    var isLocationSend: Boolean = false,                        //      *
+    var tag: String? = null,                                    //  *
+    var isTop: Boolean= false                                   //*
 )

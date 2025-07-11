@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -46,6 +48,8 @@ android {
 
 dependencies {
 
+
+    implementation("com.google.code.gson:gson:2.10.1")// En güncel stabil sürüm
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
 

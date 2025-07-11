@@ -1,13 +1,19 @@
 package com.example.warning.data.remote.Dto
 
 data class ContactDto(
-    var phoneNumber: String,
-    var name: String?,
-    var nickName: String?,
-    val ownerPhoneNumber: String?,
+    val id: String,
+    val phone: String,
+    val country: String,
+    var name: String,
+    var profilePhoto: String?,
+    var ownerProfilePhoto: String?,
+    val ownerPhone: String,
+    val ownerCountry: String,
+    var ownerName: String,
     var isActiveUser: Boolean,
-    var specielMessage: String?= null,
+    var specialMessage: String?= null,
     var isLocationSend: Boolean = false,
     var tag: String? = null,
-    var isTop: Boolean= false
+    var isTop: Boolean= false,
+    val date: Long
 )

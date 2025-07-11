@@ -6,22 +6,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.warning.data.local.entity.ProfileEntity
-import com.example.warning.data.local.entity.ProfileWithContacts
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProfileDao {
 
     @Transaction
     @Query("SELECT * FROM profile")
-    suspend fun getProfile(): ProfileEntity?
+    suspend fun getProfile(): Flow<ProfileEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProfile(profile: ProfileEntity)
-
-    @Query("DELETE FROM profile")
-    suspend fun deleteProfile()
-
-    @Transaction
-    @Query("SELECT * FROM profile LIMIT 1") // ya da hangi user ise
-    suspend fun getProfileWithContacts(): ProfileWithContacts
 }

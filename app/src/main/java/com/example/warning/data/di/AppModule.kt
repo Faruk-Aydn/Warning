@@ -6,7 +6,6 @@ import com.example.warning.data.MIGRATION_2_3
 import com.example.warning.data.local.AppDatabase
 import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.LinkedDao
-import com.example.warning.data.local.dao.PendingSyncDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.repository.ProfileRepositoryImpl
 import com.example.warning.domain.repository.ProfileRepository
@@ -41,9 +40,6 @@ object AppModule {
     fun provideProfileDao(db: AppDatabase): ProfileDao = db.profileDao()
 
     @Provides
-    fun providesPendingSyncDao( db: AppDatabase): PendingSyncDao = db.pendingSyncDao()
-
-    @Provides
     fun provideContactDao(db: AppDatabase): ContactDao = db.contactDao()
 
     @Provides
@@ -54,11 +50,10 @@ object AppModule {
     fun provideProfileRepository(
         profileDao: ProfileDao,
         contactDao: ContactDao,
-        syncDao: PendingSyncDao,
         linkedDao: LinkedDao
     ): ProfileRepository {
         return ProfileRepositoryImpl(
-            profileDao, contactDao, syncDao,linkedDao,
+            profileDao, contactDao as LinkedDao, linkedDao as ContactDao,
             firestoreService = TODO()
         )
     }

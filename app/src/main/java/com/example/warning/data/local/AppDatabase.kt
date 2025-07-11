@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.LinkedDao
-import com.example.warning.data.local.dao.PendingSyncDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.data.local.entity.PendingSyncEntity

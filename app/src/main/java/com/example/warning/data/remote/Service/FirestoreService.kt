@@ -1,5 +1,6 @@
 package com.example.warning.data.remote.Service
 
+import com.example.warning.data.remote.Dto.ContactDto
 import com.example.warning.data.remote.Dto.UserDto
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -41,7 +42,13 @@ class FirestoreService {
             .document(phoneNumber)
             .get()
             .await()
-
         return snapshot.toObject(UserDto::class.java)
+    }
+    suspend fun getContact(id: String): ContactDto? {
+        val snapshot = firestore.collection("profiles")
+            .document(id)
+            .get()
+            .await()
+        return snapshot.toObject(ContactDto::class.java)
     }
 }
