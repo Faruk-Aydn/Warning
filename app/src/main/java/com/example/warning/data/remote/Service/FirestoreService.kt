@@ -6,9 +6,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kotlin.jvm.java
 
-class FirestoreService {
+class FirestoreService(
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+) {
 
-    private val firestore = FirebaseFirestore.getInstance()
 
     fun uploadUser(userDto: UserDto?, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
         if (userDto == null) {

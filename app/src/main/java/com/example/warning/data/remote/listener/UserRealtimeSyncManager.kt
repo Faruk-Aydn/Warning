@@ -16,8 +16,7 @@ import javax.inject.Inject
 
 class UserRealtimeSyncManager @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val profileDao: ProfileDao,
-    private val firestoreService: FirestoreService
+    private val profileDao: ProfileDao
 ){
     private var listenerRegistration: ListenerRegistration? = null
 

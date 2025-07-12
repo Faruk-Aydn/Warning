@@ -2,11 +2,13 @@ package com.example.warning.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.warning.data.MIGRATION_2_3
 import com.example.warning.data.local.AppDatabase
 import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.ProfileDao
+import com.example.warning.data.remote.listener.ContactRealtimeSyncManager
+import com.example.warning.data.remote.listener.LinkedRealtimeSyncManager
+import com.example.warning.data.remote.listener.UserRealtimeSyncManager
 import com.example.warning.data.repository.ProfileRepositoryImpl
 import com.example.warning.domain.repository.ProfileRepository
 import com.example.warning.domain.usecase.ProfileUseCases
@@ -28,11 +30,10 @@ object AppModule {
         @ApplicationContext appContext: Context
     ): AppDatabase {
         return Room.databaseBuilder(
-            appContext,
-            AppDatabase::class.java,
-            "profile_database"
-        ).fallbackToDestructiveMigration()
-            .addMigrations(MIGRATION_2_3)
+                appContext,
+                AppDatabase::class.java,
+                "profile_database"
+            ).fallbackToDestructiveMigration(true)
             .build()
     }
 
@@ -53,8 +54,9 @@ object AppModule {
         linkedDao: LinkedDao
     ): ProfileRepository {
         return ProfileRepositoryImpl(
-            profileDao, contactDao as LinkedDao, linkedDao as ContactDao,
-            firestoreService = TODO()
+            profileDao,
+            linkedDao,
+            contactDao
         )
     }
 

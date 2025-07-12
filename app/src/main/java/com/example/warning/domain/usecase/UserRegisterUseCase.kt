@@ -1,9 +1,12 @@
 package com.example.warning.domain.usecase
 
+import com.example.warning.data.repository.FirebaseRepositoryImpl
 import com.example.warning.data.repository.ProfileRepositoryImpl
 import com.example.warning.domain.model.Profile
+import com.google.android.play.integrity.internal.f
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
 sealed class UserRegistrationState {
     object CheckingRegistration : UserRegistrationState()          // Kayıt kontrolü yapılıyor (loading)
@@ -14,8 +17,9 @@ sealed class UserRegistrationState {
     object Idle : UserRegistrationState()                            // Boş / bekleme durumu
 }
 
-class UserRegistrationUseCase(
-    private val repository: ProfileRepositoryImpl // senin interface'in burada olmalı
+class UserRegistrationUseCase @Inject constructor(
+    private val firebaseRepository: FirebaseRepositoryImpl,
+    private val repository: ProfileRepositoryImpl
 ) {
 
     // Flow ile UI'a durum göndermek için
@@ -25,20 +29,22 @@ class UserRegistrationUseCase(
     suspend fun checkAndRegisterUser(user: Profile) {
         _state.value = UserRegistrationState.CheckingRegistration
         try {
-            val isRegistered = repository.isRegistered(user.phoneNumber)
+            val isRegistered = firebaseRepository.isRegistered(user.phoneNumber)
             if (isRegistered) {
                 _state.value = UserRegistrationState.RegistrationConfirmed
 
-                val addResult = repository.addUser(user)
+                val addResult = firebaseRepository.addUser(user)
                 if (addResult) {
                     _state.value = UserRegistrationState.RegistrationSuccess
 
                     // Firebase kaydı başarılı, şimdi Room'a yaz
-                    val localAddResult = repository.addLocal(user.phoneNumber)
-                    if (localAddResult) {
+                    val localAddResult = firebaseRepository.getUser(user.phoneNumber)
+                    if (localAddResult != null) {
                         _state.value = UserRegistrationState.LoadingFromRoom
                         // dönüşümler ve diğer local tablolarını yapacam
-                        repository.startAllListener(user.phoneNumber)
+                        firebaseRepository.startUserListener(user.phoneNumber)
+                        firebaseRepository.startContactListener(user.phoneNumber)
+                        firebaseRepository.startLinkedListener(user.phoneNumber)
                         // Burada UI Room'dan veriyi observe etmeli (örn. LiveData veya Flow)
                         // Domain katmanı burada Room verisini direkt almaz, UI veya ViewModel gözlem yapar
                     } else {

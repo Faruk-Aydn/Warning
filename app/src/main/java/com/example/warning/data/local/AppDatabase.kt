@@ -7,21 +7,19 @@ import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.local.entity.ContactEntity
-import com.example.warning.data.local.entity.PendingSyncEntity
+import com.example.warning.data.local.entity.LinkedEntity
 import com.example.warning.data.local.entity.ProfileEntity
-import com.example.warning.data.mapper.Converters
 
 @Database(
     entities = [
         ProfileEntity::class,
-        PendingSyncEntity::class,
+        LinkedEntity::class,
         ContactEntity::class],
     version = 3
 )
-@TypeConverters(Converters::class)
+@TypeConverters()
 abstract class AppDatabase : RoomDatabase() {
     abstract fun profileDao(): ProfileDao
     abstract fun contactDao(): ContactDao
-    abstract fun pendingSyncDao(): PendingSyncDao
     abstract fun linkedDao(): LinkedDao
 }
