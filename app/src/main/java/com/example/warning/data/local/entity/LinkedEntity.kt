@@ -11,5 +11,6 @@ data class LinkedEntity(
     val country: String,
     var name: String,
     var profilePhoto: String?,
-    val date: Long
+    val date: Long,
+    val ownerPhone: String
 )

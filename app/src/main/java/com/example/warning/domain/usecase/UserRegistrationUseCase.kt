@@ -1,9 +1,8 @@
 package com.example.warning.domain.usecase
 
 import com.example.warning.data.repository.FirebaseRepositoryImpl
-import com.example.warning.data.repository.ProfileRepositoryImpl
 import com.example.warning.domain.model.Profile
-import com.google.android.play.integrity.internal.f
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -18,19 +17,23 @@ sealed class UserRegistrationState {
 }
 
 class UserRegistrationUseCase @Inject constructor(
-    private val firebaseRepository: FirebaseRepositoryImpl,
-    private val repository: ProfileRepositoryImpl
+    private val firebaseRepository: FirebaseRepositoryImpl
 ) {
 
     // Flow ile UI'a durum göndermek için
     private val _state = MutableStateFlow<UserRegistrationState>(UserRegistrationState.Idle)
     val state: StateFlow<UserRegistrationState> = _state
 
+
+    suspend fun checkUser(phone: String): Boolean{
+        return firebaseRepository.isRegistered(phone)
+    }
+
     suspend fun checkAndRegisterUser(user: Profile) {
         _state.value = UserRegistrationState.CheckingRegistration
         try {
             val isRegistered = firebaseRepository.isRegistered(user.phoneNumber)
-            if (isRegistered) {
+            if (isRegistered == false) {
                 _state.value = UserRegistrationState.RegistrationConfirmed
 
                 val addResult = firebaseRepository.addUser(user)
@@ -45,6 +48,11 @@ class UserRegistrationUseCase @Inject constructor(
                         firebaseRepository.startUserListener(user.phoneNumber)
                         firebaseRepository.startContactListener(user.phoneNumber)
                         firebaseRepository.startLinkedListener(user.phoneNumber)
+                        delay(200)
+                        firebaseRepository.stopUserListener()
+                        firebaseRepository.stopContactListener()
+                        firebaseRepository.stopLinkedListener()
+
                         // Burada UI Room'dan veriyi observe etmeli (örn. LiveData veya Flow)
                         // Domain katmanı burada Room verisini direkt almaz, UI veya ViewModel gözlem yapar
                     } else {
@@ -56,7 +64,7 @@ class UserRegistrationUseCase @Inject constructor(
                 }
 
             } else {
-                _state.value = UserRegistrationState.Error("Kullanıcı kayıtlı değil")
+                _state.value = UserRegistrationState.Error("Kullanıcı zaten kayıtlı. giriş ysp")
             }
         } catch (e: Exception) {
             _state.value = UserRegistrationState.Error(e.localizedMessage ?: "Bilinmeyen hata")

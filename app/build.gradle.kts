@@ -48,6 +48,8 @@ android {
 
 dependencies {
 
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
+
 
     implementation("com.google.code.gson:gson:2.10.1")// En güncel stabil sürüm
     // Import the Firebase BoM

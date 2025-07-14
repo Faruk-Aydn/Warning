@@ -1,5 +1,5 @@
 package com.example.warning.presentation.ui.screens
-
+/*
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.warning.presentation.viewModel.ProfileViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -47,3 +46,4 @@ fun SplashScreen(
         }
     }
 }
+*/

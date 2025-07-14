@@ -1,7 +1,6 @@
 package com.example.warning.data.repository
 
 import com.example.warning.data.mapper.toDto
-import com.example.warning.data.mapper.toEntity
 import com.example.warning.data.remote.Dto.UserDto
 import com.example.warning.data.remote.Service.FirestoreService
 import com.example.warning.data.remote.listener.ContactRealtimeSyncManager
@@ -55,13 +54,13 @@ class FirebaseRepositoryImpl @Inject constructor(
     }
 
     //Stop
-    override suspend fun stopContactListener(phone: String){
+    override suspend fun stopContactListener(){
         syncContact.stopListening()
     }
-    override suspend fun stoptUserListener(phone: String){
+    override suspend fun stopUserListener(){
         syncManagerUser.stopListening()
     }
-    override suspend fun stopLinkedListener(phone: String){
+    override suspend fun stopLinkedListener(){
         syncLinked.stopListening()
     }
 }

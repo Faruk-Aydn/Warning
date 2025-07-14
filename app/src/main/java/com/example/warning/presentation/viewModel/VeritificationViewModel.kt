@@ -60,7 +60,7 @@ class VerificationViewModel @Inject constructor(
 
                 override fun onVerificationFailed(e: FirebaseException) {
                     Log.e("FirebaseAuth", "Hata: 2 ${e.message}")
-                    onFailure
+                    onFailure()
                     isLoading = false
                     errorMessage = e.localizedMessage ?: "Doğrulama başarısız"
                 }
@@ -74,7 +74,7 @@ class VerificationViewModel @Inject constructor(
                     verificationId = id
                     resendToken = token
                     Log.e("FirebaseAuth", "Hata: yok")
-                    isLoading = true
+                    isLoading = false
                 }
             })
             .build()

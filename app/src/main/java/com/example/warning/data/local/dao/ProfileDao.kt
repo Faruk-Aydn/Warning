@@ -13,8 +13,8 @@ interface ProfileDao {
 
     @Transaction
     @Query("SELECT * FROM profile")
-    suspend fun getProfile(): Flow<ProfileEntity>
+    fun getProfile(): Flow<ProfileEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertProfile(profile: ProfileEntity)
+    fun insertProfile(profile: ProfileEntity)
 }

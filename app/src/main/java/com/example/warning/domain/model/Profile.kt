@@ -5,7 +5,7 @@ data class Profile(
     val country: String,
     var profilePhoto: String,
     val name: String,
-    val emergencyMessage: String?,
+    var emergencyMessage: String?,
     var locationPermission: Boolean = false,
     var contactPermission: Boolean = false
 )

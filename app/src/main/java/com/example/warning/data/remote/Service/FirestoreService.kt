@@ -9,8 +9,12 @@ import kotlin.jvm.java
 class FirestoreService(
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 ) {
+    //table Linked
+
+    //tableContact
 
 
+    // table User
     fun uploadUser(userDto: UserDto?, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
         if (userDto == null) {
             onError(IllegalArgumentException("userDto is null"))

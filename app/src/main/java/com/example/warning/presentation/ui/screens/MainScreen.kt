@@ -42,8 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.warning.presentation.ui.theme.DrawerBackground
 import com.example.warning.presentation.ui.theme.DrawerItemText
-import com.example.warning.presentation.viewModel.ProfileViewModel
-
+/*
 @Composable
 fun WarningButton(
     buttonSize: Int,
@@ -201,3 +200,4 @@ fun MainScreen(
 fun MainScreenPre(){
 
 }
+*/

@@ -10,6 +10,7 @@ import com.example.warning.data.remote.listener.ContactRealtimeSyncManager
 import com.example.warning.data.remote.listener.LinkedRealtimeSyncManager
 import com.example.warning.data.remote.listener.UserRealtimeSyncManager
 import com.example.warning.data.repository.ProfileRepositoryImpl
+import com.example.warning.domain.repository.FirebaseRepository
 import com.example.warning.domain.repository.ProfileRepository
 import com.example.warning.domain.usecase.ProfileUseCases
 import dagger.Module
@@ -62,8 +63,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideProfileUseCases(repository: ProfileRepository): ProfileUseCases {
-        return ProfileUseCases(repository)
+    fun provideProfileUseCases(repository: ProfileRepository, firebaseRepo: FirebaseRepository): ProfileUseCases {
+        return ProfileUseCases(repository, firebaseRepo)
     }
 
 }

@@ -21,24 +21,15 @@ import kotlin.contracts.Returns
 
 // ENTITY -> DOMAIN
 
-fun LinkedEntity.toDomain(): Linked{
-    return Linked(
-        phoneNumber = phoneNumber,
-        name = name,
-        nickName = nickName,
-        ownerPhoneNumber = ownerPhoneNumber,
-        date = date
-    )
-}
-
-fun ProfileEntity.toDomain(): Profile {
+fun ProfileEntity.toDomain(): Profile{
     return Profile(
-        phoneNumber = phoneNumber,
+        phoneNumber = phone,
+        country = country,
+        profilePhoto = profilePhoto,
         name = name,
         emergencyMessage = emergencyMessage,
-        contactPermission =contactPermission,
         locationPermission = locationPermission,
-        country = country
+        contactPermission = contactPermission
     )
 }
 
@@ -59,49 +50,18 @@ fun ContactEntity.toDomain(): Contact {
     )
 }
 
-// DOMAIN -> ENTITY
-
-fun Linked.toEntity(): LinkedEntity{
-    return LinkedEntity(
-        phoneNumber = phoneNumber,
+fun LinkedEntity.toDomain(): Linked{
+    return Linked(
+        id = id,
+        phoneNumber = phone,
         name = name,
-        nickName = nickName,
-        ownerPhoneNumber = ownerPhoneNumber,
+        country = country,
+        profilePhoto = profilePhoto,
+        ownerPhoneNumber = ownerPhone,
         date = date
     )
 }
-
-fun Profile.toEntity(): ProfileEntity {
-    return ProfileEntity(
-        phoneNumber = phoneNumber,
-        name = name,
-        emergencyMessage = emergencyMessage,
-        locationPermission = locationPermission,
-        contactPermission = contactPermission
-        // contacts entity'leri ayrı olarak insert edilecek
-    )
-}
-
-fun Contact.toEntity(): ContactEntity {
-    return ContactEntity(
-        phone = phoneNumber,
-        name = name,
-        ownerPhoneNumber = ownerPhoneNumber,
-        nickName = nickname,
-        isActiveUser = isActiveUser,
-        specielMessage = specielMessage,
-        isLocationSend = isLocationSend,
-        tag = tag,
-        isTop = isTop,
-        id = TODO(),
-        ownerName = TODO(),
-        ownerPhone = TODO(),
-        ownerCountry = TODO(),
-        ownerPhoto = TODO(),
-        profilePhoto = TODO(),
-        country = TODO()
-    )
-}
+// DOMAIN -> ENTITY
 
 // contactDto to linkedDto
 fun ContactDto.toLinked(): LinkedDto{
@@ -145,10 +105,10 @@ fun Profile.toDto(): UserDto{ //sadece kayıt
         emergencyMessage = emergencyMessage,
         isLocationPermission = locationPermission,
         isContactPermission = contactPermission,
-        linked = null,
-        contact = null,
-        messageReceiver = null,
-        messageSented = null
+        linked = emptyList(),
+        contact = emptyList(),
+        messageReceiver = emptyList(),
+        messageSented = emptyList()
     )
 }
 
@@ -161,7 +121,8 @@ fun LinkedDto.toEntity(): LinkedEntity{
         country = country,
         name = name,
         profilePhoto = profilePhoto,
-        date = date
+        date = date,
+        ownerPhone = ownerPhone
     )
 }
 fun UserDto.toEntity(): ProfileEntity{
@@ -174,8 +135,9 @@ fun UserDto.toEntity(): ProfileEntity{
         contactPermission = isContactPermission,
         linked = fromStringList(linked),
         contact = fromStringList(contact),
-        messageReceiver =fromStringList(messageReceiver) ,
-        messageSented = fromStringList(messageSented)
+        messageReceiver = fromStringList(messageReceiver),
+        messageSented = fromStringList(messageSented),
+        profilePhoto = profilePhoto
     )
 }
 
