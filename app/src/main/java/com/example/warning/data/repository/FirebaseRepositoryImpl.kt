@@ -1,5 +1,6 @@
 package com.example.warning.data.repository
 
+import androidx.room.Update
 import com.example.warning.data.mapper.toDto
 import com.example.warning.data.remote.Dto.UserDto
 import com.example.warning.data.remote.Service.FirestoreService
@@ -9,6 +10,7 @@ import com.example.warning.data.remote.listener.UserRealtimeSyncManager
 import com.example.warning.domain.model.Profile
 import com.example.warning.domain.repository.FirebaseRepository
 import com.google.firebase.FirebaseException
+import com.google.firebase.firestore.auth.User
 import javax.inject.Inject
 
 class FirebaseRepositoryImpl @Inject constructor(
@@ -26,6 +28,7 @@ class FirebaseRepositoryImpl @Inject constructor(
             return user
         }
     }
+
     override suspend fun addUser(user: Profile): Boolean {
         try {
             firestoreService.registerUser(user.toDto())

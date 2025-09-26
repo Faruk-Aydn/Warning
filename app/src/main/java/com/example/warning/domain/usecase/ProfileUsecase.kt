@@ -14,8 +14,8 @@ class ProfileUseCases @Inject constructor(
 ) {
 
     // Profile işlemleri
-    suspend fun getProfile(phone: String): Flow<Profile> {
-        return repository.getMyProfile(phone)
+    suspend fun getProfile(): Flow<Profile> {
+        return repository.getMyProfile()
     }
 
     suspend fun getAllContact(): Flow<List<Contact>> {

@@ -12,7 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.warning.presentation.ui.screens.register.RegistrationScreen
+import com.example.warning.presentation.ui.screens.MainScreen
+import com.example.warning.presentation.ui.screens.SplashScreen
+import com.example.warning.presentation.ui.screens.register.SignInScreen
+import com.example.warning.presentation.ui.screens.register.SignUpScreen
 import com.example.warning.presentation.ui.theme.WarningTheme
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,11 +44,30 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "register", // Şu anlık başlangıcı signup yapıyoruz
+            startDestination = "splash", // Şu anlık başlangıcı signup yapıyoruz
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("register") {
-                RegistrationScreen()
+
+            composable("splash") {
+                SplashScreen(
+                    navController = navController
+                )
+            }
+            composable("signIn") {
+                SignInScreen(
+                    navController = navController
+                )
+            }
+
+            composable("signUp") {
+                SignUpScreen(
+                    navController = navController
+                )
+            }
+            composable("main") {
+                MainScreen(
+                    navController = navController
+                )
             }
         }
     }

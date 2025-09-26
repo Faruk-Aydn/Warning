@@ -23,7 +23,7 @@ class ProfileRepositoryImpl @Inject constructor(
     private val linkedDao: LinkedDao,
     private val contactDao: ContactDao
 ) : ProfileRepository {
-    override suspend fun getMyProfile(id: String): Flow<Profile> {
+    override suspend fun getMyProfile(): Flow<Profile> {
         return profileDao.getProfile().map { it.toDomain()}
     }
 

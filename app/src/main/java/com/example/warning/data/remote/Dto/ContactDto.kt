@@ -15,5 +15,6 @@ data class ContactDto(
     var isLocationSend: Boolean = false,
     var tag: String? = null,
     var isTop: Boolean= false,
+    var isConfirmed: Boolean= false,
     val date: Long
 )

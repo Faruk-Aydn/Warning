@@ -7,5 +7,6 @@ data class LinkedDto(
     var name: String,
     var profilePhoto: String?,
     val ownerPhone: String,
-    val date: Long
+    val date: Long,
+    var isConfirmed: Boolean
 )

@@ -23,7 +23,12 @@ class RegistrationViewModel @Inject constructor(
             registerUse.checkAndRegisterUser(profile)
         }
     }
+
     suspend fun checkingUser(phoneNumber: String): Boolean{
         return registerUse.checkUser(phoneNumber)
+    }
+
+    suspend fun signIn(phone: String){
+        return registerUse.getUser(phone)
     }
 }

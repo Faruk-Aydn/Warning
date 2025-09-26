@@ -1,5 +1,6 @@
 package com.example.warning.presentation.ui.theme
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -11,24 +12,35 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 
-val DrawerBackground = Color(0xFFEEEEEE) // Açık gri
-val DrawerItemBackground = Color(0xFFD6D6D6) // Bir ton koyu
-val DrawerItemText = Color(0xFF333333) // Koyu gri
+// 🔴 Temel Renkler
+val PrimaryRed = Color(0xFFF54927)      // Önemli butonlar, vurgular
+val SecondaryGray = Color(0xFF8E8E93)   // Pasif yazılar, ikincil ikonlar
+val InactiveRed = Color(0x4DFF3B30)     // Pasif hata, arka plan uyarıları
+val ErrorRed = Color(0xFFFF3B30)        // Hata mesajları, yanlış giriş
+val SuccessGreen = Color(0xFF4CD964)    // Başarılı işlem onayı
+val BackgroundDark = Color(0xFF2C2C2E)  // Koyu arka plan
 
-val BackgroundGradientTop = Color(0xFF0D1B2A)
-val BackgroundGradientBottom = Color(0xFF1B263B)
+// 🟡 Ekstra Önerilen Renkler
+val NeutralLight = Color(0xFFF2F2F7)    // Açık tema arka plan
+val WarningYellow = Color(0xFFFFD60A)   // Uyarı durumları
+val InfoBlue = Color(0xFF007AFF)        // Linkler, bilgi mesajları
+val DividerGray = Color(0xFFC6C6C8)     // Ayırıcı çizgiler
 
-// Menü bar rengi açık ton
-val MenuPanelBackground = Color(0xFFE3E8F1) // Çok açık mavi-gri ton
+// 🎨 Merkezi Renk Şeması
+object AppColorScheme {
+    // Temel
+    val primary = PrimaryRed
+    val secondary = SecondaryGray
+    val inactive = InactiveRed
+    val error = ErrorRed
+    val success = SuccessGreen
+    val backgroundDark = BackgroundDark
 
-// Menü içindeki butonlar menüden koyu
-val MenuButtonBackground = Color(0xFFB0B8C6) // Menüden koyu ama gri-mavi ton
+    // Ekstra
+    val neutralLight = NeutralLight
+    val warning = WarningYellow
+    val info = InfoBlue
+    val divider = DividerGray
+    val successGreen =SuccessGreen
+}
 
-val DialogBackgroundOverlay = Color.Black.copy(alpha = 0.5f)
-
-val EmergencyRed = Color.Red
-val TransparentRedStroke = Color.Red.copy(alpha = 0.3f)
-
-val ProfileButtonColor = Color.Gray
-val MenuTextColor = Color.Black
-val TextOnWhite = Color.Black
