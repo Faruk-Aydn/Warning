@@ -1,5 +1,6 @@
 package com.example.warning.data.repository
 
+import android.util.Log
 import androidx.room.Update
 import com.example.warning.data.mapper.toDto
 import com.example.warning.data.remote.Dto.UserDto
@@ -12,6 +13,7 @@ import com.example.warning.domain.repository.FirebaseRepository
 import com.google.firebase.FirebaseException
 import com.google.firebase.firestore.auth.User
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class FirebaseRepositoryImpl @Inject constructor(
     private val firestoreService: FirestoreService,
@@ -21,24 +23,19 @@ class FirebaseRepositoryImpl @Inject constructor(
 ) : FirebaseRepository {
 
     override suspend fun getUser(phone: String): UserDto?{
-        var user =firestoreService.getProfile(phone)
-        if (user == null)
-            return null
-        else{
-            return user
-        }
+        return firestoreService.getProfile(phone)
     }
 
     override suspend fun addUser(user: Profile): Boolean {
-        try {
+        return try {
             firestoreService.registerUser(user.toDto())
-        }catch (e: FirebaseException){
-            return false
+        }catch (e: CancellationException) {
+            Log.w("Firestore Service","Coroutine iptal edildi: $e")
+            throw e // iptali tekrar yukarı at
+        }catch (e: Exception){
+            Log.w("Firestore Service","addUser fun'da bir problemden dolayı fale döndü ${e}")
+            false
         }
-        catch (e: Exception){
-            return false
-        }
-        return true
     }
 
     override suspend fun isRegistered(phone: String): Boolean {

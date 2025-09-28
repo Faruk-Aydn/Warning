@@ -7,5 +7,6 @@ data class Linked(
     val country: String,
     var profilePhoto: String?,
     var ownerPhoneNumber: String,
-    val date: Long
+    val date: Long,
+    var isConfirmed: Boolean
 )

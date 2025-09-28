@@ -1,11 +1,11 @@
 package com.example.warning.presentation.ui.screens.register
 
+import android.R.attr.name
 import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -40,9 +40,16 @@ import com.example.warning.presentation.viewModel.VerificationViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.ui.input.key.Key.Companion.U
+import com.example.warning.presentation.viewModel.UserRegistrationState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 // NOTE: Bu dosya SignUp ekranını içerir.
 // Dosya konumu: ui/screens/SignUpScreen.kt
+
+
 
 @Composable
 fun SignUpScreen(
@@ -50,51 +57,55 @@ fun SignUpScreen(
     verificationViewModel: VerificationViewModel = hiltViewModel(),
     registrationViewModel: RegistrationViewModel = hiltViewModel()
 ) {
-    // Context & Activity for Firebase phone verification
     val context = LocalContext.current
     val activity = context as? Activity
-
-
-// State oluştur
     val snackbarHostState = remember { SnackbarHostState() }
-    // Scaffold for Snackbar
     val coroutineScope = rememberCoroutineScope()
 
-    // Form state
+    // --- UI State ---
     var name by remember { mutableStateOf("") }
-    var selectedCountry by remember { mutableStateOf("+90") } // default +90
+    var phone by remember { mutableStateOf("") }
+    var selectedCountry by remember { mutableStateOf("+90") }
     var countryQuery by remember { mutableStateOf("") }
     val countryList = listOf("+1", "+90")
-    var phone by remember { mutableStateOf("") }
 
-    // Permission toggles (Switch + visual tick icon on the right)
     var locationPermission by remember { mutableStateOf(false) }
     var contactPermission by remember { mutableStateOf(false) }
 
-    // Dropdown menu state for country selection
     var expanded by remember { mutableStateOf(false) }
-
-    // Verification UI state
     var verificationStep by remember { mutableStateOf(VerificationStep.EnterPhone) }
     var codeInput by remember { mutableStateOf("") }
 
-    // Observe viewmodel states
     val isLoading by remember { derivedStateOf { verificationViewModel.isLoading } }
     val isVerified by remember { derivedStateOf { verificationViewModel.isVerified } }
     val errorMessage by remember { derivedStateOf { verificationViewModel.errorMessage } }
 
-    // Registration result: collect from stateflow if available
-    // For simplicity burada registrationViewModel.registrationState'in içeriğini check etmek için basit bir collect yapıyoruz.
-    // Uygulamanızda UserRegistrationState modeline göre handle edin.
     var registrationSuccess by remember { mutableStateOf(false) }
-    var registrationError by remember { mutableStateOf<String?>(null) }
 
-    // Bu örnekte registrationState'in nasıl olduğu bilinmediği için safe bir bekleme yapılır.
-    // Eğer registerUse.state içinde belirli alanlar varsa onları burada collectAsState ile kullanabilirsiniz.
+    // Registration state takibi
+
+    // --- Registration State ---
+    val _state = MutableStateFlow<UserRegistrationState>(UserRegistrationState.Idle)
+    val state: StateFlow<UserRegistrationState> = _state
+
+    LaunchedEffect(state) {
+        if(state is UserRegistrationState.RegistrationSuccess) {
+            navController.navigate("main")
+        }
+    }
+
+    when (state) {
+        UserRegistrationState.CheckingRegistration -> Log.i("kontrol","Kayıt kontrol ediliyor...")
+        UserRegistrationState.RegistrationConfirmed -> Log.i("ontrol","Firebase kaydı bekleniyor...")
+        UserRegistrationState.LoadingFromRoom -> Log.i("Veriler yükleniyor...","")
+            is UserRegistrationState.Error ->Log.i("Hata: ","${state.message}")
+//        UserRegistrationState.RegistrationSuccess -> navController.navigate("main")
+        else -> "" // Idle zaten return ile önleniyor
+    }
+
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = { /* İstenirse üst bar eklenir */ }
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -102,329 +113,323 @@ fun SignUpScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // --- Form alanları (üst kısım) ---
             Column {
-                // Başlık
                 Text(
                     text = "Kayıt Ol",
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
 
-                // 1) İsim alanı - boş olamaz
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("İsim") },
-                    singleLine = true,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Text
-                    )
+                UserFormSection(
+                    name = name,
+                    onNameChange = { name = it },
+                    phone = phone,
+                    onPhoneChange = { input ->
+                        val digits = input.filter { it.isDigit() }
+                        if (digits.length <= 10) phone = digits
+                    },
+                    selectedCountry = selectedCountry,
+                    onCountryChange = { selectedCountry = it },
+                    countryQuery = countryQuery,
+                    onCountryQueryChange = { countryQuery = it },
+                    expanded = expanded,
+                    onExpandedChange = { expanded = it },
+                    countryList = countryList,
+                    locationPermission = locationPermission,
+                    onLocationPermissionChange = { locationPermission = it },
+                    contactPermission = contactPermission,
+                    onContactPermissionChange = { contactPermission = it }
                 )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // 2) Ülke kodu + Telefon numarası (yan yana)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Country selector with a small searchable dropdown
-                    Box {
-                        OutlinedButton(
-                            onClick = { expanded = true },
-                            modifier = Modifier.height(56.dp)
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(selectedCountry)
-                                Icon(
-                                    imageVector = Icons.Default.KeyboardArrowDown,
-                                    contentDescription = "Ülke kodu aç"
-                                )
-                            }
-                        }
-
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            // Search field in menu
-                            OutlinedTextField(
-                                value = countryQuery,
-                                onValueChange = { countryQuery = it },
-                                label = { Text("Ara") },
-                                singleLine = true,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp)
-                            )
-
-                            val filtered = if (countryQuery.isBlank()) countryList else countryList.filter { it.contains(countryQuery) }
-                            filtered.forEach { code ->
-                                DropdownMenuItem(
-                                    text = {Text(code)},
-                                    onClick = {
-                                    selectedCountry = code
-                                    expanded = false
-                                    countryQuery = ""
-                                })
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    // Telefon numarası alanı (sadece rakam, 10 hane)
-                    OutlinedTextField(
-                        value = phone,
-                        onValueChange = { input ->
-                            // sadece rakamlara izin ver
-                            val digits = input.filter { it.isDigit() }
-                            if (digits.length <= 10) phone = digits
-                        },
-                        label = { Text("Telefon (10 hane)") },
-                        singleLine = true,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // 3) Konum izni satırı (Switch + sağda tik ikonu)
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Bilgilendirici metin
-                    Text(modifier = Modifier.weight(1f), text = "Konum izni")
-
-                    // Switch ile izin verme
-                    Switch(
-                        checked = locationPermission,
-                        onCheckedChange = { locationPermission = it }
-                    )
-
-                    // Sağ tarafta onaylandığını göstermek için tik ikonu
-                    if (locationPermission) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = "Konum onaylandı",
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-
-                // 4) Rehber izni satırı (Switch + sağda tik ikonu)
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(modifier = Modifier.weight(1f), text = "Rehber erişim izni")
-
-                    Switch(
-                        checked = contactPermission,
-                        onCheckedChange = { contactPermission = it }
-                    )
-
-                    if (contactPermission) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = "Rehber onaylandı",
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 5) Doğrulama aşamasına göre farklı UI: telefon girme veya kod girme
                 when (verificationStep) {
                     VerificationStep.EnterPhone -> {
-                        // Kayıt Ol butonu - önce checkUser çalıştırılacak
-                        Button(
-                            onClick = {
-                                // Validasyonlar
-                                when {
-                                    name.isBlank() -> {
-                                        coroutineScope.launch {
-                                            snackbarHostState.showSnackbar("İsim boş bırakılamaz")
-                                        }
-                                    }
-                                    phone.length != 10 -> {
-                                        coroutineScope.launch {
-                                            snackbarHostState.showSnackbar("Telefon 10 hane olmalı")
-                                        }
-                                    }
-                                    else -> {
-                                        // Full number: e.g. +90xxxxxxxxxx
-                                        val fullNumber = selectedCountry + phone
-
-                                        // checkUser çağrısı - suspend fonksiyon olduğu için coroutine
-                                        coroutineScope.launch {
-                                            try {
-                                                val exists = registrationViewModel.checkingUser(fullNumber)
-                                                if (exists) {
-                                                    // Kullanıcı zaten kayıtlıysa uyar
-                                                    snackbarHostState.showSnackbar("Bu telefon zaten kayıtlı")
-                                                } else {
-                                                    // Gönderme işlemini başlat
-                                                    if (activity != null) {
-                                                        verificationViewModel.sendVerificationCode(
-                                                            phoneNumber = fullNumber,
-                                                            activity = activity,
-                                                            onSuccess = {
-                                                                // Kod gönderildi, EnterCode aşamasına geç
-                                                                verificationStep = VerificationStep.EnterCode
-                                                            },
-                                                            onFailure = {
-                                                                coroutineScope.launch {
-                                                                    snackbarHostState.showSnackbar("Doğrulama kodu gönderilemedi")
-                                                                }
-                                                            }
-                                                        )
-                                                    } else {
-                                                        snackbarHostState.showSnackbar("Activity bulunamadı")
-                                                    }
-                                                }
-                                            } catch (e: Exception) {
-                                                Log.e("SignUp", "checkUser hata: ${e.message}")
-                                                snackbarHostState.showSnackbar("Kullanıcı kontrolünde hata")
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            colors = ButtonDefaults.buttonColors(AppColorScheme.neutralLight)
-                        ) {
-                            if (isLoading) CircularProgressIndicator(modifier = Modifier.size(20.dp))
-                            else Text("Kayıt Ol")
-                        }
+                        PhoneVerificationSection(
+                            isLoading = isLoading,
+                            phone = phone,
+                            selectedCountry = selectedCountry,
+                            name = name,
+                            activity = activity,
+                            registrationViewModel = registrationViewModel,
+                            verificationViewModel = verificationViewModel,
+                            snackbarHostState = snackbarHostState,
+                            coroutineScope = coroutineScope,
+                            onVerificationStepChange = { verificationStep = it }
+                        )
                     }
 
                     VerificationStep.EnterCode -> {
-                        // Kod girme alanı
-                        OutlinedTextField(
-                            value = codeInput,
-                            onValueChange = { codeInput = it.filter { ch -> ch.isDigit() } },
-                            label = { Text("Doğrulama Kodu") },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        CodeVerificationSection(
+                            codeInput = codeInput,
+                            onCodeChange = { codeInput = it },
+                            selectedCountry = selectedCountry,
+                            activity = activity,
+                            verificationViewModel = verificationViewModel,
+                            snackbarHostState = snackbarHostState,
+                            coroutineScope = coroutineScope,
+                            isVerified = isVerified,
+                            errorMessage = errorMessage,
+                            registrationViewModel = registrationViewModel,
+                            onRegistrationSuccess = { registrationSuccess = it },
+                            profile = Profile(
+                                id = null,
+                                phoneNumber = phone,
+                                country = selectedCountry,
+                                profilePhoto = "",
+                                name = name,
+                                emergencyMessage = null,
+                                locationPermission = locationPermission
+                            )
                         )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            // Onaylama butonu
-                            Button(onClick = {
-                                // Kod doğrulama
-                                verificationViewModel.verifyCode(codeInput)
-                            }) {
-                                Text("Kodu Onayla")
-                            }
-
-                            // Tekrar gönder
-                            TextButton(onClick = {
-                                val fullNumber = selectedCountry + phone
-                                if (activity != null) {
-                                    verificationViewModel.sendVerificationCode(
-                                        phoneNumber = fullNumber,
-                                        activity = activity,
-                                        onSuccess = {
-                                            coroutineScope.launch {
-                                                snackbarHostState.showSnackbar("Kod tekrar gönderildi")
-                                            }
-                                        },
-                                        onFailure = {
-                                            coroutineScope.launch {
-                                                snackbarHostState.showSnackbar("Tekrar gönderilemedi")
-                                            }
-                                        }
-                                    )
-                                }
-                            }) {
-                                Icon(imageVector = Icons.Default.Refresh, contentDescription = "Tekrar gönder")
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text("Tekrar Gönder")
-                            }
-                        }
-
-                        // Eğer verificationViewModel.isVerified true olduysa kayıt etme adımına geç
-                        LaunchedEffect(isVerified) {
-                            if (isVerified == true) {
-                                // Map to domain model
-                                val profile = Profile(
-                                    phoneNumber = phone.toString(),
-                                    country = selectedCountry,
-                                    profilePhoto = "", // default boş
-                                    name = name,
-                                    emergencyMessage = null,
-                                    locationPermission = locationPermission,
-                                    contactPermission = contactPermission
-                                )
-
-                                // Kayıt işlemini başlat
-                                registrationViewModel.registerUser(profile)
-
-                                // registrationViewModel.registrationState'i dinleyip success olduğunda MainScreen'e yönlendir
-                                // Burada basit bir bekleme yerine uygulamanızın RegistrationState modeline göre handle edin
-                                // Örnek: registrationViewModel.registrationState.collect { state -> if (state.isSuccess) navController.navigate("MainScreen") }
-                                // Bu örnekte success olduğunu varsayıp doğrudan yönlendiriyoruz (gerçek kullanımda registrationState'i kontrol edin)
-                                registrationSuccess = true
-                            }
-                            if (isVerified == false) {
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar(errorMessage ?: "Doğrulama başarısız")
-                                }
-                            }
-                        }
                     }
 
                     VerificationStep.Verified -> {
-                        // İsteğe bağlı: Verified state için bilgi göster
                         Text("Doğrulama başarılı, yönlendiriliyorsunuz...")
                     }
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
+                BottomNavigationSection(navController)
+            }
 
-                // Alt kısım: Zaten hesabın var mı? Giriş yap
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    Text(text = "Zaten hesabın var mı? ")
-                    Text(
-                        text = "Giriş yap",
-                        modifier = Modifier.clickable {
-                            // Navigation: SignInScreen'e git
-                            navController.navigate("SignInScreen")
+            if (registrationSuccess) {
+                Log.i("signup ", "registrationSuccess is true. loading is start")
+            }
+        }
+    }
+}
+
+@Composable
+fun PhoneVerificationSection(
+    isLoading: Boolean,
+    phone: String,
+    selectedCountry: String,
+    name: String,
+    activity: Activity?,
+    registrationViewModel: RegistrationViewModel,
+    verificationViewModel: VerificationViewModel,
+    snackbarHostState: SnackbarHostState,
+    coroutineScope: CoroutineScope,
+    onVerificationStepChange: (VerificationStep) -> Unit
+) {
+    Button(
+        onClick = {
+            when {
+                name.isBlank() -> coroutineScope.launch { snackbarHostState.showSnackbar("İsim boş bırakılamaz") }
+                phone.length != 10 -> coroutineScope.launch { snackbarHostState.showSnackbar("Telefon 10 hane olmalı") }
+                else -> {
+                    val fullNumber = selectedCountry + phone
+                    coroutineScope.launch {
+                        try {
+                            val exists = registrationViewModel.checkingUser(phone).await()
+                            if (exists) {
+                                snackbarHostState.showSnackbar("Bu telefon zaten kayıtlı")
+                            } else {
+                                coroutineScope.launch {
+                                    if (activity != null) {
+                                        verificationViewModel.sendVerificationCode(
+                                            phoneNumber = fullNumber,
+                                            activity = activity,
+                                            onSuccess = { onVerificationStepChange(VerificationStep.EnterCode) },
+                                            onFailure = {
+                                                coroutineScope.launch {
+                                                    snackbarHostState.showSnackbar("Doğrulama kodu gönderilemedi")
+                                                }
+                                            }
+                                        )
+                                    } else {
+                                        coroutineScope.launch {
+                                            snackbarHostState.showSnackbar("Activity bulunamadı")
+                                        }
+                                    }
+                                }
+
+                            }
+                        } catch (e: Exception) {
+                            Log.e("SignUp", "checkUser hata: ${e.message}")
+                            snackbarHostState.showSnackbar("Kullanıcı kontrolünde hata")
+                        }
+                    }
+                }
+            }
+        },
+        modifier = Modifier.fillMaxWidth().height(52.dp),
+        colors = ButtonDefaults.buttonColors(AppColorScheme.neutralLight)
+    ) {
+        if (isLoading) CircularProgressIndicator(modifier = Modifier.size(20.dp))
+        else Text("Kayıt Ol")
+    }
+}
+
+@Composable
+fun UserFormSection(
+    name: String,
+    onNameChange: (String) -> Unit,
+    phone: String,
+    onPhoneChange: (String) -> Unit,
+    selectedCountry: String,
+    onCountryChange: (String) -> Unit,
+    countryQuery: String,
+    onCountryQueryChange: (String) -> Unit,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    countryList: List<String>,
+    locationPermission: Boolean,
+    onLocationPermissionChange: (Boolean) -> Unit,
+    contactPermission: Boolean,
+    onContactPermissionChange: (Boolean) -> Unit
+) {
+    // İsim
+    OutlinedTextField(
+        value = name,
+        onValueChange = onNameChange,
+        label = { Text("İsim") },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Text
+        )
+    )
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    // Ülke kodu + telefon
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box {
+            OutlinedButton(
+                onClick = { onExpandedChange(true) },
+                modifier = Modifier.height(56.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(selectedCountry)
+                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Ülke kodu aç")
+                }
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { onExpandedChange(false) }
+            ) {
+                OutlinedTextField(
+                    value = countryQuery,
+                    onValueChange = onCountryQueryChange,
+                    label = { Text("Ara") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth().padding(8.dp)
+                )
+
+                val filtered = if (countryQuery.isBlank()) countryList else countryList.filter { it.contains(countryQuery) }
+                filtered.forEach { code ->
+                    DropdownMenuItem(
+                        text = { Text(code) },
+                        onClick = {
+                            onCountryChange(code)
+                            onExpandedChange(false)
+                            onCountryQueryChange("")
                         }
                     )
                 }
             }
-
-            // Alt bölüm: eğer kayıt başarılıysa MainScreen'e yönlendir
-            if (registrationSuccess) {
-                // Navigation comment: Başarılı kayıt sonrası MainScreen'e yönlendir
-                LaunchedEffect(Unit) {
-                    // Örneğin navController.navigate("MainScreen")
-                    navController.navigate("MainScreen") {
-                        // Eğer geri yığını temizlemek isterseniz:
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-            }
         }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        OutlinedTextField(
+            value = phone,
+            onValueChange = onPhoneChange,
+            label = { Text("Telefon (10 hane)") },
+            singleLine = true,
+            modifier = Modifier.weight(1f).height(56.dp),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
+        )
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    // İzinler
+    PermissionSwitchRow("Konum izni", locationPermission, onLocationPermissionChange)
+    PermissionSwitchRow("Rehber erişim izni", contactPermission, onContactPermissionChange)
+}
+
+@Composable
+fun PermissionSwitchRow(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(modifier = Modifier.weight(1f), text = label)
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+        if (checked) Icon(Icons.Default.Check, contentDescription = "$label onaylandı", modifier = Modifier.padding(start = 8.dp))
+    }
+}
+@Composable
+fun CodeVerificationSection(
+    profile: Profile,
+    codeInput: String,
+    onCodeChange: (String) -> Unit,
+    selectedCountry: String,
+    activity: Activity?,
+    verificationViewModel: VerificationViewModel,
+    snackbarHostState: SnackbarHostState,
+    coroutineScope: CoroutineScope,
+    isVerified: Boolean?,
+    errorMessage: String?,
+    registrationViewModel: RegistrationViewModel,
+    onRegistrationSuccess: (Boolean) -> Unit
+) {
+    OutlinedTextField(
+        value = codeInput,
+        onValueChange = { onCodeChange(it.filter { ch -> ch.isDigit() }) },
+        label = { Text("Doğrulama Kodu") },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Button(onClick = { verificationViewModel.verifyCode(codeInput) }) {
+            Text("Kodu Onayla")
+        }
+
+        TextButton(onClick = {
+            val fullNumber = selectedCountry + profile.phoneNumber
+            if (activity != null) {
+                verificationViewModel.sendVerificationCode(
+                    phoneNumber = fullNumber,
+                    activity = activity,
+                    onSuccess = { coroutineScope.launch { snackbarHostState.showSnackbar("Kod tekrar gönderildi") } },
+                    onFailure = { coroutineScope.launch { snackbarHostState.showSnackbar("Tekrar gönderilemedi") } }
+                )
+            }
+        }) {
+            Icon(Icons.Default.Refresh, contentDescription = "Tekrar gönder")
+            Spacer(modifier = Modifier.width(6.dp))
+            Text("Tekrar Gönder")
+        }
+    }
+
+    LaunchedEffect(isVerified) {
+        if (isVerified == true) {
+            registrationViewModel.registerUser(profile)
+            onRegistrationSuccess(true)
+        }
+        if (isVerified == false) {
+            coroutineScope.launch { snackbarHostState.showSnackbar(errorMessage ?: "Doğrulama başarısız") }
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationSection(navController: NavHostController) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+        Text(text = "Zaten hesabın var mı? ")
+        Text(
+            text = "Giriş yap",
+            modifier = Modifier.clickable { navController.navigate("SignInScreen") }
+        )
     }
 }
 

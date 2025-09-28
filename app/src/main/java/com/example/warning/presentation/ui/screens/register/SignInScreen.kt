@@ -126,7 +126,7 @@ fun SignInScreen(
                             errorMessage = "Telefon numarası 10 hane olmalı"
                         } else {
                             coroutineScope.launch {
-                                val exists = registrationViewModel.checkingUser(phoneNumber)
+                                val exists = registrationViewModel.checkingUser(phoneNumber).await()
                                 if (exists) {
                                     // ✅ Kullanıcı var → SMS gönder
                                     verificationViewModel.sendVerificationCode(
@@ -165,6 +165,7 @@ fun SignInScreen(
                         verificationViewModel.verifyCode(smsCode)
                         if (verificationViewModel.isVerified == true) {
                             // ✅ Başarılı giriş
+
                             step = VerificationStep.Verified
                             navController.navigate("main") {
                                 popUpTo("signin") { inclusive = true }

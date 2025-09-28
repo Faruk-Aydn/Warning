@@ -40,6 +40,7 @@ fun ProfileScreen(
     val contacts by viewModel.contacts.collectAsState()
     val linked by viewModel.linked.collectAsState()
 
+    val contactPermission= false
     when (profile == null) {
 
         true -> Log.d("ProfileScreen", "Profil verisi boş geldi: ")
@@ -83,7 +84,7 @@ fun ProfileScreen(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text("Konum İzni: ${if (profile!!.locationPermission) "Verildi" else "Verilmedi"}")
-                    Text("Kişi İzni: ${if (profile!!.contactPermission) "Verildi" else "Verilmedi"}")
+                    Text("Kişi İzni: ${if (contactPermission) "Verildi" else "Verilmedi"}")
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 

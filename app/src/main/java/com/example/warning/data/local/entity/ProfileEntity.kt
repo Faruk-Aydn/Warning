@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "profile")
 data class ProfileEntity(
+    @PrimaryKey val id: String,
     val phone: String, // unique id olarak kullanıyoruz
     val country: String,
     var name: String,

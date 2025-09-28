@@ -43,7 +43,7 @@ class LinkedRealtimeSyncManager @Inject constructor(
                     }
                 }
             }
-        Log.d("LinkedSync", "LinkedSync dinleyici başlatıldı: $phone")
+        Log.i("LinkedSync", "LinkedSync dinleyici başlatıldı: $phone")
     }
 
 

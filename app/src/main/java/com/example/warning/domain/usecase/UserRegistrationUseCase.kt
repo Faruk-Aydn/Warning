@@ -9,15 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import android.util.Log
 import com.example.warning.domain.repository.ProfileRepository
-
-sealed class UserRegistrationState {
-    object CheckingRegistration : UserRegistrationState()          // Kayıt kontrolü yapılıyor (loading)
-    object RegistrationConfirmed : UserRegistrationState()          // Kayıt var, Firebase kayıt bekleniyor
-    object RegistrationSuccess : UserRegistrationState()            // Firebase kayıt başarılı, Room yazılıyor
-    object LoadingFromRoom : UserRegistrationState()                 // Room'dan veri çekiliyor
-    data class Error(val message: String) : UserRegistrationState()  // Hata durumu
-    object Idle : UserRegistrationState()                            // Boş / bekleme durumu
-}
+import com.example.warning.presentation.viewModel.UserRegistrationState
 
 class UserRegistrationUseCase @Inject constructor(
     private val firebaseRepository: FirebaseRepositoryImpl
@@ -69,7 +61,7 @@ class UserRegistrationUseCase @Inject constructor(
         }
     }
 
-    suspend fun checkAndRegisterUser(user: Profile) {
+    suspend fun checkAndRegisterUser(user: Profile): Boolean {
 
         Log.wtf("Check", "  try dışı")
         _state.value = UserRegistrationState.CheckingRegistration
@@ -80,17 +72,17 @@ class UserRegistrationUseCase @Inject constructor(
             if (isRegistered == false) {
                 _state.value = UserRegistrationState.RegistrationConfirmed
 
+                Log.i("addResult","başlatılıyorr")
                 val addResult = firebaseRepository.addUser(user)
                 if (addResult) {
                     _state.value = UserRegistrationState.RegistrationSuccess
 
-                    Log.wtf("Check", "  wtf  checkAndRegisterUser() başladı")
+                    Log.i("addResult", " checkAndRegisterUser() başladı, addResult = true")
                     // Firebase kaydı başarılı, şimdi Room'a yaz
                     val localAddResult = firebaseRepository.getUser(user.phoneNumber)
 
-                    Log.wtf("Check", "  wtf  çekd,k başladı")
                     if (localAddResult != null) {
-                        Log.wtf("Check", "  nul değil başladı")
+                        Log.i("Firestore", "  get işlemi tamamlandı ve nul değil")
                         _state.value = UserRegistrationState.LoadingFromRoom
                         // dönüşümler ve diğer local tablolarını yapacam
                         firebaseRepository.startUserListener(user.phoneNumber)
@@ -102,31 +94,27 @@ class UserRegistrationUseCase @Inject constructor(
                         firebaseRepository.startLinkedListener(user.phoneNumber)
                         Log.w("Listener", "startLinkedListener")
 
-                        delay(2000)
-                        firebaseRepository.stopUserListener()
-                        Log.w("Listener", "stopUserListener")
-
-                        firebaseRepository.stopContactListener()
-                        Log.w("Listener","stopContactListener")
-                        firebaseRepository.stopLinkedListener()
-                        Log.w("Listener", "stopLinkedListener")
-
-
+                        _state.value = UserRegistrationState.RegistrationSuccess
+                        return true
                         // Burada UI Room'dan veriyi observe etmeli (örn. LiveData veya Flow)
                         // Domain katmanı burada Room verisini direkt almaz, UI veya ViewModel gözlem yapar
                     } else {
+                        Log.w("get local",  "addResult = null")
                         _state.value = UserRegistrationState.Error("Local database yazma başarısız")
                     }
 
                 } else {
+                    Log.w("Firebase ","Kullanıcı Firebase'e eklenemedi")
                     _state.value = UserRegistrationState.Error("Kullanıcı Firebase'e eklenemedi")
                 }
 
             } else {
+                Log.w("firestore","Kullanıcı zaten kayıtlı. giriş ysp")
                 _state.value = UserRegistrationState.Error("Kullanıcı zaten kayıtlı. giriş ysp")
             }
         } catch (e: Exception) {
             _state.value = UserRegistrationState.Error(e.localizedMessage ?: "Bilinmeyen hata")
         }
+        return false
     }
 }

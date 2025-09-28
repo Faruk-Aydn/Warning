@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "contacts")
 data class ContactEntity(
+    @PrimaryKey var id: String,
+    var ownerPhone: String,
     var profilePhoto: String?,
     var name: String,                                           //      *
     val country: String,                                        //          *

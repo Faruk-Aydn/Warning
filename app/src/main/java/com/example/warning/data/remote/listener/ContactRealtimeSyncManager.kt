@@ -36,11 +36,11 @@ class ContactRealtimeSyncManager @Inject constructor(
 
                     CoroutineScope(Dispatchers.IO).launch {
                         contactDao.insertContact(contactList)
-
+                        Log.i("contactDao,listener",contactList.size.toString())
                     }
                 }
             }
-        Log.d("ContactSync", "Contact dinleyici başlatıldı: $ownerPhone")
+        Log.i("ContactSync", "Contact dinleyici başlatıldı: $ownerPhone")
     }
 
 

@@ -29,7 +29,7 @@ fun ProfileEntity.toDomain(): Profile{
         name = name,
         emergencyMessage = emergencyMessage,
         locationPermission = locationPermission,
-        contactPermission = contactPermission
+        id = id
     )
 }
 
@@ -43,22 +43,20 @@ fun ContactEntity.toDomain(): Contact {
         phoneNumber = phone,
         country = country,
         ownerPhoneNumber = ownerPhone,
-        profilePhoto = profilePhoto,
-        ownerCountry = ownerCountry,
-        ownerName = ownerName,
-        ownerPhoto = ownerPhoto
+        profilePhoto = profilePhoto
     )
 }
 
 fun LinkedEntity.toDomain(): Linked{
     return Linked(
-        id = id,
         phoneNumber = phone,
         name = name,
         country = country,
         profilePhoto = profilePhoto,
         ownerPhoneNumber = ownerPhone,
-        date = date
+        date = date,
+        id = id,
+        isConfirmed = isConfirmed
     )
 }
 // DOMAIN -> ENTITY
@@ -72,18 +70,15 @@ fun ContactDto.toLinked(): LinkedDto{
         name = name,
         profilePhoto = profilePhoto,
         ownerPhone = ownerPhone,
-        date = date
+        date = date,
+        isConfirmed = isConfirmed
     )
 }
 // Domain to Dto
 
 fun ContactDto.toEntity(): ContactEntity{
     return ContactEntity(
-        id = TODO(),
-        ownerName = ownerName,
         ownerPhone = ownerPhone,
-        ownerCountry = ownerCountry,
-        ownerPhoto = ownerProfilePhoto,
         profilePhoto = profilePhoto,
         name = name,
         country = country,
@@ -91,7 +86,10 @@ fun ContactDto.toEntity(): ContactEntity{
         specielMessage = specialMessage,
         isLocationSend = isLocationSend,
         tag = tag,
-        isTop = isTop
+        isTop = isTop,
+        date = date,
+        isConfirmed = isConfirmed,
+        id = id
     )
 
 }
@@ -104,11 +102,7 @@ fun Profile.toDto(): UserDto{ //sadece kayıt
         name = name,
         emergencyMessage = emergencyMessage,
         isLocationPermission = locationPermission,
-        isContactPermission = contactPermission,
-        linked = emptyList(),
-        contact = emptyList(),
-        messageReceiver = emptyList(),
-        messageSented = emptyList()
+        id = id.toString()
     )
 }
 
@@ -116,13 +110,14 @@ fun Profile.toDto(): UserDto{ //sadece kayıt
 
 fun LinkedDto.toEntity(): LinkedEntity{
     return LinkedEntity(
-        id = id,
         phone = phone,
         country = country,
         name = name,
         profilePhoto = profilePhoto,
         date = date,
-        ownerPhone = ownerPhone
+        ownerPhone = ownerPhone,
+        id = id,
+        isConfirmed = isConfirmed
     )
 }
 fun UserDto.toEntity(): ProfileEntity{
@@ -132,27 +127,7 @@ fun UserDto.toEntity(): ProfileEntity{
         name = name,
         emergencyMessage = emergencyMessage,
         locationPermission = isLocationPermission,
-        contactPermission = isContactPermission,
-        linked = fromStringList(linked),
-        contact = fromStringList(contact),
-        messageReceiver = fromStringList(messageReceiver),
-        messageSented = fromStringList(messageSented),
-        profilePhoto = profilePhoto
+        profilePhoto = profilePhoto.toString(),
+        id = id.toString()
     )
-}
-
-@TypeConverter
-fun fromStringList(value: List<Int?>): String? {
-
-    val gson = Gson()
-    return gson.toJson(value)
-}
-
-@TypeConverter
-fun toStringList(value: String?): List<String?> {
-
-    val gson = Gson()
-    if (value == null) return emptyList()
-    val listType = object : TypeToken<List<String>>() {}.type
-    return gson.fromJson(value, listType)
 }

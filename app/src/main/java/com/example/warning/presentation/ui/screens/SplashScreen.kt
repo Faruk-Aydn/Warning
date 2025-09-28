@@ -23,7 +23,7 @@ import androidx.compose.material3.CircularProgressIndicator
 object Routes {
     const val Splash = "splash"
     const val Main = "main"
-    const val SignIn = "sign_in"
+    const val SignIn = "signIn"
 }
 
 /**

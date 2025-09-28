@@ -39,7 +39,7 @@ class UserRealtimeSyncManager @Inject constructor(
                 }
             }
 
-        Log.d("UserRealtimeSync", "Dinleme başlatıldı: $phoneNumber")
+        Log.i("UserRealtimeSync", "Dinleme başlatıldı: $phoneNumber")
     }
 
     fun stopListening() {
