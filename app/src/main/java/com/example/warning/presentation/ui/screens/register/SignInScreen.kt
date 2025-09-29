@@ -5,6 +5,7 @@ import com.example.warning.presentation.viewModel.VerificationStep
 import com.example.warning.presentation.viewModel.VerificationViewModel
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -18,7 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.warning.domain.model.Contact
 import com.example.warning.presentation.ui.theme.AppColorScheme
+import com.example.warning.presentation.viewModel.ContactListenerViewmodel
+import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -27,7 +31,9 @@ import kotlinx.coroutines.launch
 fun SignInScreen(
     navController: NavHostController,
     registrationViewModel: RegistrationViewModel = hiltViewModel(),
-    verificationViewModel: VerificationViewModel = hiltViewModel()
+    verificationViewModel: VerificationViewModel = hiltViewModel(),
+    userview: ProfileListenerViewModel = hiltViewModel(),
+    contactview: ContactListenerViewmodel= hiltViewModel()
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -167,9 +173,6 @@ fun SignInScreen(
                             // ✅ Başarılı giriş
 
                             step = VerificationStep.Verified
-                            navController.navigate("main") {
-                                popUpTo("signin") { inclusive = true }
-                            }
                         } else {
                             errorMessage = verificationViewModel.errorMessage
                         }
@@ -203,6 +206,12 @@ fun SignInScreen(
 
             VerificationStep.Verified -> {
                 Text("Giriş başarılı!", color = AppColorScheme.success)
+                Log.i("signIn","giriş başarılı")
+                userview.startUserListener(phoneNumber)
+                contactview.startContactListener(phoneNumber)
+                navController.navigate("main") {
+                    popUpTo("signin") { inclusive = true }
+                }
             }
         }
 

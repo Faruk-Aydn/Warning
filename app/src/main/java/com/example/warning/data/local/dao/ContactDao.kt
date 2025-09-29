@@ -15,7 +15,7 @@ interface ContactDao {
 
     // Tüm Contact'ları getir
     @Query("SELECT * FROM contacts")
-    fun getAllContacts(): Flow<List<ContactEntity>>
+    fun getAllContacts(): Flow<List<ContactEntity>?>
 
     // Tek bir Contact ekle
     @Insert(onConflict = OnConflictStrategy.REPLACE)

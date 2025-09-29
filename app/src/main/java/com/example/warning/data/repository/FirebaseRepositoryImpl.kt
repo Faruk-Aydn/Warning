@@ -54,13 +54,13 @@ class FirebaseRepositoryImpl @Inject constructor(
     }
 
     //Stop
-    override suspend fun stopContactListener(){
+    override fun stopContactListener(){
         syncContact.stopListening()
     }
-    override suspend fun stopUserListener(){
+    override fun stopUserListener(){
         syncManagerUser.stopListening()
     }
-    override suspend fun stopLinkedListener(){
+    override fun stopLinkedListener(){
         syncLinked.stopListening()
     }
 }

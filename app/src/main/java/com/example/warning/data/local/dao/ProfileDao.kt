@@ -12,8 +12,15 @@ import kotlinx.coroutines.flow.Flow
 interface ProfileDao {
 
     @Transaction
-    @Query("SELECT * FROM profile")
-    fun getProfile(): Flow<ProfileEntity>
+    @Query("SELECT * FROM profile LIMIT 1")
+    fun getCurrentUser(): Flow<ProfileEntity?> // sürekli gözlem
+
+
+    @Query("SELECT * FROM profile LIMIT 1")
+    suspend fun getCurrentUserOnce(): ProfileEntity?   // tek seferlik kontrol
+
+    @Query("DELETE FROM profile")
+    suspend fun clearProfile()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProfile(profile: ProfileEntity)

@@ -1,8 +1,7 @@
 package com.example.warning.presentation.ui.screens
 
 
-import android.R.attr.scaleX
-import android.R.attr.scaleY
+import android.R.attr.phoneNumber
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,12 +18,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.warning.presentation.ui.theme.AppColorScheme
+import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navController: NavHostController) {
+fun MainScreen(
+    navController: NavHostController,
+    viewModel: ProfileListenerViewModel
+) {
     // Drawer kontrolü için
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -47,6 +50,11 @@ fun MainScreen(navController: NavHostController) {
         }
     }
 
+    val profile by viewModel.profileState.collectAsState()
+    val contacts by viewModel.contacts.collectAsState()
+    val linked by viewModel.linked.collectAsState()
+
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -61,6 +69,7 @@ fun MainScreen(navController: NavHostController) {
                         Row {
                             IconButton(onClick = {
                                 // Profil ekranına git
+
                                 navController.navigate("ProfileScreen")
                             }) {
                                 Icon(Icons.Default.Person, contentDescription = "Profile")

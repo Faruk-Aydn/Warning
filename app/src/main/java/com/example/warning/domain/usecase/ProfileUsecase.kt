@@ -14,15 +14,15 @@ class ProfileUseCases @Inject constructor(
 ) {
 
     // Profile işlemleri
-    suspend fun getProfile(): Flow<Profile> {
+    suspend fun getProfile(): Flow<Profile?> {
         return repository.getMyProfile()
     }
 
-    suspend fun getAllContact(): Flow<List<Contact>> {
+    suspend fun getAllContact(): Flow<List<Contact>?> {
         return repository.getAllContact()
     }
 
-    suspend fun getAllLinked(): Flow<List<Linked>>{
+    suspend fun getAllLinked(): Flow<List<Linked>?>{
         return repository.getAllLinked()
     }
 
@@ -38,13 +38,13 @@ class ProfileUseCases @Inject constructor(
     }
 
     // Stop
-    suspend fun stopContactListener(){
+    fun stopContactListener(){
         firebaseRepo.stopContactListener()
     }
-    suspend fun stopUserListener(){
+    fun stopUserListener(){
         firebaseRepo.stopUserListener()
     }
-    suspend fun stopLinkedListener(){
+    fun stopLinkedListener(){
         firebaseRepo.stopLinkedListener()
     }
 

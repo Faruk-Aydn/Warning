@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Linked
-import com.example.warning.domain.model.Profile
 import com.example.warning.domain.usecase.ProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,14 +12,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+class ContactListenerViewmodel @Inject constructor(
     private val profileUseCases: ProfileUseCases
-) : ViewModel() {
-
-    private val _profileState = MutableStateFlow<Profile?>(null)
-    val profileState: StateFlow<Profile?> = _profileState
+) : ViewModel(){
 
     private val _contacts = MutableStateFlow<List<Contact>>(emptyList())
     val contacts: StateFlow<List<Contact>> = _contacts
@@ -28,37 +23,45 @@ class ProfileViewModel @Inject constructor(
     private val _linked = MutableStateFlow<List<Linked>>(emptyList())
     val linked: StateFlow<List<Linked>> = _linked
 
-    fun loadProfile() {
+    init {
+        // Eğer uygulama açıldığında phoneNumber mevcutsa listener başlat
         viewModelScope.launch {
-            profileUseCases.getProfile().collectLatest {
-                _profileState.value = it
+            profileUseCases.getProfile().collectLatest { profile ->
+                if (profile != null) {
+                    val phoneNumber = profile.phoneNumber
+                    startContactListener(phoneNumber)
+                }
             }
         }
+    }
+    fun loadContact() {
         viewModelScope.launch {
             profileUseCases.getAllContact().collectLatest {
-                _contacts.value = it
+                if (it != null) {
+                    _contacts.value = it
+                }
             }
         }
         viewModelScope.launch {
             profileUseCases.getAllLinked().collectLatest {
-                _linked.value = it
+                if (it != null) {
+                    _linked.value = it
+                }
             }
         }
     }
 
-    fun startListeners(phone: String) {
+    fun startContactListener(phone: String){
         viewModelScope.launch {
-            profileUseCases.startUserListener(phone)
             profileUseCases.startContactListener(phone)
             profileUseCases.startLinkedListener(phone)
         }
     }
-
-    fun stopListeners() {
+    fun stopContactListener(){
         viewModelScope.launch {
-            profileUseCases.stopUserListener()
             profileUseCases.stopContactListener()
             profileUseCases.stopLinkedListener()
         }
     }
+
 }

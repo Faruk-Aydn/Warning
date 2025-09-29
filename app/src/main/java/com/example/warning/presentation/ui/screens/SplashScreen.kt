@@ -18,6 +18,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.warning.presentation.viewModel.AuthViewModel
+import com.example.warning.presentation.viewModel.ContactListenerViewmodel
+import com.example.warning.presentation.viewModel.ProfileListenerViewModel
+import dagger.hilt.android.scopes.ViewScoped
 
 // Basit route sabitleri (NavGraph'teki route isimleri ile eşleşmeli)
 object Routes {
@@ -39,7 +47,12 @@ object Routes {
  * `isLoggedIn` değişkeni demo amaçlıdır — bunu kendi ViewModel'inizden / repo'dan alın.
  */
 @Composable
-fun SplashScreen(navController: NavHostController) {
+fun SplashScreen(
+    viewModel: AuthViewModel = hiltViewModel(),
+    userview: ProfileListenerViewModel = hiltViewModel(),
+    contactview: ContactListenerViewmodel = hiltViewModel(),
+    navController: NavHostController
+) {
     // UI
     Box(
         modifier = Modifier
@@ -55,8 +68,12 @@ fun SplashScreen(navController: NavHostController) {
         )
     }
 
+    val scope = rememberCoroutineScope()
+
     // Geçiş mantığı (kısa süre sonra yönlendirir)
     LaunchedEffect(Unit) {
+        val isLoggedIn = viewModel.isLoggedIn()// TODO: Replace with real check from ViewModel/Repository
+
         // ---------- Burada GERÇEK kontrolü yapmalısınız ----------
         // Önerilen uygulama (mimari):
         // 1) ViewModel (AuthViewModel gibi) oluşturun.
@@ -72,10 +89,14 @@ fun SplashScreen(navController: NavHostController) {
 
         // ----- DEMO: placeholder -----
         // Bu satırı gerçek kontrol ile değiştirin (ör. authRepository.isUserLoggedIn() suspend çağrısı)
-        val isLoggedIn = false // TODO: Replace with real check from ViewModel/Repository
+
 
         // ----- Yönlendirme -----
         if (isLoggedIn) {
+
+            val phone =userview.profileState.value!!.phoneNumber
+            userview.startUserListener(phone)
+            contactview.startContactListener(phone)
             // Eğer giriş yapılmışsa Main ekranına git.
             // popUpTo ile splash'i backstack'ten kaldırıyoruz, böylece geri tuşu splash'e dönmez.
             navController.navigate(Routes.Main) {

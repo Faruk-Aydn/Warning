@@ -1,6 +1,7 @@
 package com.example.warning.presentation.ui.screens.register
 
-import android.R.attr.name
+import android.R.attr.country
+import android.R.attr.phoneNumber
 import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -40,8 +41,10 @@ import com.example.warning.presentation.viewModel.VerificationViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.ui.input.key.Key.Companion.U
+import com.example.warning.presentation.viewModel.ContactListenerViewmodel
+import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 import com.example.warning.presentation.viewModel.UserRegistrationState
+import com.google.firebase.firestore.auth.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,9 +56,11 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun SignUpScreen(
-    navController: NavHostController,
+    navController: NavHostController ,
     verificationViewModel: VerificationViewModel = hiltViewModel(),
-    registrationViewModel: RegistrationViewModel = hiltViewModel()
+    registrationViewModel: RegistrationViewModel = hiltViewModel(),
+    userview: ProfileListenerViewModel = hiltViewModel(),
+    contactview: ContactListenerViewmodel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
@@ -170,22 +175,22 @@ fun SignUpScreen(
                             coroutineScope = coroutineScope,
                             isVerified = isVerified,
                             errorMessage = errorMessage,
-                            registrationViewModel = registrationViewModel,
                             onRegistrationSuccess = { registrationSuccess = it },
-                            profile = Profile(
-                                id = null,
-                                phoneNumber = phone,
-                                country = selectedCountry,
-                                profilePhoto = "",
-                                name = name,
-                                emergencyMessage = null,
-                                locationPermission = locationPermission
-                            )
+                            phone= phone
                         )
                     }
 
                     VerificationStep.Verified -> {
                         Text("Doğrulama başarılı, yönlendiriliyorsunuz...")
+                        registrationViewModel.registerUser(profile= Profile(
+                            id = null,
+                            phoneNumber = phone,
+                            country = selectedCountry,
+                            profilePhoto = "",
+                            name = name,
+                            emergencyMessage = null,
+                            locationPermission = locationPermission
+                        ))
                     }
                 }
 
@@ -366,7 +371,6 @@ fun PermissionSwitchRow(label: String, checked: Boolean, onCheckedChange: (Boole
 }
 @Composable
 fun CodeVerificationSection(
-    profile: Profile,
     codeInput: String,
     onCodeChange: (String) -> Unit,
     selectedCountry: String,
@@ -376,8 +380,8 @@ fun CodeVerificationSection(
     coroutineScope: CoroutineScope,
     isVerified: Boolean?,
     errorMessage: String?,
-    registrationViewModel: RegistrationViewModel,
-    onRegistrationSuccess: (Boolean) -> Unit
+    onRegistrationSuccess: (Boolean) -> Unit,
+    phone: String
 ) {
     OutlinedTextField(
         value = codeInput,
@@ -395,7 +399,7 @@ fun CodeVerificationSection(
         }
 
         TextButton(onClick = {
-            val fullNumber = selectedCountry + profile.phoneNumber
+            val fullNumber = selectedCountry + phone
             if (activity != null) {
                 verificationViewModel.sendVerificationCode(
                     phoneNumber = fullNumber,
@@ -413,7 +417,6 @@ fun CodeVerificationSection(
 
     LaunchedEffect(isVerified) {
         if (isVerified == true) {
-            registrationViewModel.registerUser(profile)
             onRegistrationSuccess(true)
         }
         if (isVerified == false) {

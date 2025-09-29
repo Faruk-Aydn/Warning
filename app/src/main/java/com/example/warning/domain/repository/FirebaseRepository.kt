@@ -18,7 +18,7 @@ interface FirebaseRepository {
     suspend fun startContactListener(phone: String)
     suspend fun startUserListener(phone: String)
 //    -> Stop
-    suspend fun stopContactListener()
-    suspend fun stopUserListener()
-    suspend fun stopLinkedListener()
+    fun stopContactListener()
+    fun stopUserListener()
+    fun stopLinkedListener()
 }

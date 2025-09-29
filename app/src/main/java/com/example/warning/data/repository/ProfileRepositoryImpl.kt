@@ -18,19 +18,19 @@ class ProfileRepositoryImpl @Inject constructor(
     private val linkedDao: LinkedDao,
     private val contactDao: ContactDao
 ) : ProfileRepository {
-    override suspend fun getMyProfile(): Flow<Profile> {
-        return profileDao.getProfile().map { it.toDomain()}
+    override suspend fun getMyProfile(): Flow<Profile?> {
+        return profileDao.getCurrentUser().map { it?.toDomain() }
     }
 
-    override suspend fun getAllLinked(): Flow<List<Linked>> {
+    override suspend fun getAllLinked(): Flow<List<Linked>?> {
         return linkedDao.getAllLinked().map { list ->
-            list.map { it.toDomain()  }
+            list?.map { it.toDomain()  } ?: emptyList()
         }
     }
 
-    override suspend fun getAllContact(): Flow<List<Contact>> {
+    override suspend fun getAllContact(): Flow<List<Contact>?> {
         return contactDao.getAllContacts().map { list ->
-            list.map{ it.toDomain() }
+            list?.map{ it.toDomain() } ?: emptyList()
         }
     }
     override suspend fun insertProfile(profileEntity: ProfileEntity){

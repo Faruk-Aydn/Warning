@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface LinkedDao {
 
     @Query("SELECT * FROM linkeds")
-    fun getAllLinked(): Flow<List<LinkedEntity>>
+    fun getAllLinked(): Flow<List<LinkedEntity>?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLinked(linkedEntity: List<LinkedEntity>)

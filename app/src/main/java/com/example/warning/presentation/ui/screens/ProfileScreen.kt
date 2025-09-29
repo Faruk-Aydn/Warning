@@ -2,43 +2,29 @@ package com.example.warning.presentation.ui.screens
 
 
 import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.warning.domain.usecase.ProfileUseCases
-import com.example.warning.presentation.viewModel.ProfileViewModel
-import com.google.android.play.integrity.internal.f
-import com.google.firebase.firestore.auth.User
-import kotlin.math.log
+import com.example.warning.presentation.viewModel.ContactListenerViewmodel
+import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 
 
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel(),
+    viewModel: ProfileListenerViewModel = hiltViewModel(),
+    contactViewModel: ContactListenerViewmodel = hiltViewModel(),
     navController: NavController
 ) {
     val profile by viewModel.profileState.collectAsState()
-    val contacts by viewModel.contacts.collectAsState()
-    val linked by viewModel.linked.collectAsState()
+    val contacts by contactViewModel.contacts.collectAsState()
+    val linked by contactViewModel.linked.collectAsState()
 
     val contactPermission= false
     when (profile == null) {
@@ -48,12 +34,7 @@ fun ProfileScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.startListeners(profile!!.phoneNumber)
         viewModel.loadProfile()
-    }
-
-    DisposableEffect(Unit) {
-        onDispose { viewModel.stopListeners() }
     }
 
     Box(){
