@@ -63,7 +63,7 @@ class UserRegistrationUseCase @Inject constructor(
 
     suspend fun checkAndRegisterUser(user: Profile): Boolean {
 
-        Log.wtf("Check", "  try dışı")
+        Log.i("Check", " checkAndRegisterUser başladı ")
         _state.value = UserRegistrationState.CheckingRegistration
         try {
 

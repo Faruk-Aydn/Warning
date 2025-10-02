@@ -19,6 +19,7 @@ class RegistrationViewModel @Inject constructor(
     private val registerUse: UserRegistrationUseCase
 ) : ViewModel(){
 
+    val state: StateFlow<UserRegistrationState> = registerUse.state
     fun registerUser(profile: Profile){
         viewModelScope.launch {
             try {
@@ -33,7 +34,6 @@ class RegistrationViewModel @Inject constructor(
     fun checkingUser(phoneNumber: String) = viewModelScope.async {
         try {
             registerUse.checkUser(phoneNumber)
-            true
         } catch (e: Exception) {
             Log.w("checkingUser","check ederken sorun oldu $e")
             false

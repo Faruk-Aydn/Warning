@@ -1,5 +1,6 @@
 package com.example.warning.presentation.ui.screens
 
+import android.util.Log
 import com.example.warning.presentation.ui.theme.AppColorScheme
 
 // - NavHostController : androidx.navigation.NavHostController (Navigation Compose)
@@ -73,7 +74,7 @@ fun SplashScreen(
     // Geçiş mantığı (kısa süre sonra yönlendirir)
     LaunchedEffect(Unit) {
         val isLoggedIn = viewModel.isLoggedIn()// TODO: Replace with real check from ViewModel/Repository
-
+        Log.i("splash", "isLoggedIn: ${isLoggedIn?.phoneNumber}")
         // ---------- Burada GERÇEK kontrolü yapmalısınız ----------
         // Önerilen uygulama (mimari):
         // 1) ViewModel (AuthViewModel gibi) oluşturun.
@@ -92,11 +93,10 @@ fun SplashScreen(
 
 
         // ----- Yönlendirme -----
-        if (isLoggedIn) {
+        if (isLoggedIn != null) {
 
-            val phone =userview.profileState.value!!.phoneNumber
-            userview.startUserListener(phone)
-            contactview.startContactListener(phone)
+            userview.startUserListener(isLoggedIn.phoneNumber)
+            contactview.startContactListener(isLoggedIn.phoneNumber)
             // Eğer giriş yapılmışsa Main ekranına git.
             // popUpTo ile splash'i backstack'ten kaldırıyoruz, böylece geri tuşu splash'e dönmez.
             navController.navigate(Routes.Main) {

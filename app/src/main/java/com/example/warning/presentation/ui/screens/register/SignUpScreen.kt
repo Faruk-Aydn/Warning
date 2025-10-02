@@ -1,7 +1,5 @@
 package com.example.warning.presentation.ui.screens.register
 
-import android.R.attr.country
-import android.R.attr.phoneNumber
 import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -44,10 +42,7 @@ import androidx.compose.material3.SnackbarHostState
 import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 import com.example.warning.presentation.viewModel.UserRegistrationState
-import com.google.firebase.firestore.auth.User
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 // NOTE: Bu dosya SignUp ekranını içerir.
 // Dosya konumu: ui/screens/SignUpScreen.kt
@@ -85,13 +80,9 @@ fun SignUpScreen(
     val isVerified by remember { derivedStateOf { verificationViewModel.isVerified } }
     val errorMessage by remember { derivedStateOf { verificationViewModel.errorMessage } }
 
-    var registrationSuccess by remember { mutableStateOf(false) }
-
-    // Registration state takibi
-
     // --- Registration State ---
-    val _state = MutableStateFlow<UserRegistrationState>(UserRegistrationState.Idle)
-    val state: StateFlow<UserRegistrationState> = _state
+    val state by registrationViewModel.state.collectAsState()
+    // Flow'u Compose state'e çeviriyoruz
 
     LaunchedEffect(state) {
         if(state is UserRegistrationState.RegistrationSuccess) {
@@ -100,12 +91,35 @@ fun SignUpScreen(
     }
 
     when (state) {
-        UserRegistrationState.CheckingRegistration -> Log.i("kontrol","Kayıt kontrol ediliyor...")
-        UserRegistrationState.RegistrationConfirmed -> Log.i("ontrol","Firebase kaydı bekleniyor...")
-        UserRegistrationState.LoadingFromRoom -> Log.i("Veriler yükleniyor...","")
-            is UserRegistrationState.Error ->Log.i("Hata: ","${state.message}")
-//        UserRegistrationState.RegistrationSuccess -> navController.navigate("main")
-        else -> "" // Idle zaten return ile önleniyor
+        is UserRegistrationState.CheckingRegistration -> {
+            Log.i("kontrol", "Kayıt kontrol ediliyor...")
+            // burada loading gösterebilirsin
+        }
+
+        is UserRegistrationState.RegistrationConfirmed -> {
+            Log.i("ontrol", "Firebase kaydı bekleniyor...")
+            // belki "Kayıt yapılıyor..." text
+        }
+
+        is UserRegistrationState.LoadingFromRoom -> {
+            Log.i("Veriler yükleniyor...", "")
+            // burada progress bar
+        }
+
+        is UserRegistrationState.Error -> {
+            val message = (state as UserRegistrationState.Error).message
+            Log.w("Hata: ", message)
+            // hata mesajını ekranda göster
+        }
+
+        is UserRegistrationState.RegistrationSuccess -> {
+            // LaunchedEffect zaten yönlendirme yapıyor ama UI tarafında da info gösterebilirsin
+            Log.i("Success", "Kayıt başarılı!")
+        }
+
+        UserRegistrationState.Idle -> {
+            // İlk açılışta boş state, hiçbir şey göstermeyebilirsin
+        }
     }
 
 
@@ -173,34 +187,43 @@ fun SignUpScreen(
                             verificationViewModel = verificationViewModel,
                             snackbarHostState = snackbarHostState,
                             coroutineScope = coroutineScope,
-                            isVerified = isVerified,
-                            errorMessage = errorMessage,
-                            onRegistrationSuccess = { registrationSuccess = it },
-                            phone= phone
+                            phone = phone
                         )
                     }
 
                     VerificationStep.Verified -> {
                         Text("Doğrulama başarılı, yönlendiriliyorsunuz...")
-                        registrationViewModel.registerUser(profile= Profile(
-                            id = null,
-                            phoneNumber = phone,
-                            country = selectedCountry,
-                            profilePhoto = "",
-                            name = name,
-                            emergencyMessage = null,
-                            locationPermission = locationPermission
-                        ))
+                        LaunchedEffect(Unit) {   // sadece 1 kere çalışır
+                            registrationViewModel.registerUser(
+                                profile = Profile(
+                                    id = null,
+                                    phoneNumber = phone,
+                                    country = selectedCountry,
+                                    profilePhoto = "",
+                                    name = name,
+                                    emergencyMessage = null,
+                                    locationPermission = locationPermission
+                                )
+                            )
+                        }
                     }
                 }
 
+
+                LaunchedEffect(isVerified) {
+                    if (isVerified == true) {
+                    verificationStep = VerificationStep.Verified
+                    Log.i("signup ", "registrationSuccess is true. loading is start")
+                    }
+                    if (isVerified == false) {
+                        coroutineScope.launch { snackbarHostState.showSnackbar(errorMessage ?: "Doğrulama başarısız") }
+                    }
+                }
                 Spacer(modifier = Modifier.height(12.dp))
                 BottomNavigationSection(navController)
             }
 
-            if (registrationSuccess) {
-                Log.i("signup ", "registrationSuccess is true. loading is start")
-            }
+
         }
     }
 }
@@ -378,9 +401,6 @@ fun CodeVerificationSection(
     verificationViewModel: VerificationViewModel,
     snackbarHostState: SnackbarHostState,
     coroutineScope: CoroutineScope,
-    isVerified: Boolean?,
-    errorMessage: String?,
-    onRegistrationSuccess: (Boolean) -> Unit,
     phone: String
 ) {
     OutlinedTextField(
@@ -414,15 +434,6 @@ fun CodeVerificationSection(
             Text("Tekrar Gönder")
         }
     }
-
-    LaunchedEffect(isVerified) {
-        if (isVerified == true) {
-            onRegistrationSuccess(true)
-        }
-        if (isVerified == false) {
-            coroutineScope.launch { snackbarHostState.showSnackbar(errorMessage ?: "Doğrulama başarısız") }
-        }
-    }
 }
 
 @Composable
@@ -431,7 +442,7 @@ fun BottomNavigationSection(navController: NavHostController) {
         Text(text = "Zaten hesabın var mı? ")
         Text(
             text = "Giriş yap",
-            modifier = Modifier.clickable { navController.navigate("SignInScreen") }
+            modifier = Modifier.clickable { navController.navigate("SignIn") }
         )
     }
 }

@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.warning.presentation.ui.theme.AppColorScheme
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    viewModel: ProfileListenerViewModel
+    viewModel: ProfileListenerViewModel= hiltViewModel()
 ) {
     // Drawer kontrolü için
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -51,8 +52,6 @@ fun MainScreen(
     }
 
     val profile by viewModel.profileState.collectAsState()
-    val contacts by viewModel.contacts.collectAsState()
-    val linked by viewModel.linked.collectAsState()
 
 
     ModalNavigationDrawer(
@@ -70,7 +69,7 @@ fun MainScreen(
                             IconButton(onClick = {
                                 // Profil ekranına git
 
-                                navController.navigate("ProfileScreen")
+                                navController.navigate("Profile")
                             }) {
                                 Icon(Icons.Default.Person, contentDescription = "Profile")
                             }

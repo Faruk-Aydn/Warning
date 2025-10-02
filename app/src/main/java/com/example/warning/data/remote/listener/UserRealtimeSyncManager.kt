@@ -27,7 +27,7 @@ class UserRealtimeSyncManager @Inject constructor(
             .document(phoneNumber)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    Log.e("UserRealtimeSync", "Dinleme hatası", error)
+                    Log.w("UserRealtimeSync", "Dinleme hatası", error)
                     return@addSnapshotListener
                 }
 

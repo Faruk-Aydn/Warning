@@ -27,7 +27,6 @@ class ProfileListenerViewModel @Inject constructor(
         viewModelScope.launch {
             profileUseCases.getProfile().collectLatest { profile ->
                 if (profile != null) {
-                    phoneNumber = profile.phoneNumber.toInt()
                     startUserListener(profile.phoneNumber)
                 }
             }
