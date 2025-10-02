@@ -1,33 +1,63 @@
 package com.example.warning.presentation.ui.screens
 
 
+import android.R.attr.contentDescription
 import android.R.attr.phoneNumber
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImagePainter
 import com.example.warning.presentation.ui.theme.AppColorScheme
+import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import coil.compose.rememberAsyncImagePainter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    viewModel: ProfileListenerViewModel= hiltViewModel()
+    viewModel: ProfileListenerViewModel= hiltViewModel(),
+    contactVm: ContactListenerViewmodel = hiltViewModel()
 ) {
     // Drawer kontrolü için
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -38,8 +68,6 @@ fun MainScreen(
     var isLocationEnabled by remember { mutableStateOf(false) }
     var isLocationTransition by remember { mutableStateOf(false) }
 
-    // Bağlantı sayısı (örnek 15)
-    var contactCount by remember { mutableStateOf(15) }
 
     var triggerToggle by remember { mutableStateOf(false) }
 
@@ -52,7 +80,10 @@ fun MainScreen(
     }
 
     val profile by viewModel.profileState.collectAsState()
+    val contacts by contactVm.contacts.collectAsState()
 
+    // Bağlantı sayısı (örnek 15)
+    var contactCount by remember { mutableStateOf(contacts.size) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -71,7 +102,44 @@ fun MainScreen(
 
                                 navController.navigate("Profile")
                             }) {
-                                Icon(Icons.Default.Person, contentDescription = "Profile")
+                                if (profile?.profilePhoto.isNullOrEmpty()) {
+                                // Null durumda default ikon
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = "Profile",
+                                    modifier = Modifier.size(40.dp) // boyutunu ayarlayabilirsin
+                                )
+                            } else {
+                                    val painter = rememberAsyncImagePainter(model = profile?.profilePhoto)
+                                    val state = painter.state
+
+                                    Box(modifier = Modifier.size(40.dp)) {
+                                        when (state) {
+                                            is AsyncImagePainter.State.Loading -> {
+                                                // Yüklenirken progress göster
+                                                CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.matchParentSize())
+                                            }
+                                            is AsyncImagePainter.State.Error -> {
+                                                // Hata durumunda ikon göster
+                                                Icon(
+                                                    imageVector = Icons.Default.Person,
+                                                    contentDescription = "Profile",
+                                                    modifier = Modifier.matchParentSize()
+                                                )
+                                            }
+                                            else -> {
+                                                // Başarılı durumda resmi göster
+                                                Image(
+                                                    painter = painter,
+                                                    contentDescription = "Profile Image",
+                                                    modifier = Modifier
+                                                        .matchParentSize()
+                                                        .clip(CircleShape)
+                                                )
+                                            }
+                                        }
+                                    }
+                            }
                             }
                             IconButton(onClick = {
                                 // Bildirim ekranına git

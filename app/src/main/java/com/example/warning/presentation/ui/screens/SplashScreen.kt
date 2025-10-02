@@ -33,6 +33,7 @@ object Routes {
     const val Splash = "splash"
     const val Main = "main"
     const val SignIn = "signIn"
+    const val SignUp = "signUp"
 }
 
 /**

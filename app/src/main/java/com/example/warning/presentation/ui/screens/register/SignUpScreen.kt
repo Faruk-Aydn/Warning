@@ -39,6 +39,7 @@ import com.example.warning.presentation.viewModel.VerificationViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import com.example.warning.presentation.ui.screens.Routes
 import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 import com.example.warning.presentation.viewModel.UserRegistrationState
@@ -86,7 +87,10 @@ fun SignUpScreen(
 
     LaunchedEffect(state) {
         if(state is UserRegistrationState.RegistrationSuccess) {
-            navController.navigate("main")
+            navController.navigate("main"){
+                launchSingleTop = true
+                popUpTo(Routes.SignUp) { inclusive = true }
+            }
         }
     }
 
@@ -442,7 +446,12 @@ fun BottomNavigationSection(navController: NavHostController) {
         Text(text = "Zaten hesabın var mı? ")
         Text(
             text = "Giriş yap",
-            modifier = Modifier.clickable { navController.navigate("SignIn") }
+            modifier = Modifier.clickable {
+                navController.navigate("SignIn"){
+                    launchSingleTop = true
+                    popUpTo(Routes.SignUp) { inclusive = true }
+                }
+            }
         )
     }
 }

@@ -22,66 +22,61 @@ fun ProfileScreen(
     contactViewModel: ContactListenerViewmodel = hiltViewModel(),
     navController: NavController
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.loadProfile()
+    }
+
     val profile by viewModel.profileState.collectAsState()
     val contacts by contactViewModel.contacts.collectAsState()
     val linked by contactViewModel.linked.collectAsState()
 
     val contactPermission= false
-    when (profile == null) {
-
-        true -> Log.d("ProfileScreen", "Profil verisi boş geldi: ")
-        false -> return
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.loadProfile()
-    }
-
-    Box(){
-        if (profile == null) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        when (profile) {
+            null -> {
+                // Profil yok, loading göster
                 CircularProgressIndicator()
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Profil bilgileri
-                item {
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = profile!!.name,
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-                    )
-                    Text(text = profile!!.phoneNumber)
-                    Text(text = "Ülke: ${profile!!.country}")
-                    profile!!.emergencyMessage?.let {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text("Acil Mesaj: $it")
+            else -> {
+                // Profil geldi, LazyColumn ile UI göster
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = profile!!.name.toString(),
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                        )
+                        Text(text = profile!!.phoneNumber)
+                        Text(text = "Ülke: ${profile!!.country}")
+                        profile!!.emergencyMessage?.let {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Acil Mesaj: $it")
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text("Konum İzni: ${if (profile?.locationPermission == true) "Verildi" else "Verilmedi"}")
+                        val contactPermission = false
+                        Text("Kişi İzni: ${if (contactPermission) "Verildi" else "Verilmedi"}")
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text("Konum İzni: ${if (profile!!.locationPermission) "Verildi" else "Verilmedi"}")
-                    Text("Kişi İzni: ${if (contactPermission) "Verildi" else "Verilmedi"}")
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
 
-                // Contact listesi
-                item { Text("📇 Kişiler", style = MaterialTheme.typography.titleMedium) }
-                items(contacts.size) { index ->
-                    Text("- ${contacts[index].name} (${contacts[index].phoneNumber})")
-                }
-                item{
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+                    // Contact listesi
+                    item { Text("📇 Kişiler", style = MaterialTheme.typography.titleMedium) }
+                    items(contacts.size) { index ->
+                        Text("- ${contacts[index].name} (${contacts[index].phoneNumber})")
+                    }
 
-                // Linked listesi
-                item { Text("🔗 Linked Hesaplar", style = MaterialTheme.typography.titleMedium) }
-                items(linked.size) { index ->
-                    Text("- ${linked[index].phoneNumber}")
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
+
+                    // Linked listesi
+                    item { Text("🔗 Linked Hesaplar", style = MaterialTheme.typography.titleMedium) }
+                    items(linked.size) { index ->
+                        Text("- ${linked[index].phoneNumber}")
+                    }
                 }
             }
         }

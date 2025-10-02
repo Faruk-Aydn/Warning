@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.ui.tooling.preview)
 
+    implementation("io.coil-kt:coil-compose:2.6.0")
     // Navigation
     implementation(libs.androidx.navigation.compose)
     // Diğer
