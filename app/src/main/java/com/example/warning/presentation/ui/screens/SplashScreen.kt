@@ -23,10 +23,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.warning.domain.model.Profile
 import com.example.warning.presentation.viewModel.AuthViewModel
 import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 import dagger.hilt.android.scopes.ViewScoped
+import okhttp3.internal.http2.Settings
 
 // Basit route sabitleri (NavGraph'teki route isimleri ile eşleşmeli)
 object Routes {
@@ -34,6 +36,9 @@ object Routes {
     const val Main = "main"
     const val SignIn = "signIn"
     const val SignUp = "signUp"
+    const val Settings = "settings"
+    const val Contacts = "contacts"
+    const val Profile= "profile"
 }
 
 /**

@@ -12,8 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.warning.presentation.ui.screens.ContactLinkedScreen
 import com.example.warning.presentation.ui.screens.MainScreen
 import com.example.warning.presentation.ui.screens.ProfileScreen
+import com.example.warning.presentation.ui.screens.SettingsScreen
 import com.example.warning.presentation.ui.screens.SplashScreen
 import com.example.warning.presentation.ui.screens.register.SignInScreen
 import com.example.warning.presentation.ui.screens.register.SignUpScreen
@@ -73,6 +75,14 @@ fun AppNavigation() {
             composable ("profile"){
                 ProfileScreen(
                     navController = navController
+                )
+            }
+            composable("settings"){
+                SettingsScreen()
+            }
+            composable("contacts") {
+                ContactLinkedScreen(
+                    navController= navController
                 )
             }
         }

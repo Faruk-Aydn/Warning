@@ -1,5 +1,6 @@
 package com.example.warning.presentation.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.warning.domain.model.Contact
@@ -42,6 +43,7 @@ class ContactListenerViewmodel @Inject constructor(
                 }
             }
         }
+        Log.i("loadContact", "listener yükledi")
         viewModelScope.launch {
             profileUseCases.getAllLinked().collectLatest {
                 if (it != null) {
@@ -49,6 +51,7 @@ class ContactListenerViewmodel @Inject constructor(
                 }
             }
         }
+        Log.i("loadLinked", "listener yükledi")
     }
 
     fun startContactListener(phone: String){

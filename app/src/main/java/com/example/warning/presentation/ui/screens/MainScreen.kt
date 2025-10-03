@@ -100,7 +100,7 @@ fun MainScreen(
                             IconButton(onClick = {
                                 // Profil ekranına git
 
-                                navController.navigate("Profile")
+                                navController.navigate("profile")
                             }) {
                                 if (profile?.profilePhoto.isNullOrEmpty()) {
                                 // Null durumda default ikon
@@ -184,7 +184,7 @@ fun MainScreen(
                             .padding(end = 48.dp)
                             .clickable {
                                 // Contact listesine git
-                                navController.navigate("ContactListScreen")
+                                navController.navigate(route = Routes.Contacts)
                             }
                     ) {
                         Icon(
