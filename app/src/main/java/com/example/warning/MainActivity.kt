@@ -12,9 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.warning.domain.usecase.AddContactResult
+import com.example.warning.presentation.ui.screens.AddContactScreen
 import com.example.warning.presentation.ui.screens.ContactLinkedScreen
 import com.example.warning.presentation.ui.screens.MainScreen
 import com.example.warning.presentation.ui.screens.ProfileScreen
+import com.example.warning.presentation.ui.screens.Routes
 import com.example.warning.presentation.ui.screens.SettingsScreen
 import com.example.warning.presentation.ui.screens.SplashScreen
 import com.example.warning.presentation.ui.screens.register.SignInScreen
@@ -51,6 +54,9 @@ fun AppNavigation() {
             modifier = Modifier.padding(innerPadding)
         ) {
 
+            composable(route = Routes.AddContact) {
+                AddContactScreen(navController)
+            }
             composable("splash") {
                 SplashScreen(
                     navController = navController

@@ -20,6 +20,22 @@ class FirestoreService(
     //tableContact
 
 
+    suspend fun addContact(contactDto: ContactDto): Boolean {
+        return try {
+            firestore.collection("contacts")
+                .document(contactDto.id)
+                .set(contactDto)
+                .await()
+            true
+        } catch (e: CancellationException) {
+            Log.w("Service", "Coroutine iptal edildi")
+            throw e
+        } catch (e: Exception) {
+            Log.e("ServiceAddContact", "Hata: ${e.message}", e)
+            false
+        }
+    }
+
     suspend fun updateName(userId: String, newName: String) {
         firestore.collection("profiles")
             .document(userId)
@@ -42,10 +58,11 @@ class FirestoreService(
     suspend fun isUserRegistered(phoneNumber: String): Boolean {
         return try {
             val snapshot = firestore.collection("profiles")
-                .document(phoneNumber)
+                .whereEqualTo("phoneNumber", phoneNumber)
+                .limit(1) // sadece 1 kayıt yeterli
                 .get()
                 .await()
-            snapshot.exists() // kullanıcı varsa true, yoksa false
+            !snapshot.isEmpty // varsa true, yoksa false // kullanıcı varsa true, yoksa false
         } catch (e: Exception) {
             Log.w("Firestore", "Kullanıcı kontrol edilirken hata: $e")
             false
@@ -79,8 +96,9 @@ class FirestoreService(
                 .document(phoneNumber)
                 .get()
                 .await()
-                Log.d("Service", "Firebase'den veri çekildi: ${snapshot.data}")
-                return snapshot.toObject(UserDto::class.java)
+
+            Log.d("Service", "Firebase'den veri çekildi: ${snapshot.data}")
+            return snapshot.toObject(UserDto::class.java)
         }catch (e: CancellationException) {
             // Job iptal edilmişse burası normal, hata gibi göstermemek daha iyi
             Log.d("ServiceGet", "Coroutine iptal edildi.")
@@ -145,5 +163,4 @@ class FirestoreService(
             }
         }
     }
-
 }

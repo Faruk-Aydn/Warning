@@ -25,7 +25,7 @@ class LinkedRealtimeSyncManager @Inject constructor(
         if (listener != null) return // zaten çalışıyorsa tekrar başlatma
 
         listener = firestore.collection("contacts")
-            .whereEqualTo("phoneNumber", phone)
+            .whereEqualTo("phone", phone)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     Log.e("LinkedSync", "Dinleme hatası", error)

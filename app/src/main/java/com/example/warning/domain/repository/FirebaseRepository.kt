@@ -9,6 +9,7 @@ interface FirebaseRepository {
     //Kayıt        => Firebase (succes) -> local
     suspend fun getUser(phone: String): UserDto?
     suspend fun addUser(user: Profile): Boolean
+    suspend fun addContact(contact: com.example.warning.data.remote.Dto.ContactDto): Boolean
     suspend fun isRegistered(phone: String): Boolean
 
     /*Listener    ->  firebaseService -> local

@@ -7,6 +7,8 @@ import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Linked
 import com.example.warning.domain.usecase.ProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.warning.domain.usecase.AddContactUseCase
+import com.example.warning.domain.usecase.AddContactResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ContactListenerViewmodel @Inject constructor(
-    private val profileUseCases: ProfileUseCases
+    private val profileUseCases: ProfileUseCases,
+    private val addContactUseCase: AddContactUseCase
 ) : ViewModel(){
 
     private val _contacts = MutableStateFlow<List<Contact>>(emptyList())
@@ -31,6 +34,7 @@ class ContactListenerViewmodel @Inject constructor(
                 if (profile != null) {
                     val phoneNumber = profile.phoneNumber
                     startContactListener(phoneNumber)
+
                 }
             }
         }
@@ -53,11 +57,44 @@ class ContactListenerViewmodel @Inject constructor(
         }
         Log.i("loadLinked", "listener yükledi")
     }
+    fun loadLinked() {
+        viewModelScope.launch {
+            profileUseCases.getAllLinked().collectLatest {
+                if (it != null) {
+                    _linked.value = it
+                }
+            }
+        }
+        Log.i("loadContact", "listener yükledi")
+        viewModelScope.launch {
+            profileUseCases.getAllLinked().collectLatest {
+                if (it != null) {
+                    _linked.value = it
+                }
+            }
+        }
+        Log.i("loadLinked", "listener yükledi")
+    }
 
     fun startContactListener(phone: String){
         viewModelScope.launch {
             profileUseCases.startContactListener(phone)
             profileUseCases.startLinkedListener(phone)
+        }
+    }
+
+    private val _addContactState = MutableStateFlow<AddContactResult>(AddContactResult.Idle)
+    val addContactState: StateFlow<AddContactResult> = _addContactState
+
+    fun addContact(phone: String, country: String){
+        viewModelScope.launch {
+            try {
+                addContactUseCase.execute(phone, country).collect {
+                    _addContactState.value = it
+                }
+            } catch (e: Exception) {
+                _addContactState.value = AddContactResult.Error(e.message ?: "Bilinmeyen hata")
+            }
         }
     }
     fun stopContactListener(){

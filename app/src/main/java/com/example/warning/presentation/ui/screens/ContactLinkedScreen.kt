@@ -70,6 +70,7 @@ fun ContactLinkedScreen(
         scope.launch {
             isRefreshing = true
             viewModel.loadContact()
+            viewModel.loadLinked()
             kotlinx.coroutines.delay(1000) // loading simülasyonu
             isRefreshing = false
         }
@@ -88,10 +89,8 @@ fun ContactLinkedScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate("settings"){
-                            launchSingleTop = true
-                            popUpTo(Routes.Settings) { inclusive = true }
-                        }
+                        navController.navigate(route = "addContact")
+
                     }) {
                         Icon(Icons.Default.Settings, contentDescription = "Settings")
                     }

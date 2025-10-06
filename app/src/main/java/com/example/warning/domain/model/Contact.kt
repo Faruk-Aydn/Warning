@@ -9,5 +9,6 @@ data class Contact(
     var specielMessage: String?= null,
     var isLocationSend: Boolean = false,
     var tag: String? = null,
-    var isTop: Boolean= false
+    var isTop: Boolean= false,
+    var isConfirmed: Boolean
 )

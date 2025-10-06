@@ -43,7 +43,8 @@ fun ContactEntity.toDomain(): Contact {
         phoneNumber = phone,
         country = country,
         ownerPhoneNumber = ownerPhone,
-        profilePhoto = profilePhoto
+        profilePhoto = profilePhoto,
+        isConfirmed = isConfirmed
     )
 }
 
@@ -89,7 +90,8 @@ fun ContactDto.toEntity(): ContactEntity{
         isTop = isTop,
         date = date,
         isConfirmed = isConfirmed,
-        id = id
+        id = id,
+        ownerCountry = ownerCountry
     )
 
 }

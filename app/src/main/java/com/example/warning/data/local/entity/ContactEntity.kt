@@ -9,6 +9,7 @@ import androidx.room.PrimaryKey
 data class ContactEntity(
     @PrimaryKey var id: String,
     var ownerPhone: String,
+    var ownerCountry: String,
     var profilePhoto: String?,
     var name: String,                                           //      *
     val country: String,                                        //          *

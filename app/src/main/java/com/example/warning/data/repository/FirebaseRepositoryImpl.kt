@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.room.Update
 import com.example.warning.data.mapper.toDto
 import com.example.warning.data.remote.Dto.UserDto
+import com.example.warning.data.remote.Dto.ContactDto
 import com.example.warning.data.remote.Service.FirestoreService
 import com.example.warning.data.remote.listener.ContactRealtimeSyncManager
 import com.example.warning.data.remote.listener.LinkedRealtimeSyncManager
@@ -40,6 +41,18 @@ class FirebaseRepositoryImpl @Inject constructor(
 
     override suspend fun isRegistered(phone: String): Boolean {
         return firestoreService.isUserRegistered(phone)
+    }
+
+    override suspend fun addContact(contact: ContactDto): Boolean {
+        return try {
+            firestoreService.addContact(contact)
+        } catch (e: CancellationException) {
+            Log.w("Firestore Service","Coroutine iptal edildi: $e")
+            throw e
+        } catch (e: Exception) {
+            Log.w("Firestore Service","addContact hata: ${e}")
+            false
+        }
     }
 
     //Start

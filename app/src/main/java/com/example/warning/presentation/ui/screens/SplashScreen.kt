@@ -39,6 +39,7 @@ object Routes {
     const val Settings = "settings"
     const val Contacts = "contacts"
     const val Profile= "profile"
+    const val AddContact ="addContact"
 }
 
 /**

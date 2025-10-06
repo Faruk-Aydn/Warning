@@ -4,6 +4,7 @@ import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.local.entity.ProfileEntity
+import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.data.mapper.toDomain
 import com.example.warning.domain.repository.ProfileRepository
 import com.example.warning.domain.model.Contact
@@ -35,6 +36,14 @@ class ProfileRepositoryImpl @Inject constructor(
     }
     override suspend fun insertProfile(profileEntity: ProfileEntity){
         profileDao.insertProfile(profileEntity)
+    }
+
+    override suspend fun insertContact(contactEntity: ContactEntity){
+        contactDao.insertContact(listOf(contactEntity))
+    }
+
+    override suspend fun getCurrentUserOnce(): Profile? {
+        return profileDao.getCurrentUserOnce()?.toDomain()
     }
 }
 
