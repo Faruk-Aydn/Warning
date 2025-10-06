@@ -55,6 +55,54 @@ class FirebaseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun setContactTop(ownerPhone: String, contactPhone: String, isTop: Boolean): Boolean {
+        return try {
+            firestoreService.updateContactFields(ownerPhone, contactPhone, mapOf("isTop" to isTop))
+        } catch (e: CancellationException) {
+            Log.w("Firestore Service","Coroutine iptal edildi: $e")
+            throw e
+        } catch (e: Exception) {
+            Log.w("Firestore Service","setContactTop hata: ${e}")
+            false
+        }
+    }
+
+    override suspend fun deleteContact(ownerPhone: String, contactPhone: String): Boolean {
+        return try {
+            firestoreService.deleteContactByOwnerAndPhone(ownerPhone, contactPhone)
+        } catch (e: CancellationException) {
+            Log.w("Firestore Service","Coroutine iptal edildi: $e")
+            throw e
+        } catch (e: Exception) {
+            Log.w("Firestore Service","deleteContact hata: ${e}")
+            false
+        }
+    }
+
+    override suspend fun confirmLinked(contactId: String): Boolean {
+        return try {
+            firestoreService.updateContactById(contactId, mapOf("isConfirmed" to true))
+        } catch (e: CancellationException) {
+            Log.w("Firestore Service","Coroutine iptal edildi: $e")
+            throw e
+        } catch (e: Exception) {
+            Log.w("Firestore Service","confirmLinked hata: ${e}")
+            false
+        }
+    }
+
+    override suspend fun deleteLinked(contactId: String): Boolean {
+        return try {
+            firestoreService.deleteContactById(contactId)
+        } catch (e: CancellationException) {
+            Log.w("Firestore Service","Coroutine iptal edildi: $e")
+            throw e
+        } catch (e: Exception) {
+            Log.w("Firestore Service","deleteLinked hata: ${e}")
+            false
+        }
+    }
+
     //Start
     override suspend fun startContactListener(phone: String){
         syncContact.startListening(phone)

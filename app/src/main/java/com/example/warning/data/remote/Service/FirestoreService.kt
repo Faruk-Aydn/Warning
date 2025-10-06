@@ -36,6 +36,56 @@ class FirestoreService(
         }
     }
 
+    // Update only specified fields for a contact document matched by ownerPhone + phone
+    suspend fun updateContactFields(ownerPhone: String, contactPhone: String, fields: Map<String, Any?>): Boolean {
+        return try {
+            val query = firestore.collection("contacts")
+                .whereEqualTo("ownerPhone", ownerPhone)
+                .whereEqualTo("phone", contactPhone)
+                .limit(1)
+                .get()
+                .await()
+
+            val doc = query.documents.firstOrNull() ?: return false
+            firestore.collection("contacts")
+                .document(doc.id)
+                .update(fields)
+                .await()
+            true
+        } catch (e: CancellationException) {
+            Log.w("Service", "Coroutine iptal edildi")
+            throw e
+        } catch (e: Exception) {
+            Log.e("ServiceUpdateContact", "Hata: ${e.message}", e)
+            false
+        }
+    }
+
+    // Delete contact by ownerPhone + phone
+    suspend fun deleteContactByOwnerAndPhone(ownerPhone: String, contactPhone: String): Boolean {
+        return try {
+            val query = firestore.collection("contacts")
+                .whereEqualTo("ownerPhone", ownerPhone)
+                .whereEqualTo("phone", contactPhone)
+                .limit(1)
+                .get()
+                .await()
+
+            val doc = query.documents.firstOrNull() ?: return false
+            firestore.collection("contacts")
+                .document(doc.id)
+                .delete()
+                .await()
+            true
+        } catch (e: CancellationException) {
+            Log.w("Service", "Coroutine iptal edildi")
+            throw e
+        } catch (e: Exception) {
+            Log.e("ServiceDeleteContact", "Hata: ${e.message}", e)
+            false
+        }
+    }
+
     suspend fun updateName(userId: String, newName: String) {
         firestore.collection("profiles")
             .document(userId)
@@ -161,6 +211,39 @@ class FirestoreService(
                     date = entity.date
                 )
             }
+        }
+    }
+
+    // Generic update by document id on contacts
+    suspend fun updateContactById(contactId: String, fields: Map<String, Any?>): Boolean {
+        return try {
+            firestore.collection("contacts")
+                .document(contactId)
+                .update(fields)
+                .await()
+            true
+        } catch (e: CancellationException) {
+            Log.w("Service", "Coroutine iptal edildi")
+            throw e
+        } catch (e: Exception) {
+            Log.e("ServiceUpdateById", "Hata: ${e.message}", e)
+            false
+        }
+    }
+
+    suspend fun deleteContactById(contactId: String): Boolean {
+        return try {
+            firestore.collection("contacts")
+                .document(contactId)
+                .delete()
+                .await()
+            true
+        } catch (e: CancellationException) {
+            Log.w("Service", "Coroutine iptal edildi")
+            throw e
+        } catch (e: Exception) {
+            Log.e("ServiceDeleteById", "Hata: ${e.message}", e)
+            false
         }
     }
 }

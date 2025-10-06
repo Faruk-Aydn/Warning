@@ -12,6 +12,14 @@ interface FirebaseRepository {
     suspend fun addContact(contact: com.example.warning.data.remote.Dto.ContactDto): Boolean
     suspend fun isRegistered(phone: String): Boolean
 
+    // Contact actions
+    suspend fun setContactTop(ownerPhone: String, contactPhone: String, isTop: Boolean): Boolean
+    suspend fun deleteContact(ownerPhone: String, contactPhone: String): Boolean
+
+    // Linked actions (operate on contact doc id viewed as linked)
+    suspend fun confirmLinked(contactId: String): Boolean
+    suspend fun deleteLinked(contactId: String): Boolean
+
     /*Listener    ->  firebaseService -> local
       |
       -> Start                                   */
