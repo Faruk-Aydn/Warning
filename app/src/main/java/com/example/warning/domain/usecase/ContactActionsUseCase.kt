@@ -17,14 +17,16 @@ class ContactActionsUseCase @Inject constructor(
     private val firebaseRepository: FirebaseRepository,
     private val profileRepository: ProfileRepository
 ) {
-    suspend fun toggleTop(contactPhone: String, makeTop: Boolean): Flow<ContactActionResult> = flow {
+    // Flip isTop decision here (domain), repo stays dumb
+    suspend fun toggleTop(contactPhone: String, currentIsTop: Boolean): Flow<ContactActionResult> = flow {
         emit(ContactActionResult.Loading)
         val owner = profileRepository.getCurrentUserOnce()
         if (owner == null) {
             emit(ContactActionResult.Error("Mevcut kullanıcı bulunamadı"))
             return@flow
         }
-        val ok = firebaseRepository.setContactTop(owner.phoneNumber, contactPhone, makeTop)
+        val nextIsTop = !currentIsTop
+        val ok = firebaseRepository.setContactTop(owner.phoneNumber, contactPhone, nextIsTop)
         if (!ok) {
             emit(ContactActionResult.Error("Favori güncellenemedi"))
             return@flow

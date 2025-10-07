@@ -54,6 +54,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
+import androidx.compose.material.icons.outlined.Add
 import kotlinx.coroutines.delay
 
 
@@ -163,7 +164,7 @@ fun ContactLinkedScreen(
                                 contact,
                                 actionState.loadingContactPhone == contact.phoneNumber,
                                 onToggleTop = {
-                                    actionsViewModel.toggleTop(contact.phoneNumber)
+                                    actionsViewModel.toggleTop(contact.phoneNumber, contact.isTop)
                                 },
                                 onDeleteConfirmed = {
                                     actionsViewModel.delete(contact.phoneNumber)
@@ -172,7 +173,7 @@ fun ContactLinkedScreen(
                         }
                     } else {
                         // LINKED LIST
-                        items(linked) { link ->
+                        items(items = linked, key = { it.id }) { link ->
                             LinkedRow(
                                 linked = link,
                                 isLoading = linkedActionState.loadingLinkedId == link.id,
@@ -202,20 +203,18 @@ fun ContactRow(
     var showDialog by remember { mutableStateOf(false) }
 
     ListItem(
-        headlineContent = { Text("${contact.name} (${contact.tag ?: ""})") },
+        headlineContent = { Text("${contact.name} (${contact.tag ?: ""}) ${contact.isTop}") },
         supportingContent = { Text("${contact.country} ${contact.phoneNumber}") },
         trailingContent = {
             Row {
                 if (isLoading) {
                     CircularProgressIndicator()
                 } else {
-                    if (contact.isTop) {
-                        IconButton(onClick = { /* already top */ }) {
+                    IconButton(onClick = { onToggleTop() }) {
+                        if (contact.isTop) {
                             Icon(Icons.Filled.Star, "Favori")
-                        }
-                    } else {
-                        IconButton(onClick = { onToggleTop() }) {
-                            Icon(Icons.Outlined.FavoriteBorder, "Not Favori")
+                        } else {
+                            Icon(Icons.Outlined.Add, "Not Favori")
                         }
                     }
                 }

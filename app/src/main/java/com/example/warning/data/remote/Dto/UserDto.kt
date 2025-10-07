@@ -1,5 +1,7 @@
 package com.example.warning.data.remote.Dto
 
+import com.google.firebase.firestore.PropertyName
+
 data class UserDto(
     var id: String? = null,
     val phoneNumber: String = "",
@@ -7,5 +9,6 @@ data class UserDto(
     var name: String = "",
     var profilePhoto: String? = "",
     var emergencyMessage: String? = null,
+    @get:PropertyName("isLocationPermission") @set:PropertyName("isLocationPermission")
     var isLocationPermission: Boolean = false
 )

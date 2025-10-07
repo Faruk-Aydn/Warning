@@ -1,6 +1,7 @@
 package com.example.warning.domain.usecase
 
 import com.example.warning.domain.repository.FirebaseRepository
+import com.example.warning.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -13,11 +14,22 @@ sealed class LinkedActionResult {
 }
 
 class LinkedActionsUseCase @Inject constructor(
-    private val firebaseRepository: FirebaseRepository
+    private val firebaseRepository: FirebaseRepository,
+    private val profileRepository: ProfileRepository
 ) {
     suspend fun accept(contactId: String): Flow<LinkedActionResult> = flow {
         emit(LinkedActionResult.Loading)
-        val ok = firebaseRepository.confirmLinked(contactId)
+        val me = profileRepository.getCurrentUserOnce()
+        if (me == null) {
+            emit(LinkedActionResult.Error("Profil bulunamadı"))
+            return@flow
+        }
+        val ok = firebaseRepository.confirmLinked(
+            contactId = contactId,
+            phone = me.phoneNumber,
+            country = me.country,
+            name = me.name
+        )
         if (!ok) {
             emit(LinkedActionResult.Error("İstek kabul edilemedi"))
             return@flow

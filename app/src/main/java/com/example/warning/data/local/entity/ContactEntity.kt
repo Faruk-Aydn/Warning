@@ -11,7 +11,7 @@ data class ContactEntity(
     var ownerPhone: String,
     var ownerCountry: String,
     var profilePhoto: String?,
-    var name: String,                                           //      *
+    var name: String?,                                           //      *
     val country: String,                                        //          *
     val phone: String,    // İletişim kişisinin numarası           //              *      owner ekleyen kişi - mmesaj gönderecek olan
                               //              *      default eklenen kişi - kime gidecek

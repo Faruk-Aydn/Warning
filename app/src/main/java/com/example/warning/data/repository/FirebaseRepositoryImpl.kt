@@ -79,9 +79,16 @@ class FirebaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun confirmLinked(contactId: String): Boolean {
+    override suspend fun confirmLinked(contactId: String, phone: String, country: String, name: String): Boolean {
         return try {
-            firestoreService.updateContactById(contactId, mapOf("isConfirmed" to true))
+            // Update only profile-derived fields and confirmation status
+            val fields = mapOf(
+                "phone" to phone,
+                "country" to country,
+                "name" to name,
+                "isConfirmed" to true
+            )
+            firestoreService.updateContactById(contactId, fields)
         } catch (e: CancellationException) {
             Log.w("Firestore Service","Coroutine iptal edildi: $e")
             throw e

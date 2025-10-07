@@ -41,7 +41,7 @@ class AddContactUseCase @Inject constructor(
             id = contactId,
             phone = phone,
             country = country,
-            name = owner.name,
+            name = "waiting request",
             profilePhoto = null,
             ownerProfilePhoto = owner.profilePhoto,
             ownerPhone = owner.phoneNumber,

@@ -17,7 +17,12 @@ interface FirebaseRepository {
     suspend fun deleteContact(ownerPhone: String, contactPhone: String): Boolean
 
     // Linked actions (operate on contact doc id viewed as linked)
-    suspend fun confirmLinked(contactId: String): Boolean
+    suspend fun confirmLinked(
+        contactId: String,
+        phone: String,
+        country: String,
+        name: String
+    ): Boolean
     suspend fun deleteLinked(contactId: String): Boolean
 
     /*Listener    ->  firebaseService -> local

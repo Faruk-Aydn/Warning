@@ -35,7 +35,7 @@ fun ProfileEntity.toDomain(): Profile{
 
 fun ContactEntity.toDomain(): Contact {
     return Contact(
-        name = name,
+        name = name.toString(),
         specielMessage = specielMessage,
         isLocationSend = isLocationSend,
         tag = tag,
@@ -66,11 +66,11 @@ fun LinkedEntity.toDomain(): Linked{
 fun ContactDto.toLinked(): LinkedDto{
     return LinkedDto(
         id = id,
-        phone = phone,
-        country = country,
-        name = name,
-        profilePhoto = profilePhoto,
-        ownerPhone = ownerPhone,
+        phone = ownerPhone,
+        country = ownerCountry,
+        name = ownerName,
+        profilePhoto = ownerProfilePhoto,
+        ownerPhone = phone,
         date = date,
         isConfirmed = isConfirmed
     )

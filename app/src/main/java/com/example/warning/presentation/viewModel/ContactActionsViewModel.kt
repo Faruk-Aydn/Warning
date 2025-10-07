@@ -25,10 +25,10 @@ class ContactActionsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ContactActionUiState())
     val uiState: StateFlow<ContactActionUiState> = _uiState
 
-    fun toggleTop(contactPhone: String) {
+    fun toggleTop(contactPhone: String, currentIsTop: Boolean) {
         viewModelScope.launch {
-            Log.i("ContactAction", "toggleTop started for $contactPhone")
-            contactActionsUseCase.toggleTop(contactPhone, true).collect { result ->
+            Log.i("ContactAction", "toggleTop started for $contactPhone currentIsTop=$currentIsTop")
+            contactActionsUseCase.toggleTop(contactPhone, currentIsTop).collect { result ->
                 when (result) {
                     is ContactActionResult.Loading -> _uiState.update { it.copy(loadingContactPhone = contactPhone, lastResult = result) }
                     is ContactActionResult.Success -> {
@@ -44,25 +44,7 @@ class ContactActionsViewModel @Inject constructor(
             }
         }
     }
-    fun toggleNotTop(contactPhone: String) {
-        viewModelScope.launch {
-            Log.i("ContactAction", "toggleTop started for $contactPhone")
-            contactActionsUseCase.toggleTop(contactPhone, false).collect { result ->
-                when (result) {
-                    is ContactActionResult.Loading -> _uiState.update { it.copy(loadingContactPhone = contactPhone, lastResult = result) }
-                    is ContactActionResult.Success -> {
-                        Log.i("ContactAction", "toggleTop success for $contactPhone")
-                        _uiState.update { it.copy(loadingContactPhone = null, lastResult = result) }
-                    }
-                    is ContactActionResult.Error -> {
-                        Log.w("ContactAction", "toggleTop error for $contactPhone: ${result.message}")
-                        _uiState.update { it.copy(loadingContactPhone = null, lastResult = result) }
-                    }
-                    else -> {}
-                }
-            }
-        }
-    }
+    // Removed toggleNotTop: domain flips based on current state
 
 
     fun delete(contactPhone: String) {
