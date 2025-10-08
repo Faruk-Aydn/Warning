@@ -6,7 +6,6 @@ import com.example.warning.domain.repository.FirebaseRepository
 import com.example.warning.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.util.UUID
 import javax.inject.Inject
 
 sealed class AddContactResult {
@@ -36,9 +35,14 @@ class AddContactUseCase @Inject constructor(
             return@flow
         }
 
-        val contactId = UUID.randomUUID().toString()
+        val addingUserId = owner.id
+        if (addingUserId.isNullOrEmpty()) {
+            emit(AddContactResult.Error("Kullanıcı kimliği bulunamadı"))
+            return@flow
+        }
+
         val dto = ContactDto(
-            id = contactId,
+            id = "", // Firestore tarafı id oluşturacak
             phone = phone,
             country = country,
             name = "waiting request",
@@ -47,6 +51,7 @@ class AddContactUseCase @Inject constructor(
             ownerPhone = owner.phoneNumber,
             ownerCountry = owner.country,
             ownerName = owner.name,
+            addingId = addingUserId,
             isActiveUser = true,
             specialMessage = null,
             isLocationSend = false,

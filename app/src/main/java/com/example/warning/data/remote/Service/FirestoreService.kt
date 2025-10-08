@@ -22,10 +22,45 @@ class FirestoreService(
 
     suspend fun addContact(contactDto: ContactDto): Boolean {
         return try {
-            firestore.collection("contacts")
-                .document(contactDto.id)
-                .set(contactDto)
+            // 1) Phone check: hedef kullanici kayitli mi?
+            val targetProfile = firestore.collection("profiles")
+                .document(contactDto.phone)
+                .get()
                 .await()
+            if (!targetProfile.exists()) {
+                Log.w("ServiceAddContact", "Hedef kullanıcı bulunamadı: ${contactDto.phone}")
+                return false
+            }
+
+            // 2) Mükerrer kontrol: aynı owner için aynı phone zaten var mı?
+            val duplicate = firestore.collection("contacts")
+                .whereEqualTo("ownerPhone", contactDto.ownerPhone)
+                .whereEqualTo("phone", contactDto.phone)
+                .limit(1)
+                .get()
+                .await()
+            if (!duplicate.isEmpty) {
+                Log.w("ServiceAddContact", "Aynı kişi zaten ekli: ${contactDto.ownerPhone} -> ${contactDto.phone}")
+                return true // idempotent davran: mevcutsa başarı say
+            }
+
+            // 3) addingId otomatik: ekleyen taraf ownerPhone olarak işaretlensin
+            val payload = contactDto.copy(
+                addingId = contactDto.addingId ?: contactDto.ownerPhone,
+                // addedId, onaylanınca dolacak
+            )
+
+            // 4) Firebase'in id üretmesi için add kullan
+            val newDoc = firestore.collection("contacts")
+                .add(payload)
+                .await()
+
+            // 5) Belge içine id alanını geri yaz (okuma kolaylığı)
+            firestore.collection("contacts")
+                .document(newDoc.id)
+                .update(mapOf("id" to newDoc.id))
+                .await()
+
             true
         } catch (e: CancellationException) {
             Log.w("Service", "Coroutine iptal edildi")
@@ -99,10 +134,14 @@ class FirestoreService(
             return
         }
 
-        firestore.collection("profile")
-            .document(userDto.phoneNumber)
-            .set(userDto)
-            .addOnSuccessListener { onSuccess() }
+        // Legacy function: keep behavior if used elsewhere, but prefer registerUser for new flow
+        firestore.collection("profiles")
+            .add(userDto)
+            .addOnSuccessListener { ref ->
+                ref.update(mapOf("id" to ref.id))
+                    .addOnSuccessListener { onSuccess() }
+                    .addOnFailureListener { onError(it) }
+            }
             .addOnFailureListener { onError(it) }
     }
     suspend fun isUserRegistered(phoneNumber: String): Boolean {
@@ -122,11 +161,13 @@ class FirestoreService(
 
     suspend fun registerUser(userDto: UserDto): Boolean{
         return try {
-            firestore.collection("profiles")
-                .document(userDto.phoneNumber)
-                .set(userDto)
+            // Firestore generated id
+            val ref = firestore.collection("profiles")
+                .add(userDto)
                 .await()
-            Log.i("addUser", "Başarılı: ${userDto.phoneNumber}") // Bu çalışıyor mu bak
+            // write back id field for lookups
+            ref.update(mapOf("id" to ref.id)).await()
+            Log.i("addUser", "Başarılı: ${userDto.phoneNumber} -> ${ref.id}")
             true // başarılı olursa true döner
         }
         catch (e: CancellationException) {
@@ -143,12 +184,13 @@ class FirestoreService(
     suspend fun getProfile(phoneNumber: String): UserDto? {
         return try {
             val snapshot = firestore.collection("profiles")
-                .document(phoneNumber)
+                .whereEqualTo("phoneNumber", phoneNumber)
+                .limit(1)
                 .get()
                 .await()
-
-            Log.d("Service", "Firebase'den veri çekildi: ${snapshot.data}")
-            return snapshot.toObject(UserDto::class.java)
+            val doc = snapshot.documents.firstOrNull()
+            Log.d("Service", "Firebase'den veri çekildi: ${doc?.data}")
+            return doc?.toObject(UserDto::class.java)
         }catch (e: CancellationException) {
             // Job iptal edilmişse burası normal, hata gibi göstermemek daha iyi
             Log.d("ServiceGet", "Coroutine iptal edildi.")
@@ -202,6 +244,8 @@ class FirestoreService(
                     ownerPhone = entity.ownerPhone,
                     ownerCountry = entity.ownerCountry,
                     ownerName = entity.ownerName,
+                    addingId = entity.addingId,
+                    addedId = entity.addedId,
                     isActiveUser = entity.isActiveUser,
                     specialMessage = entity.specialMessage,
                     isLocationSend = entity.isLocationSend,

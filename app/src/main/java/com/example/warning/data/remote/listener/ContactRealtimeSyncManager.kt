@@ -33,7 +33,8 @@ class ContactRealtimeSyncManager @Inject constructor(
                 if (snapshot != null) {
                     CoroutineScope(Dispatchers.IO).launch {
                         snapshot.documentChanges.forEach { change ->
-                            val contact = change.document.toObject(ContactDto::class.java).toEntity()
+                            val dto = change.document.toObject(ContactDto::class.java).apply { id = change.document.id }
+                            val contact = dto.toEntity()
                             when (change.type) {
                                 DocumentChange.Type.ADDED -> {
                                     contactDao.insertContact(listOf(contact))

@@ -79,14 +79,42 @@ class FirebaseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun setContactTopById(contactId: String, isTop: Boolean): Boolean {
+        return try {
+            firestoreService.updateContactById(contactId, mapOf("isTop" to isTop))
+        } catch (e: CancellationException) {
+            Log.w("Firestore Service","Coroutine iptal edildi: $e")
+            throw e
+        } catch (e: Exception) {
+            Log.w("Firestore Service","setContactTopById hata: ${e}")
+            false
+        }
+    }
+
+    override suspend fun deleteContactById(contactId: String): Boolean {
+        return try {
+            firestoreService.deleteContactById(contactId)
+        } catch (e: CancellationException) {
+            Log.w("Firestore Service","Coroutine iptal edildi: $e")
+            throw e
+        } catch (e: Exception) {
+            Log.w("Firestore Service","deleteContactById hata: ${e}")
+            false
+        }
+    }
+
     override suspend fun confirmLinked(contactId: String, phone: String, country: String, name: String): Boolean {
         return try {
+            val confirmingUser = firestoreService.getProfile(phone)
+            val confirmingUserId = confirmingUser?.id
             // Update only profile-derived fields and confirmation status
             val fields = mapOf(
                 "phone" to phone,
                 "country" to country,
                 "name" to name,
-                "isConfirmed" to true
+                "isConfirmed" to true,
+                // addedId: onaylayan kullanıcının userId'si
+                "addedId" to confirmingUserId
             )
             firestoreService.updateContactById(contactId, fields)
         } catch (e: CancellationException) {

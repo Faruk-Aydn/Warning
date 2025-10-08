@@ -18,15 +18,10 @@ class ContactActionsUseCase @Inject constructor(
     private val profileRepository: ProfileRepository
 ) {
     // Flip isTop decision here (domain), repo stays dumb
-    suspend fun toggleTop(contactPhone: String, currentIsTop: Boolean): Flow<ContactActionResult> = flow {
+    suspend fun toggleTopById(contactId: String, currentIsTop: Boolean): Flow<ContactActionResult> = flow {
         emit(ContactActionResult.Loading)
-        val owner = profileRepository.getCurrentUserOnce()
-        if (owner == null) {
-            emit(ContactActionResult.Error("Mevcut kullanıcı bulunamadı"))
-            return@flow
-        }
         val nextIsTop = !currentIsTop
-        val ok = firebaseRepository.setContactTop(owner.phoneNumber, contactPhone, nextIsTop)
+        val ok = firebaseRepository.setContactTopById(contactId, nextIsTop)
         if (!ok) {
             emit(ContactActionResult.Error("Favori güncellenemedi"))
             return@flow
@@ -34,14 +29,9 @@ class ContactActionsUseCase @Inject constructor(
         emit(ContactActionResult.Success)
     }
 
-    suspend fun delete(contactPhone: String): Flow<ContactActionResult> = flow {
+    suspend fun deleteById(contactId: String): Flow<ContactActionResult> = flow {
         emit(ContactActionResult.Loading)
-        val owner = profileRepository.getCurrentUserOnce()
-        if (owner == null) {
-            emit(ContactActionResult.Error("Mevcut kullanıcı bulunamadı"))
-            return@flow
-        }
-        val ok = firebaseRepository.deleteContact(owner.phoneNumber, contactPhone)
+        val ok = firebaseRepository.deleteContactById(contactId)
         if (!ok) {
             emit(ContactActionResult.Error("Bağlantı silinemedi"))
             return@flow

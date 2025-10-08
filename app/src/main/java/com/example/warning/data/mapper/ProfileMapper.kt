@@ -35,6 +35,7 @@ fun ProfileEntity.toDomain(): Profile{
 
 fun ContactEntity.toDomain(): Contact {
     return Contact(
+        id = id,
         name = name.toString(),
         specielMessage = specielMessage,
         isLocationSend = isLocationSend,

@@ -54,7 +54,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
-import androidx.compose.material.icons.outlined.Add
+
 import kotlinx.coroutines.delay
 
 
@@ -159,15 +159,15 @@ fun ContactLinkedScreen(
                 ) {
                     if (selectedTab == 0) {
                         // CONTACTS LIST
-                        items(contacts) { contact ->
+                        items(items = contacts, key = { it.id }) { contact ->
                             ContactRow(
                                 contact,
-                                actionState.loadingContactPhone == contact.phoneNumber,
+                                actionState.loadingContactId == contact.id,
                                 onToggleTop = {
-                                    actionsViewModel.toggleTop(contact.phoneNumber, contact.isTop)
+                                    actionsViewModel.toggleTop(contact.id, contact.isTop)
                                 },
                                 onDeleteConfirmed = {
-                                    actionsViewModel.delete(contact.phoneNumber)
+                                    actionsViewModel.delete(contact.id)
                                 }
                             )
                         }
@@ -214,7 +214,7 @@ fun ContactRow(
                         if (contact.isTop) {
                             Icon(Icons.Filled.Star, "Favori")
                         } else {
-                            Icon(Icons.Outlined.Add, "Not Favori")
+                            Icon(Icons.Outlined.FavoriteBorder, "Not Favori")
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 package com.example.warning.domain.model
 
 data class Contact(
+    val id: String,
     val phoneNumber: String,
     val country: String,
     var name: String,

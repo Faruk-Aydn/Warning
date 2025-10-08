@@ -14,6 +14,9 @@ data class ContactDto(
     var ownerPhone: String = "",
     var ownerCountry: String = "",
     var ownerName: String = "",
+    // Foreign-key like references: who added and who was added
+    var addingId: String? = null, // ekleyen (adder)
+    var addedId: String? = null,  // eklenen (added/contacted user). Set upon confirmation
     @get:PropertyName("isActiveUser") @set:PropertyName("isActiveUser")
     var isActiveUser: Boolean = false,
     var specialMessage: String? = null,

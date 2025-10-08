@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ContactActionUiState(
-    val loadingContactPhone: String? = null,
+    val loadingContactId: String? = null,
     val lastResult: ContactActionResult = ContactActionResult.Idle
 )
 
@@ -25,19 +25,19 @@ class ContactActionsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ContactActionUiState())
     val uiState: StateFlow<ContactActionUiState> = _uiState
 
-    fun toggleTop(contactPhone: String, currentIsTop: Boolean) {
+    fun toggleTop(contactId: String, currentIsTop: Boolean) {
         viewModelScope.launch {
-            Log.i("ContactAction", "toggleTop started for $contactPhone currentIsTop=$currentIsTop")
-            contactActionsUseCase.toggleTop(contactPhone, currentIsTop).collect { result ->
+            Log.i("ContactAction", "toggleTop started for $contactId currentIsTop=$currentIsTop")
+            contactActionsUseCase.toggleTopById(contactId, currentIsTop).collect { result ->
                 when (result) {
-                    is ContactActionResult.Loading -> _uiState.update { it.copy(loadingContactPhone = contactPhone, lastResult = result) }
+                    is ContactActionResult.Loading -> _uiState.update { it.copy(loadingContactId = contactId, lastResult = result) }
                     is ContactActionResult.Success -> {
-                        Log.i("ContactAction", "toggleTop success for $contactPhone")
-                        _uiState.update { it.copy(loadingContactPhone = null, lastResult = result) }
+                        Log.i("ContactAction", "toggleTop success for $contactId")
+                        _uiState.update { it.copy(loadingContactId = null, lastResult = result) }
                     }
                     is ContactActionResult.Error -> {
-                        Log.w("ContactAction", "toggleTop error for $contactPhone: ${result.message}")
-                        _uiState.update { it.copy(loadingContactPhone = null, lastResult = result) }
+                        Log.w("ContactAction", "toggleTop error for $contactId: ${result.message}")
+                        _uiState.update { it.copy(loadingContactId = null, lastResult = result) }
                     }
                     else -> {}
                 }
@@ -47,19 +47,19 @@ class ContactActionsViewModel @Inject constructor(
     // Removed toggleNotTop: domain flips based on current state
 
 
-    fun delete(contactPhone: String) {
+    fun delete(contactId: String) {
         viewModelScope.launch {
-            Log.i("ContactAction", "delete started for $contactPhone")
-            contactActionsUseCase.delete(contactPhone).collect { result ->
+            Log.i("ContactAction", "delete started for $contactId")
+            contactActionsUseCase.deleteById(contactId).collect { result ->
                 when (result) {
-                    is ContactActionResult.Loading -> _uiState.update { it.copy(loadingContactPhone = contactPhone, lastResult = result) }
+                    is ContactActionResult.Loading -> _uiState.update { it.copy(loadingContactId = contactId, lastResult = result) }
                     is ContactActionResult.Success -> {
-                        Log.i("ContactAction", "delete success for $contactPhone")
-                        _uiState.update { it.copy(loadingContactPhone = null, lastResult = result) }
+                        Log.i("ContactAction", "delete success for $contactId")
+                        _uiState.update { it.copy(loadingContactId = null, lastResult = result) }
                     }
                     is ContactActionResult.Error -> {
-                        Log.w("ContactAction", "delete error for $contactPhone: ${result.message}")
-                        _uiState.update { it.copy(loadingContactPhone = null, lastResult = result) }
+                        Log.w("ContactAction", "delete error for $contactId: ${result.message}")
+                        _uiState.update { it.copy(loadingContactId = null, lastResult = result) }
                     }
                     else -> {}
                 }
