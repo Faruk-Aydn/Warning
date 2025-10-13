@@ -11,5 +11,7 @@ data class ProfileEntity(
     var name: String,
     var profilePhoto: String,
     var emergencyMessage: String? = null,
-    var locationPermission: Boolean = false
+    var locationPermission: Boolean = false,
+    var fcmToken: String? = null // FCM Token
+
 )

@@ -69,6 +69,7 @@ fun AddContactScreen(
                     Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
                 }
                 is AddContactResult.NotFound -> {
+                    Log.w("state", "not found")
                     Toast.makeText(context, "Kullanıcı bulunamadı", Toast.LENGTH_SHORT).show()
                 }
                 else -> {}
@@ -160,6 +161,7 @@ fun AddContactScreen(
                         try {
                             val exists = registrationVm.checkingUser(phone).await()
                             if (!exists) {
+                                Log.w("check in screen", "${context}. kontrol ettik yok")
                                 Toast.makeText(context, "Kullanıcı bulunamadı", Toast.LENGTH_SHORT).show()
                             } else {
                                 contactVm.addContact(phone, country)

@@ -55,6 +55,9 @@ dependencies {
 
 
     implementation("com.google.code.gson:gson:2.10.1")// En güncel stabil sürüm
+    
+    // OkHttp for HTTP requests
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
 
@@ -70,11 +73,13 @@ dependencies {
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
-    implementation(libs.androidx.room.runtime.android)
+    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
     kapt(libs.room.compiler)
 
     //firebase auth
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-messaging:20.1.6")
+
 
     // hilt
     implementation("com.google.dagger:hilt-android:2.51.1")

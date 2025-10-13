@@ -1,0 +1,73 @@
+[debug] [2025-10-08T17:47:26.521Z] ----------------------------------------------------------------------
+[debug] [2025-10-08T17:47:26.522Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Hakan\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve --only functions
+[debug] [2025-10-08T17:47:26.523Z] CLI Version:   14.19.1
+[debug] [2025-10-08T17:47:26.523Z] Platform:      win32
+[debug] [2025-10-08T17:47:26.523Z] Node Version:  v22.20.0
+[debug] [2025-10-08T17:47:26.523Z] Time:          Wed Oct 08 2025 20:47:26 GMT+0300 (GMT+03:00)
+[debug] [2025-10-08T17:47:26.523Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-10-08T17:47:26.659Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-08T17:47:26.659Z] > authorizing via signed-in user (hakan.k3272@gmail.com)
+[debug] [2025-10-08T17:47:26.659Z] [iam] checking project warning-5d457 for permissions ["firebase.projects.get"]
+[debug] [2025-10-08T17:47:26.660Z] Checked if tokens are valid: true, expires at: 1759948286788
+[debug] [2025-10-08T17:47:26.660Z] Checked if tokens are valid: true, expires at: 1759948286788
+[debug] [2025-10-08T17:47:26.661Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457:testIamPermissions [none]
+[debug] [2025-10-08T17:47:26.661Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457:testIamPermissions x-goog-quota-user=projects/warning-5d457
+[debug] [2025-10-08T17:47:26.661Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-10-08T17:47:27.057Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457:testIamPermissions 200
+[debug] [2025-10-08T17:47:27.057Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-10-08T17:47:27.058Z] Checked if tokens are valid: true, expires at: 1759948286788
+[debug] [2025-10-08T17:47:27.058Z] Checked if tokens are valid: true, expires at: 1759948286788
+[debug] [2025-10-08T17:47:27.058Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/warning-5d457/services/cloudresourcemanager.googleapis.com [none]
+[debug] [2025-10-08T17:47:27.058Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/warning-5d457/services/cloudresourcemanager.googleapis.com x-goog-quota-user=projects/warning-5d457
+[debug] [2025-10-08T17:47:28.445Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/warning-5d457/services/cloudresourcemanager.googleapis.com 200
+[debug] [2025-10-08T17:47:28.445Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/warning-5d457/services/cloudresourcemanager.googleapis.com [omitted]
+[debug] [2025-10-08T17:47:28.461Z] Checked if tokens are valid: true, expires at: 1759948286788
+[debug] [2025-10-08T17:47:28.461Z] Checked if tokens are valid: true, expires at: 1759948286788
+[debug] [2025-10-08T17:47:28.461Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 [none]
+[debug] [2025-10-08T17:47:28.702Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 200
+[debug] [2025-10-08T17:47:28.702Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 {"projectNumber":"557249414775","projectId":"warning-5d457","lifecycleState":"ACTIVE","name":"Warning","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-07-08T17:47:05.745971Z"}
+[debug] [2025-10-08T17:47:28.859Z] defaultcredentials: writing to file C:\Users\Hakan\AppData\Roaming\firebase\hakan_k3272_gmail.com_application_default_credentials.json
+[debug] [2025-10-08T17:47:28.860Z] Setting GAC to C:\Users\Hakan\AppData\Roaming\firebase\hakan_k3272_gmail.com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\Hakan\\AppData\\Roaming\\firebase\\hakan_k3272_gmail.com_application_default_credentials.json"}}
+[debug] [2025-10-08T17:47:28.861Z] Checked if tokens are valid: true, expires at: 1759948286788
+[debug] [2025-10-08T17:47:28.861Z] Checked if tokens are valid: true, expires at: 1759948286788
+[debug] [2025-10-08T17:47:28.861Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig [none]
+[debug] [2025-10-08T17:47:29.374Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig 200
+[debug] [2025-10-08T17:47:29.375Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig {"projectId":"warning-5d457","storageBucket":"warning-5d457.firebasestorage.app"}
+[info] i  functions: Watching "C:\Users\Hakan\AndroidStudioProjects\Warning\functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"C:\\Users\\Hakan\\AndroidStudioProjects\\Warning\\functions\" for Cloud Functions..."}}
+[debug] [2025-10-08T17:47:29.404Z] Validating nodejs source
+[debug] [2025-10-08T17:47:30.231Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^6.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2025-10-08T17:47:30.232Z] Building nodejs source
+[debug] [2025-10-08T17:47:30.232Z] Failed to find version of module node: reached end of search path C:\Users\Hakan\AndroidStudioProjects\Warning\functions\node_modules
+[info] +  functions: Using node@22 from host. 
+[debug] [2025-10-08T17:47:30.234Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-10-08T17:47:30.238Z] Found firebase-functions binary at 'C:\Users\Hakan\AndroidStudioProjects\Warning\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8948
+
+[debug] [2025-10-08T17:47:30.598Z] Got response from /__/functions.yaml {"endpoints":{},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] +  functions: Loaded functions definitions from source: . {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: ."}}

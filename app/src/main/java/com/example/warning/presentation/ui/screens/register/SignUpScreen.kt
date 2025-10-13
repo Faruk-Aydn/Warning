@@ -44,6 +44,7 @@ import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 import com.example.warning.presentation.viewModel.UserRegistrationState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 
 // NOTE: Bu dosya SignUp ekranını içerir.
 // Dosya konumu: ui/screens/SignUpScreen.kt
@@ -206,9 +207,11 @@ fun SignUpScreen(
                                     profilePhoto = "",
                                     name = name,
                                     emergencyMessage = null,
-                                    locationPermission = locationPermission
+                                    locationPermission = locationPermission,
+                                    fcmToken = null
                                 )
                             )
+                            delay(500)
                         }
                     }
                 }

@@ -8,11 +8,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import android.util.Log
+import com.example.warning.data.mapper.toEntity
+import com.example.warning.data.repository.ProfileRepositoryImpl
 import com.example.warning.domain.repository.ProfileRepository
 import com.example.warning.presentation.viewModel.UserRegistrationState
 
 class UserRegistrationUseCase @Inject constructor(
-    private val firebaseRepository: FirebaseRepositoryImpl
+    private val firebaseRepository: FirebaseRepositoryImpl,
+    private val profileRepository: ProfileRepositoryImpl
 ) {
 
     // Flow ile UI'a durum göndermek için
@@ -83,8 +86,9 @@ class UserRegistrationUseCase @Inject constructor(
 
                     if (localAddResult != null) {
                         Log.i("Firestore", "  get işlemi tamamlandı ve nul değil")
-                        _state.value = UserRegistrationState.LoadingFromRoom
                         // dönüşümler ve diğer local tablolarını yapacam
+
+                        Log.i("usecase"," insert tamam")
                         firebaseRepository.startUserListener(user.phoneNumber)
                         Log.wtf("Check", "  dinledi başladı")
 

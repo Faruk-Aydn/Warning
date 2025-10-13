@@ -65,14 +65,6 @@ class ContactListenerViewmodel @Inject constructor(
                 }
             }
         }
-        Log.i("loadContact", "listener yükledi")
-        viewModelScope.launch {
-            profileUseCases.getAllLinked().collectLatest {
-                if (it != null) {
-                    _linked.value = it
-                }
-            }
-        }
         Log.i("loadLinked", "listener yükledi")
     }
 

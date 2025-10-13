@@ -210,7 +210,7 @@ fun SignInScreen(
                 userview.startUserListener(phoneNumber)
                 contactview.startContactListener(phoneNumber)
                 navController.navigate("main") {
-                    popUpTo("signin") { inclusive = true }
+                    popUpTo("signIn") { inclusive = true }
                 }
             }
         }

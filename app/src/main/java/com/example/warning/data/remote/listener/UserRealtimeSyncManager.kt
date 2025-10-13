@@ -1,12 +1,10 @@
 package com.example.warning.data.remote.listener
 
+import android.R.attr.phoneNumber
 import android.util.Log
-import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.mapper.toEntity
-import com.example.warning.data.remote.Dto.ContactDto
 import com.example.warning.data.remote.Dto.UserDto
-import com.example.warning.data.remote.Service.FirestoreService
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.CoroutineScope
@@ -20,26 +18,25 @@ class UserRealtimeSyncManager @Inject constructor(
 ){
     private var listenerRegistration: ListenerRegistration? = null
 
-    fun startListening(phoneNumber: String) {
+    fun startListening(phone: String) {
         if (listenerRegistration != null) return // Zaten dinliyorsa bir daha başlatma
 
         listenerRegistration = firestore.collection("profiles")
-            .document(phoneNumber)
+            .whereEqualTo("phoneNumber", phone)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     Log.w("UserRealtimeSync", "Dinleme hatası", error)
                     return@addSnapshotListener
                 }
-
-                snapshot?.toObject(UserDto::class.java)?.let { dto ->
+                snapshot?.documents?.firstOrNull()?.toObject(UserDto::class.java)?.let { dto ->
                     CoroutineScope(Dispatchers.IO).launch {
+                        Log.i("UserRealtimeSync", "Dinleme başlatıldı: ${dto.phoneNumber}")
                         profileDao.insertProfile(dto.toEntity())
-
                     }
                 }
+
             }
 
-        Log.i("UserRealtimeSync", "Dinleme başlatıldı: $phoneNumber")
     }
 
     fun stopListening() {

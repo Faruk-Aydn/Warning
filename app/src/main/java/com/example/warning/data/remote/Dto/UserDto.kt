@@ -10,5 +10,6 @@ data class UserDto(
     var profilePhoto: String? = "",
     var emergencyMessage: String? = null,
     @get:PropertyName("isLocationPermission") @set:PropertyName("isLocationPermission")
-    var isLocationPermission: Boolean = false
+    var isLocationPermission: Boolean = false,
+    var fcmToken: String?= null
 )

@@ -18,6 +18,11 @@ interface FirebaseRepository {
     suspend fun setContactTopById(contactId: String, isTop: Boolean): Boolean
     suspend fun deleteContactById(contactId: String): Boolean
 
+    /**
+     * Güncellenen FCM token'ı Firebase'e kaydeder
+     */
+    suspend fun updateFCMToken(userId: String, token: String): Boolean
+
     // Linked actions (operate on contact doc id viewed as linked)
     suspend fun confirmLinked(
         contactId: String,

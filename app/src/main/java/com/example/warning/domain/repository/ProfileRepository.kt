@@ -12,7 +12,7 @@ interface ProfileRepository{
     suspend fun getMyProfile(): Flow<Profile?>
     suspend fun getAllLinked(): Flow<List<Linked>?>
     suspend fun getAllContact(): Flow<List<Contact>?>
-    suspend fun insertProfile(profileEntity: ProfileEntity)
+    fun insertProfile(profileEntity: ProfileEntity)
     suspend fun insertContact(contactEntity: com.example.warning.data.local.entity.ContactEntity)
     suspend fun getCurrentUserOnce(): Profile?
 }

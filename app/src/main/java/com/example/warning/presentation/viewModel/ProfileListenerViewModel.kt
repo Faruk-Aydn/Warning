@@ -1,6 +1,7 @@
 package com.example.warning.presentation.viewModel
 
 import android.R.attr.phoneNumber
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.warning.domain.model.Profile
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,10 +27,14 @@ class ProfileListenerViewModel @Inject constructor(
     init {
         // Eğer uygulama açıldığında phoneNumber mevcutsa listener başlat
         viewModelScope.launch {
-            profileUseCases.getProfile().collectLatest { profile ->
-                if (profile != null) {
-                    startUserListener(profile.phoneNumber)
-                }
+            profileUseCases.getProfile()
+                .filterNotNull()
+                .collectLatest { profile ->
+                    if (profile == null) {
+                        Log.w("Listener", "profile null : ${profile}. listener başlatılamadı. localden çekemedk")
+                    }else{
+                        startUserListener(profile.phoneNumber)
+                    }
             }
         }
     }

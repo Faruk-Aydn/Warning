@@ -33,8 +33,10 @@ class LinkedRealtimeSyncManager @Inject constructor(
                 }
 
                 if (snapshot != null && !snapshot.isEmpty) {
-                    val linkedList = snapshot.documents.mapNotNull { it ->
-                        it.toObject(ContactDto::class.java)?.toLinked()!!.toEntity()
+                    val linkedList = snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(ContactDto::class.java)?.let { dto ->
+                            dto.toLinked().toEntity()
+                        }
                     }
 
                     CoroutineScope(Dispatchers.IO).launch {

@@ -3,14 +3,12 @@ package com.example.warning.data.di
 import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.ProfileDao
-import com.example.warning.data.remote.Service.FirestoreService
+import com.example.warning.data.remote.service.FirestoreService
 import com.example.warning.data.remote.listener.ContactRealtimeSyncManager
 import com.example.warning.data.remote.listener.LinkedRealtimeSyncManager
 import com.example.warning.data.remote.listener.UserRealtimeSyncManager
 import com.example.warning.data.repository.FirebaseRepositoryImpl
-import com.example.warning.data.repository.ProfileRepositoryImpl
 import com.example.warning.domain.repository.FirebaseRepository
-import com.example.warning.domain.repository.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module

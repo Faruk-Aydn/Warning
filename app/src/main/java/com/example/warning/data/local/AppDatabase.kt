@@ -15,7 +15,7 @@ import com.example.warning.data.local.entity.ProfileEntity
         ProfileEntity::class,
         LinkedEntity::class,
         ContactEntity::class],
-    version = 3
+    version = 4
 )
 @TypeConverters()
 abstract class AppDatabase : RoomDatabase() {

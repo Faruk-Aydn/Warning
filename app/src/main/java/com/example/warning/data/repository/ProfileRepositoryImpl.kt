@@ -1,5 +1,6 @@
 package com.example.warning.data.repository
 
+import android.util.Log
 import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.ProfileDao
@@ -25,16 +26,16 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getAllLinked(): Flow<List<Linked>?> {
         return linkedDao.getAllLinked().map { list ->
-            list?.map { it.toDomain()  } ?: emptyList()
+            list.map { it.toDomain() }
         }
     }
 
     override suspend fun getAllContact(): Flow<List<Contact>?> {
         return contactDao.getAllContacts().map { list ->
-            list?.map{ it.toDomain() } ?: emptyList()
+            list.map{ it.toDomain() }
         }
     }
-    override suspend fun insertProfile(profileEntity: ProfileEntity){
+    override fun insertProfile(profileEntity: ProfileEntity){
         profileDao.insertProfile(profileEntity)
     }
 
@@ -43,7 +44,11 @@ class ProfileRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCurrentUserOnce(): Profile? {
-        return profileDao.getCurrentUserOnce()?.toDomain()
+        val entity = profileDao.getCurrentUserOnce()
+        Log.d("ProfileRepositoryImpl", "getCurrentUserOnce() entity: $entity")
+        val domain = entity?.toDomain()
+        Log.d("ProfileRepositoryImpl", "getCurrentUserOnce() domain: $domain")
+        return domain
     }
 }
 

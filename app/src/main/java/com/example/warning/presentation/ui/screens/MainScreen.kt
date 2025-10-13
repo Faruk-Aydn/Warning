@@ -24,6 +24,8 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +50,8 @@ import coil.compose.AsyncImagePainter
 import com.example.warning.presentation.ui.theme.AppColorScheme
 import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
+import com.example.warning.presentation.viewModel.EmergencyMessageViewModel
+import com.example.warning.domain.usecase.EmergencyMessageResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import coil.compose.rememberAsyncImagePainter
@@ -57,7 +61,8 @@ import coil.compose.rememberAsyncImagePainter
 fun MainScreen(
     navController: NavHostController,
     viewModel: ProfileListenerViewModel= hiltViewModel(),
-    contactVm: ContactListenerViewmodel = hiltViewModel()
+    contactVm: ContactListenerViewmodel = hiltViewModel(),
+    emergencyViewModel: EmergencyMessageViewModel = hiltViewModel()
 ) {
     // Drawer kontrolü için
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -81,6 +86,7 @@ fun MainScreen(
 
     val profile by viewModel.profileState.collectAsState()
     val contacts by contactVm.contacts.collectAsState()
+    val emergencyState by emergencyViewModel.emergencyMessageState.collectAsState()
 
     // Bağlantı sayısı (örnek 15)
     var contactCount by remember { mutableStateOf(contacts.size) }
@@ -167,7 +173,9 @@ fun MainScreen(
             ) {
                 // Ortadaki büyük yuvarlak buton + animasyonlu çemberler
                 AnimatedCircleButton(
-                    onClick = { /* TODO: ileride işlevi belirlenecek */ }
+                    onClick = { 
+                        emergencyViewModel.sendEmergencyMessage()
+                    }
                 )
 
                 // Alt ikonlar
@@ -231,6 +239,56 @@ fun MainScreen(
                 }
             }
         }
+    }
+
+    // Emergency message state'e göre dialog göster
+    val currentEmergencyState = emergencyState
+    when (currentEmergencyState) {
+        is EmergencyMessageResult.Loading -> {
+            // Loading dialog
+            AlertDialog(
+                onDismissRequest = { },
+                title = { Text("Acil Durum Mesajı Gönderiliyor") },
+                text = { 
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                },
+                confirmButton = { }
+            )
+        }
+        is EmergencyMessageResult.Success -> {
+            // Success dialog
+            AlertDialog(
+                onDismissRequest = { emergencyViewModel.resetState() },
+                title = { Text("Başarılı") },
+                text = { 
+                    Text("${currentEmergencyState.sentCount} kişiye acil durum mesajı gönderildi.\n${currentEmergencyState.message}")
+                },
+                confirmButton = {
+                    Button(onClick = { emergencyViewModel.resetState() }) {
+                        Text("Tamam")
+                    }
+                }
+            )
+        }
+        is EmergencyMessageResult.Error -> {
+            // Error dialog
+            AlertDialog(
+                onDismissRequest = { emergencyViewModel.resetState() },
+                title = { Text("Hata") },
+                text = { Text(currentEmergencyState.message) },
+                confirmButton = {
+                    Button(onClick = { emergencyViewModel.resetState() }) {
+                        Text("Tamam")
+                    }
+                }
+            )
+        }
+        else -> { /* Idle state - dialog gösterme */ }
     }
 }
 

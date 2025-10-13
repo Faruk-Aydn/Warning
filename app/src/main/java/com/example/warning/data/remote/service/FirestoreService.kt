@@ -1,13 +1,10 @@
-package com.example.warning.data.remote.Service
+package com.example.warning.data.remote.service
 
 import android.util.Log
-import android.util.Log.e
-import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.data.remote.Dto.ContactDto
 import com.example.warning.data.remote.Dto.LinkedDto
 import com.example.warning.data.remote.Dto.UserDto
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.jvm.java
@@ -23,11 +20,12 @@ class FirestoreService(
     suspend fun addContact(contactDto: ContactDto): Boolean {
         return try {
             // 1) Phone check: hedef kullanici kayitli mi?
-            val targetProfile = firestore.collection("profiles")
-                .document(contactDto.phone)
+            val targetProfileQuery = firestore.collection("profiles")
+                .whereEqualTo("phoneNumber", contactDto.phone)
+                .limit(1)
                 .get()
                 .await()
-            if (!targetProfile.exists()) {
+            if (targetProfileQuery.isEmpty) {
                 Log.w("ServiceAddContact", "Hedef kullanıcı bulunamadı: ${contactDto.phone}")
                 return false
             }
@@ -143,6 +141,25 @@ class FirestoreService(
                     .addOnFailureListener { onError(it) }
             }
             .addOnFailureListener { onError(it) }
+    }
+    /**
+     * Update the FCM token for a user identified by their Firestore document ID.
+     */
+    suspend fun updateFCMToken(userId: String, token: String): Boolean {
+        return try {
+            firestore.collection("profiles")
+                .document(userId)
+                .update("fcmToken", token) // Firestore'da 'fcmToken' alanını günceller
+                .await()
+            Log.i("ServiceUpdateToken", "FCM token başarıyla güncellendi: $userId")
+            true
+        } catch (e: CancellationException) {
+            Log.w("Service", "Coroutine iptal edildi")
+            throw e
+        } catch (e: Exception) {
+            Log.e("ServiceUpdateToken", "FCM token güncelleme hatası: ${e.message}", e)
+            false
+        }
     }
     suspend fun isUserRegistered(phoneNumber: String): Boolean {
         return try {

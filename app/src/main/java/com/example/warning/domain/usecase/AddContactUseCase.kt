@@ -1,5 +1,6 @@
 package com.example.warning.domain.usecase
 
+import android.util.Log
 import com.example.warning.data.mapper.toEntity
 import com.example.warning.data.remote.Dto.ContactDto
 import com.example.warning.domain.repository.FirebaseRepository
@@ -30,14 +31,19 @@ class AddContactUseCase @Inject constructor(
         }
 
         val owner = profileRepository.getCurrentUserOnce()
+        Log.d("AddContactUseCase", "getCurrentUserOnce() result: $owner")
         if (owner == null) {
+            Log.e("AddContactUseCase", "Mevcut kullanıcı bulunamadı - getCurrentUserOnce() null döndü")
             emit(AddContactResult.Error("Mevcut kullanıcı bulunamadı"))
             return@flow
         }
+        
+        Log.d("AddContactUseCase", "Owner found: phoneNumber=${owner.phoneNumber}, id=${owner.id}")
 
-        val addingUserId = owner.id
+        // addingId olarak telefon numarasını kullan (ownerPhone ile aynı olmalı)
+        val addingUserId = owner.phoneNumber
         if (addingUserId.isNullOrEmpty()) {
-            emit(AddContactResult.Error("Kullanıcı kimliği bulunamadı"))
+            emit(AddContactResult.Error("Kullanıcı telefon numarası bulunamadı"))
             return@flow
         }
 
@@ -52,6 +58,7 @@ class AddContactUseCase @Inject constructor(
             ownerCountry = owner.country,
             ownerName = owner.name,
             addingId = addingUserId,
+            addedId = null,
             isActiveUser = true,
             specialMessage = null,
             isLocationSend = false,

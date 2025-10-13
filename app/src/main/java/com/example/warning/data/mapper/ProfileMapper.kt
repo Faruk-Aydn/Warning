@@ -29,7 +29,7 @@ fun ProfileEntity.toDomain(): Profile{
         name = name,
         emergencyMessage = emergencyMessage,
         locationPermission = locationPermission,
-        id = id
+        id = id // Bu Firestore document ID'si
     )
 }
 
@@ -105,7 +105,8 @@ fun Profile.toDto(): UserDto{ //sadece kayıt
         name = name,
         emergencyMessage = emergencyMessage,
         isLocationPermission = locationPermission,
-        id = id.toString()
+        id = id.toString(),
+        fcmToken = fcmToken // YENİ: Domain'den DTO'ya
     )
 }
 
@@ -130,7 +131,20 @@ fun UserDto.toEntity(): ProfileEntity{
         name = name,
         emergencyMessage = emergencyMessage,
         locationPermission = isLocationPermission,
-        profilePhoto = profilePhoto.toString(),
-        id = id.toString()
+        profilePhoto = profilePhoto ?: "",
+        id = id ?: phoneNumber, // Eğer id null ise phoneNumber'ı kullan
+        fcmToken = fcmToken
+    )
+}
+fun UserDto.toDomain(): Profile {
+    return Profile(
+        id = id,
+        phoneNumber = phoneNumber ?: "",
+        country = country ?: "",
+        name = name ?: "",
+        profilePhoto = profilePhoto,
+        emergencyMessage = emergencyMessage,
+        locationPermission = isLocationPermission ?: false,
+        fcmToken = fcmToken // YENİ: DTO'dan Domain'e
     )
 }
