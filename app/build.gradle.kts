@@ -59,7 +59,8 @@ dependencies {
     // OkHttp for HTTP requests
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     // Import the Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+//    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+
 
     // When using the BoM, you don't specify versions in Firebase library dependencies
 
@@ -74,11 +75,20 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+    // TODO: implementation(libs.firebase.functions.ktx)
     kapt(libs.room.compiler)
 
-    //firebase auth
+
+    // Firebase ürünleri (BOM varsa versiyon yazma!)
+    implementation("com.google.firebase:firebase-functions-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-messaging:20.1.6")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+
+    //firebase auth
+//    implementation("com.google.firebase:firebase-auth-ktx")
+//    implementation("com.google.firebase:firebase-messaging:20.1.6")
 
 
     // hilt

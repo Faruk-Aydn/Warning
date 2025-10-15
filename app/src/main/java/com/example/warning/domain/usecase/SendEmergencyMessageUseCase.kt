@@ -1,43 +1,53 @@
 package com.example.warning.domain.usecase
 
+import android.util.Log
+import com.example.warning.data.mapper.toDomain
 import com.example.warning.domain.repository.EmergencyMessageRepository
+import com.example.warning.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.io.IOException
 import javax.inject.Inject
 
-sealed class EmergencyMessageResult {
-    object Idle : EmergencyMessageResult()
-    object Loading : EmergencyMessageResult()
-    data class Success(
-        val sentCount: Int,
-        val failedCount: Int,
-        val message: String
-    ) : EmergencyMessageResult()
-    data class Error(val message: String) : EmergencyMessageResult()
+// UI State Modeli
+sealed class EmergencyState {
+    object Idle : EmergencyState()
+    object Loading : EmergencyState()
+    data class Success(val successCount: Int, val failureCount: Int) : EmergencyState()
+    data class Error(val message: String) : EmergencyState()
 }
 
 class SendEmergencyMessageUseCase @Inject constructor(
-    private val emergencyMessageRepository: EmergencyMessageRepository
+    private val repository: EmergencyMessageRepository
 ) {
-    suspend fun execute(): Flow<EmergencyMessageResult> = flow {
-        emit(EmergencyMessageResult.Loading)
+    /**
+     * Acil durum mesajı gönderme işlemini yürütür ve UI'ya durum (Loading/Success/Error) akışını sağlar.
+     *
+     * @return EmergencyState akışı (Flow)
+     */
+    operator fun invoke(): Flow<EmergencyState> = flow {
+        // 1. Loading durumunu emit et
+        emit(EmergencyState.Loading)
 
         try {
-            val result = emergencyMessageRepository.sendEmergencyMessage()
-            
-            if (result.isSuccess) {
-                val successResult = result.getOrNull()
-                emit(EmergencyMessageResult.Success(
-                    sentCount = successResult?.sentCount ?: 0,
-                    failedCount = successResult?.failedCount ?: 0,
-                    message = successResult?.message ?: "Mesajlar gönderildi"
-                ))
-            } else {
-                val errorMessage = result.exceptionOrNull()?.message ?: "Bilinmeyen hata"
-                emit(EmergencyMessageResult.Error(errorMessage))
-            }
+            // 2. Repository çağrısı
+            val (successCount, failureCount) = repository.sendEmergencyMessageToContacts()
+
+            // 3. Başarı durumunu emit et
+            emit(EmergencyState.Success(successCount, failureCount))
+
+        } catch (e: IllegalStateException) {
+            // Profil bulunamadı gibi iş mantığı hataları
+            Log.e("UseCase", "İş Mantığı Hatası: ${e.message}", e)
+            emit(EmergencyState.Error("İşlem başlatılamadı: ${e.message}"))
+        } catch (e: IOException) {
+            // Ağ veya I/O ile ilgili hatalar
+            Log.e("UseCase", "Ağ/I/O Hatası: ${e.message}", e)
+            emit(EmergencyState.Error("Ağ bağlantı hatası. Lütfen kontrol edin."))
         } catch (e: Exception) {
-            emit(EmergencyMessageResult.Error(e.message ?: "Bilinmeyen hata"))
+            // Diğer tüm beklenmedik hatalar
+            Log.e("UseCase", "Beklenmedik Hata: ${e.message}", e)
+            emit(EmergencyState.Error("Acil durum mesajı gönderme sırasında beklenmedik bir hata oluştu."))
         }
     }
 }

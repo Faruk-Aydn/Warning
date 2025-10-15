@@ -10,10 +10,12 @@ import com.example.warning.data.repository.ProfileRepositoryImpl
 import com.example.warning.data.repository.EmergencyMessageRepositoryImpl
 import com.example.warning.domain.repository.FirebaseRepository
 import com.example.warning.domain.repository.ProfileRepository
-import com.example.warning.domain.repository.EmergencyMessageRepository
 import com.example.warning.domain.usecase.ProfileUseCases
 import com.example.warning.domain.usecase.SendEmergencyMessageUseCase
 import com.example.warning.data.remote.service.EmergencyMessageService
+import com.example.warning.data.remote.service.FirestoreLogService
+import com.example.warning.domain.repository.EmergencyMessageRepository
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -71,16 +73,23 @@ object AppModule {
     @Provides
     @Singleton
     fun provideEmergencyMessageService(): EmergencyMessageService {
-        return EmergencyMessageService()
+        return EmergencyMessageService(
+            functions = FirebaseFunctions.getInstance()
+        )
     }
 
     @Provides
     @Singleton
     fun provideEmergencyMessageRepository(
         emergencyMessageService: EmergencyMessageService,
-        profileRepository: ProfileRepository
+        profileRepository: ProfileRepository,
+        logService: FirestoreLogService
     ): EmergencyMessageRepository {
-        return EmergencyMessageRepositoryImpl(emergencyMessageService, profileRepository)
+        return EmergencyMessageRepositoryImpl(
+            emergencyMessageService,
+            profileRepository,
+            logService
+        )
     }
 
     @Provides

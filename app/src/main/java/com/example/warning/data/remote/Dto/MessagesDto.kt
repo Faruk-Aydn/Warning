@@ -1,18 +1,15 @@
 package com.example.warning.data.remote.Dto
 
-import com.google.firebase.firestore.PropertyName
+import java.util.Date
+import com.google.firebase.firestore.ServerTimestamp
 
-data class MessagesDto(
-    val id: Int,
-    val senderId: Int,
-    val receiverId: Int,
-    val date: Long?,
+data class MessageDto(
+    val messageId: String,
+    val userId: String,
+    val contactId: String,
     val message: String,
-    val locationlat: Long?,
-    val locationlg: Long?,
-    val failureReason: String?,
-    @get:PropertyName("isSeen") @set:PropertyName("isSeen")
-    var isSeen: Boolean =false,
-    @get:PropertyName("isForwarded") @set:PropertyName("isForwarded")
-    var isForwarded: Boolean = false
+    val success: Boolean,
+    val error: String?,             // Hata mesajı (başarısızsa)
+    @get:ServerTimestamp
+    val timestamp: Date? =null // Kayıt zamanı
 )

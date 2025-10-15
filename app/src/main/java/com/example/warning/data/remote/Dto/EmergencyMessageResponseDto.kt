@@ -9,8 +9,7 @@ data class EmergencyMessageResponseDto(
 )
 
 data class MessageDetailDto(
-    val contactPhone: String,
-    val contactName: String,
+    val contactid: String,
     val success: Boolean,
     val messageId: String? = null,
     val usedSpecialMessage: Boolean = false,

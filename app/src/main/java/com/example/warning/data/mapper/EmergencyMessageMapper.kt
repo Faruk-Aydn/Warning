@@ -17,11 +17,11 @@ fun EmergencyMessageResponseDto.toDomain(): EmergencyMessageResponse {
 
 fun MessageDetailDto.toDomain(): MessageDetail {
     return MessageDetail(
-        contactPhone = contactPhone,
-        contactName = contactName,
         success = success,
         messageId = messageId,
         usedSpecialMessage = usedSpecialMessage,
-        error = error
+        error = error,
+        contactPhone = TODO(),
+        contactName = TODO()
     )
 }

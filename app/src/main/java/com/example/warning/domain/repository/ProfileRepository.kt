@@ -1,5 +1,6 @@
 package com.example.warning.domain.repository
 
+import com.example.warning.data.local.entity.ContactEntity
 import com.example.warning.data.local.entity.ProfileEntity
 import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Linked
@@ -15,4 +16,5 @@ interface ProfileRepository{
     fun insertProfile(profileEntity: ProfileEntity)
     suspend fun insertContact(contactEntity: com.example.warning.data.local.entity.ContactEntity)
     suspend fun getCurrentUserOnce(): Profile?
+    suspend fun getContactOnce(): List<Contact>
 }

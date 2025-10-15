@@ -50,5 +50,9 @@ class ProfileRepositoryImpl @Inject constructor(
         Log.d("ProfileRepositoryImpl", "getCurrentUserOnce() domain: $domain")
         return domain
     }
+
+    override suspend fun getContactOnce(): List<Contact> {
+        return contactDao.getAllContactsOnce().map { it.toDomain() }
+    }
 }
 

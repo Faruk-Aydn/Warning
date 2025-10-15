@@ -51,10 +51,10 @@ import com.example.warning.presentation.ui.theme.AppColorScheme
 import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 import com.example.warning.presentation.viewModel.EmergencyMessageViewModel
-import com.example.warning.domain.usecase.EmergencyMessageResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import coil.compose.rememberAsyncImagePainter
+import com.example.warning.domain.usecase.EmergencyState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -244,7 +244,7 @@ fun MainScreen(
     // Emergency message state'e göre dialog göster
     val currentEmergencyState = emergencyState
     when (currentEmergencyState) {
-        is EmergencyMessageResult.Loading -> {
+        is EmergencyState.Loading -> {
             // Loading dialog
             AlertDialog(
                 onDismissRequest = { },
@@ -260,13 +260,15 @@ fun MainScreen(
                 confirmButton = { }
             )
         }
-        is EmergencyMessageResult.Success -> {
+        is EmergencyState.Success -> {
             // Success dialog
             AlertDialog(
                 onDismissRequest = { emergencyViewModel.resetState() },
                 title = { Text("Başarılı") },
                 text = { 
-                    Text("${currentEmergencyState.sentCount} kişiye acil durum mesajı gönderildi.\n${currentEmergencyState.message}")
+                    Text("${currentEmergencyState.successCount} kişiye acil durum mesajı gönderildi.\n" +
+                            "${currentEmergencyState.failureCount} kişiye gönderilemedi"
+                    )
                 },
                 confirmButton = {
                     Button(onClick = { emergencyViewModel.resetState() }) {
@@ -275,7 +277,7 @@ fun MainScreen(
                 }
             )
         }
-        is EmergencyMessageResult.Error -> {
+        is EmergencyState.Error -> {
             // Error dialog
             AlertDialog(
                 onDismissRequest = { emergencyViewModel.resetState() },
