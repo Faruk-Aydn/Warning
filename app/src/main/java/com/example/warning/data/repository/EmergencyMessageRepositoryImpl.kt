@@ -1,22 +1,15 @@
 package com.example.warning.data.repository
 
 import android.util.Log
-import com.example.warning.data.remote.service.EmergencyMessageService
-import com.example.warning.data.remote.Dto.EmergencyMessageRequestDto
-import com.example.warning.data.mapper.toDomain
-import com.example.warning.data.remote.Dto.ContactDetailDto
 import com.example.warning.data.remote.Dto.MessageDto
-import com.example.warning.data.remote.service.FirestoreLogService
-import com.example.warning.domain.model.EmergencyMessageResponse
 import com.example.warning.domain.repository.EmergencyMessageRepository
 import com.example.warning.domain.repository.ProfileRepository
+import com.example.warning.domain.usecase.EmergencyState
 import java.util.UUID
 import javax.inject.Inject
 
 class EmergencyMessageRepositoryImpl @Inject constructor(
-    private val messageService: EmergencyMessageService,
     private val profileRepository: ProfileRepository,
-    private val logService: FirestoreLogService
 ) : EmergencyMessageRepository {
 
     private val TAG = "EmergencyRepository"
@@ -30,6 +23,7 @@ class EmergencyMessageRepositoryImpl @Inject constructor(
         // 1. Gönderici ve Contact listesini al
         val currentUser = profileRepository.getCurrentUserOnce()
             ?: throw IllegalStateException("Gönderici profili bulunamadı.")
+        Log.i("profile", "${currentUser.fcmToken} and id: ${currentUser.id}")
 
         val contacts = profileRepository.getContactOnce()
 
@@ -40,8 +34,8 @@ class EmergencyMessageRepositoryImpl @Inject constructor(
             Log.w(TAG, "Gönderilecek onaylanmış/üst sırada contact bulunamadı.")
             return Pair(0, 0)
         }
+        val timeInMilliSeconds: Long = 1678886400000L
 
-        val messageId = UUID.randomUUID().toString()
         val logList = mutableListOf<MessageDto>()
         var successCount = 0
         var failureCount = 0
@@ -54,30 +48,37 @@ class EmergencyMessageRepositoryImpl @Inject constructor(
                 ?: "yardım" // Varsayılan mesaj
 
             val log = try {
+                Log.e("çağrı öncesi 1","currentUser: ${currentUser.id} contact addedId: ${contact.addedId} contact id: ${contact.id} ")
+                if (currentUser.id ==null || contact.addedId == null)
+                    Log.e("repositoryImpl 2","currentUser: ${currentUser.id} contact addedId: ${contact.addedId} contact id: ${contact.id}")
                 // FCM Servis Çağrısı
                 val result = messageService.sendEmergencyMessage(
                     // TODO: bura dikkat
-                    senderId = currentUser.id.toString(),
-                    receiverId = contact.id, // Veya fcmToken'ı kullanabilirsiniz, servis tanımınıza bağlı
-                    message = messageToSend
+                    senderId = currentUser.id!!,
+                    receiverId = contact.addedId!!, // Veya fcmToken'ı kullanabilirsiniz, servis tanımınıza bağlı
+                    message = messageToSend,
+                    title ="title"
                 )
 
                 if (result.isSuccess) {
                     successCount++
+                    Log.w("successCount", "succes ${successCount}")
+
                     MessageDto(
-                        messageId = messageId,
-                        userId = currentUser.id.toString(),
+                        messageId = null,
+                        userId = currentUser.id,
                         contactId = contact.id,
                         message = messageToSend,
                         success = true,
                         error = null,
-                        timestamp = TODO(),
+                        timestamp = java.util.Date(timeInMilliSeconds),
                     )
                 } else {
                     failureCount++
                     val error = result.exceptionOrNull()?.message ?: "Bilinmeyen FCM hatası"
+                    Log.w("failureCount", "${error}")
                     MessageDto(
-                        messageId = messageId,
+                        messageId = null,
                         userId = currentUser.id.toString(),
                         contactId = contact.id,
                         message = "mesaj gönderilemedi",
@@ -90,7 +91,7 @@ class EmergencyMessageRepositoryImpl @Inject constructor(
                 Log.e(TAG, "FCM gönderme hatası: ContactID=${contact.id}, Hata: ${e.message}", e)
                 failureCount++
                 MessageDto(
-                    messageId = messageId,
+                    messageId = null,
                     userId = currentUser.id.toString(),
                     contactId = contact.id,
                     message = "Hata",
@@ -103,6 +104,8 @@ class EmergencyMessageRepositoryImpl @Inject constructor(
 
         // 4. Logları Firestore'a kaydetmek için logService'i çağır
         try {
+            Log.d(TAG, "Log listesi boyutu: ${filteredContacts.size}. İlk log contactName: ${filteredContacts.firstOrNull()?.name}")
+
             logService.saveMessageLogs(logList)
         } catch (e: Exception) {
             // Log kaydetme başarısız olsa bile, mesaj gönderme süreci UI'ya rapor edilmelidir.

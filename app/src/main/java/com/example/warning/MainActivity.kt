@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.warning.domain.usecase.AddContactResult
 import com.example.warning.presentation.ui.screens.AddContactScreen
 import com.example.warning.presentation.ui.screens.ContactLinkedScreen
 import com.example.warning.presentation.ui.screens.MainScreen
@@ -25,6 +24,7 @@ import com.example.warning.presentation.ui.screens.register.SignUpScreen
 import com.example.warning.presentation.ui.theme.WarningTheme
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.jar.Manifest
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

@@ -53,9 +53,11 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.7")
 
-
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    // JSON converter (Gson)
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.google.code.gson:gson:2.10.1")// En güncel stabil sürüm
-    
     // OkHttp for HTTP requests
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     // Import the Firebase BoM
@@ -75,13 +77,13 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+    implementation(libs.firebase.messaging)
     // TODO: implementation(libs.firebase.functions.ktx)
     kapt(libs.room.compiler)
 
 
     // Firebase ürünleri (BOM varsa versiyon yazma!)
     implementation("com.google.firebase:firebase-functions-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")

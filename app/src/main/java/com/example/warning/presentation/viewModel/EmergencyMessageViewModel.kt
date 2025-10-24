@@ -1,5 +1,6 @@
 package com.example.warning.presentation.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.warning.domain.usecase.EmergencyState
@@ -19,11 +20,26 @@ class EmergencyMessageViewModel @Inject constructor(
     private val _emergencyMessageState = MutableStateFlow<EmergencyState>(EmergencyState.Idle)
     val emergencyMessageState: StateFlow<EmergencyState> = _emergencyMessageState.asStateFlow()
 
-    fun sendEmergencyMessage() {
+    fun sendEmergencyMessage(profileId: String) {
+        _emergencyMessageState.value = EmergencyState.Loading
+        Log.d("ProfileViewModel", "ID gönderme başlatıldı: $profileId")
+
         viewModelScope.launch {
-            sendEmergencyMessageUseCase.invoke().collect { result ->
-                _emergencyMessageState.value = result
+            val result = sendEmergencyMessageUseCase.execute(profileId)
+
+            _emergencyMessageState.value = if (result.isSuccess) {
+                val response = result.getOrNull()!!
+                EmergencyState.Success(
+                    successCount = response.successCount,
+                    failureCount = response.failureCount
+                )
+            } else {
+                EmergencyState.Error(
+                    message = result.exceptionOrNull()?.message ?: "Bilinmeyen hata"
+                )
             }
+
+            Log.d("ProfileViewModel", "Güncel state: ${_emergencyMessageState.value}")
         }
     }
 

@@ -19,6 +19,7 @@ compose = "1.8.2"
 material3 = "1.2.1"
 google-service ="4.4.2"
 firebaseFunctionsKtx = "22.0.1"
+firebaseMessaging = "25.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +47,7 @@ androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-
 ui = { module = "androidx.compose.ui:ui" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 
 # Hilt
 # hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }

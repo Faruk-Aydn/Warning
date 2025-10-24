@@ -11,6 +11,7 @@ import com.example.warning.data.remote.Dto.LinkedDto
 import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Linked
 import com.example.warning.domain.model.Profile
+import com.google.android.play.core.integrity.ad
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import kotlin.contracts.Returns
@@ -45,7 +46,9 @@ fun ContactEntity.toDomain(): Contact {
         country = country,
         ownerPhoneNumber = ownerPhone,
         profilePhoto = profilePhoto,
-        isConfirmed = isConfirmed
+        isConfirmed = isConfirmed,
+        addedId = addedId,
+        addingId =addingId
     )
 }
 
@@ -92,7 +95,9 @@ fun ContactDto.toEntity(): ContactEntity{
         date = date,
         isConfirmed = isConfirmed,
         id = id,
-        ownerCountry = ownerCountry
+        ownerCountry = ownerCountry,
+        addedId = addedId,
+        addingId =addingId,
     )
 
 }

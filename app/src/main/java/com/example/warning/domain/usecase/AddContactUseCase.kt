@@ -41,7 +41,7 @@ class AddContactUseCase @Inject constructor(
         Log.d("AddContactUseCase", "Owner found: phoneNumber=${owner.phoneNumber}, id=${owner.id}")
 
         // addingId olarak telefon numarasını kullan (ownerPhone ile aynı olmalı)
-        val addingUserId = owner.phoneNumber
+        val addingUserId = owner.id
         if (addingUserId.isNullOrEmpty()) {
             emit(AddContactResult.Error("Kullanıcı telefon numarası bulunamadı"))
             return@flow

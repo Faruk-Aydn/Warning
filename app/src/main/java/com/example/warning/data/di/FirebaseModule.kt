@@ -7,7 +7,6 @@ import com.example.warning.data.remote.service.FirestoreService
 import com.example.warning.data.remote.listener.ContactRealtimeSyncManager
 import com.example.warning.data.remote.listener.LinkedRealtimeSyncManager
 import com.example.warning.data.remote.listener.UserRealtimeSyncManager
-import com.example.warning.data.remote.service.FirestoreLogService
 import com.example.warning.data.repository.FirebaseRepositoryImpl
 import com.example.warning.domain.repository.FirebaseRepository
 import com.google.firebase.auth.FirebaseAuth

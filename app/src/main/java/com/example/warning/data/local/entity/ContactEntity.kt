@@ -20,6 +20,8 @@ data class ContactEntity(
     var tag: String? = null,                                    //  *
     var isTop: Boolean= false ,
     val date: Long,
-    var isConfirmed: Boolean
+    var isConfirmed: Boolean,
+    var addedId: String?,
+    var addingId: String?
 //*
 )

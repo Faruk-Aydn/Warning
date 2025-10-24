@@ -12,5 +12,6 @@ data class Contact(
     var tag: String? = null,
     var isTop: Boolean= false,
     var isConfirmed: Boolean,
-    var fcmToken: String? = null, // FCM Token
+    var addedId: String?,
+    var addingId: String?
 )

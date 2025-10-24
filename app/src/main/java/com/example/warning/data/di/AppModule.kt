@@ -12,8 +12,6 @@ import com.example.warning.domain.repository.FirebaseRepository
 import com.example.warning.domain.repository.ProfileRepository
 import com.example.warning.domain.usecase.ProfileUseCases
 import com.example.warning.domain.usecase.SendEmergencyMessageUseCase
-import com.example.warning.data.remote.service.EmergencyMessageService
-import com.example.warning.data.remote.service.FirestoreLogService
 import com.example.warning.domain.repository.EmergencyMessageRepository
 import com.google.firebase.functions.FirebaseFunctions
 import dagger.Module
