@@ -24,7 +24,6 @@ import com.example.warning.presentation.ui.screens.register.SignUpScreen
 import com.example.warning.presentation.ui.theme.WarningTheme
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.jar.Manifest
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

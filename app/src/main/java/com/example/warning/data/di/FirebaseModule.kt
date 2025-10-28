@@ -24,11 +24,6 @@ object FirebaseModule {
 
     @Provides
     @Singleton
-    fun provideFirestoreLogService(firestore: FirebaseFirestore): FirestoreLogService {
-        return FirestoreLogService(firestore)
-    }
-    @Provides
-    @Singleton
     fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }

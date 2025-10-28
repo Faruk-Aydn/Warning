@@ -6,6 +6,7 @@ import com.example.warning.data.remote.service.SendProfileIdRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import javax.inject.Inject
 
 data class EmergencyResponse(
     val successCount: Int,
@@ -13,7 +14,7 @@ data class EmergencyResponse(
     val errors: List<String> = emptyList()
 )
 // Repository Katmanı: HTTP çağrısını yapar ve sonucu döner. Loglama burada yapılır.
-class FcmRepository(
+class FcmRepository @Inject constructor(
     private val api: BackendApi
 ) {
 
