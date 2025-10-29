@@ -3,6 +3,11 @@ package com.example.warning.presentation.ui.screens
 
 import android.R.attr.contentDescription
 import android.R.attr.phoneNumber
+import android.content.Intent
+import android.location.LocationManager
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,7 +48,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
@@ -67,20 +74,61 @@ fun MainScreen(
     // Drawer kontrolü için
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
-    // Konum izin & durum değerleri
-    var hasLocationPermission by remember { mutableStateOf(false) }
-    var isLocationEnabled by remember { mutableStateOf(false) }
+    // Konum izin kontrolü
+    fun checkLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    }
+
+    // Konum servisi kontrolü
+    fun isLocationServiceEnabled(): Boolean {
+        val locationManager = context.getSystemService(LocationManager::class.java)
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    // İlk izin kontrolü
+    var hasLocationPermission by remember { 
+        mutableStateOf(checkLocationPermission()) 
+    }
+    
+    // Konum servisi durumu
+    var isLocationEnabled by remember { 
+        mutableStateOf(isLocationServiceEnabled()) 
+    }
+    
     var isLocationTransition by remember { mutableStateOf(false) }
 
-
-    var triggerToggle by remember { mutableStateOf(false) }
-
-    LaunchedEffect(triggerToggle) {
+    // İzin isteme launcher
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineLocationGranted = permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseLocationGranted = permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        hasLocationPermission = fineLocationGranted || coarseLocationGranted
+        
+        // İzin verildiyse konum servisi durumunu kontrol et
         if (hasLocationPermission) {
-            delay(500) // bekleme
-            isLocationEnabled = !isLocationEnabled
-            isLocationTransition = false
+            isLocationEnabled = isLocationServiceEnabled()
+        }
+    }
+
+    // Konum servisi durumunu periyodik kontrol et (compose lifecycle içinde)
+    LaunchedEffect(hasLocationPermission) {
+        if (hasLocationPermission) {
+            // İzin varsa, konum servisi durumunu kontrol et
+            while (true) {
+                isLocationEnabled = isLocationServiceEnabled()
+                delay(1000) // Her saniye kontrol et
+            }
         }
     }
 
@@ -202,7 +250,7 @@ fun MainScreen(
                             modifier = Modifier.size(40.dp)
                         )
                         Text("$contactCount bağlantı")
-                    }
+                      }
 
                     // Sağ: Konum
                     Column(
@@ -212,11 +260,22 @@ fun MainScreen(
                             .clickable {
                                 // Tıklama ile durum güncelleniyor
                                 if (!hasLocationPermission) {
-                                    hasLocationPermission = true
+                                    // İzin yoksa izin iste
+                                    locationPermissionLauncher.launch(
+                                        arrayOf(
+                                            android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                            android.Manifest.permission.ACCESS_COARSE_LOCATION
+                                        )
+                                    )
                                 } else {
-                                    // Kısa animasyon bekleme
+                                    // İzin varsa her tıklamada konum ayarlarını aç
+                                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                    context.startActivity(intent)
                                     isLocationTransition = true
-                                    triggerToggle = !triggerToggle // sadece state değiştir
+                                    scope.launch {
+                                        delay(400)
+                                        isLocationTransition = false
+                                    }
                                 }
                             }
                     ) {

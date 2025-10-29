@@ -2,6 +2,8 @@ package com.example.warning.presentation.ui.screens.register
 
 import android.app.Activity
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.warning.domain.model.Profile
@@ -64,6 +67,18 @@ fun SignUpScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
+    // Konum izin kontrolü
+    fun checkLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    }
+
     // --- UI State ---
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
@@ -71,8 +86,25 @@ fun SignUpScreen(
     var countryQuery by remember { mutableStateOf("") }
     val countryList = listOf("+1", "+90")
 
-    var locationPermission by remember { mutableStateOf(false) }
+    var locationPermission by remember { 
+        mutableStateOf(checkLocationPermission()) 
+    }
     var contactPermission by remember { mutableStateOf(false) }
+
+    // Konum izni isteme launcher
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineLocationGranted = permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseLocationGranted = permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        locationPermission = fineLocationGranted || coarseLocationGranted
+        
+        if (!locationPermission) {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar("Konum izni verilmedi")
+            }
+        }
+    }
 
     var expanded by remember { mutableStateOf(false) }
     var verificationStep by remember { mutableStateOf(VerificationStep.EnterPhone) }
@@ -162,7 +194,10 @@ fun SignUpScreen(
                     locationPermission = locationPermission,
                     onLocationPermissionChange = { locationPermission = it },
                     contactPermission = contactPermission,
-                    onContactPermissionChange = { contactPermission = it }
+                    onContactPermissionChange = { contactPermission = it },
+                    onRequestLocationPermissions = { permissions ->
+                        locationPermissionLauncher.launch(permissions)
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -313,7 +348,8 @@ fun UserFormSection(
     locationPermission: Boolean,
     onLocationPermissionChange: (Boolean) -> Unit,
     contactPermission: Boolean,
-    onContactPermissionChange: (Boolean) -> Unit
+    onContactPermissionChange: (Boolean) -> Unit,
+    onRequestLocationPermissions: ((Array<String>) -> Unit)? = null
 ) {
     // İsim
     OutlinedTextField(
@@ -384,18 +420,49 @@ fun UserFormSection(
     Spacer(modifier = Modifier.height(12.dp))
 
     // İzinler
-    PermissionSwitchRow("Konum izni", locationPermission, onLocationPermissionChange)
+    PermissionSwitchRow(
+        "Konum izni", 
+        locationPermission, 
+        onLocationPermissionChange,
+        onRequestLocationPermissions = onRequestLocationPermissions
+    )
     PermissionSwitchRow("Rehber erişim izni", contactPermission, onContactPermissionChange)
 }
 
 @Composable
-fun PermissionSwitchRow(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+fun PermissionSwitchRow(
+    label: String, 
+    checked: Boolean, 
+    onCheckedChange: (Boolean) -> Unit,
+    onRequestLocationPermissions: ((Array<String>) -> Unit)? = null
+) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(modifier = Modifier.weight(1f), text = label)
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
+        Switch(checked = checked, onCheckedChange = { newValue ->
+            if (label == "Konum izni" && newValue && onRequestLocationPermissions != null) {
+                // Konum izni switch'i açılıyorsa gerçek izin iste
+                // State güncelleme launcher callback'inde yapılacak
+                onRequestLocationPermissions(
+                    arrayOf(
+                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
+            } else if (label == "Konum izni" && !newValue) {
+                // Switch kapatılıyorsa state'i güncelle
+                onCheckedChange(false)
+            } else if (label != "Konum izni") {
+                // Konum izni değilse direkt state'i güncelle
+                onCheckedChange(newValue)
+            }
+            // Konum izni açılıyorsa ve launcher null ise normal state güncellemesi
+            if (label == "Konum izni" && newValue && onRequestLocationPermissions == null) {
+                onCheckedChange(newValue)
+            }
+        })
         if (checked) Icon(Icons.Default.Check, contentDescription = "$label onaylandı", modifier = Modifier.padding(start = 8.dp))
     }
 }
