@@ -1,63 +1,40 @@
 package com.example.warning.presentation.viewModel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.warning.domain.model.Profile
 import com.example.warning.domain.usecase.EmergencyState
-import com.example.warning.domain.usecase.ProfileUseCases
 import com.example.warning.domain.usecase.SendEmergencyMessageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class EmergencyMessageViewModel @Inject constructor(
-    private val profileUseCases: ProfileUseCases,
     private val sendEmergencyMessageUseCase: SendEmergencyMessageUseCase
 ) : ViewModel() {
 
     private val _emergencyMessageState = MutableStateFlow<EmergencyState>(EmergencyState.Idle)
-    val emergencyMessageState: StateFlow<EmergencyState> = _emergencyMessageState.asStateFlow()
-
-    private val _profile = MutableStateFlow<Profile?>(null)
-    val profile: StateFlow<Profile?> = _profile
-
-    init {
-        // ✅ Profil verisini ROOM’dan canlı olarak al
-        viewModelScope.launch {
-            profileUseCases.getProfile()
-                .collect { profile ->
-                    _profile.value = profile
-                }
-        }
-    }
+    val emergencyMessageState: StateFlow<EmergencyState> = _emergencyMessageState
 
     fun sendEmergencyMessage() {
-        _emergencyMessageState.value = EmergencyState.Loading
-        Log.d("ProfileViewModel", "ID gönderme başlatıldı: ${profile.value?.id }")
-        val profileId = profile.value?.id ?: return
+        // UI'dan gelen tetikleme: Butona basınca burası çağrılıyor.
         viewModelScope.launch {
-            val result = sendEmergencyMessageUseCase.execute(
-                profileId
-            )
+            try {
+                _emergencyMessageState.value = EmergencyState.Loading
 
-            _emergencyMessageState.value = if (result.isSuccess) {
-                val response = result.getOrNull()!!
-                EmergencyState.Success(
-                    successCount = response.successCount,
-                    failureCount = response.failureCount
+                val result = sendEmergencyMessageUseCase()
+
+                _emergencyMessageState.value = EmergencyState.Success(
+                    successCount = result.successCount,
+                    failureCount = result.failureCount
                 )
-            } else {
-                EmergencyState.Error(
-                    message = result.exceptionOrNull()?.message ?: "Bilinmeyen hata"
-                )
+            } catch (e: Exception) {
+                // Şimdilik basit hata yakalama
+                _emergencyMessageState.value =
+                    EmergencyState.Error(e.message ?: "Bilinmeyen bir hata oluştu")
             }
-
-            Log.d("ProfileViewModel", "Güncel state: ${_emergencyMessageState.value}")
         }
     }
 
