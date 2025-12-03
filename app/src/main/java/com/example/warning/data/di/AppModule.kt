@@ -6,9 +6,12 @@ import com.example.warning.data.local.AppDatabase
 import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.ProfileDao
+
 import com.example.warning.data.location.AndroidLocationProvider
 import com.example.warning.data.repository.LocationRepositoryImpl
+
 import com.example.warning.data.repository.ProfileRepositoryImpl
+import com.example.warning.domain.repository.EmergencyRepository
 import com.example.warning.domain.repository.FirebaseRepository
 import com.example.warning.domain.repository.LocationRepository
 import com.example.warning.domain.repository.ProfileRepository
@@ -23,6 +26,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 
@@ -51,6 +56,7 @@ object AppModule {
 
     @Provides
     fun provideLinkedDao(db: AppDatabase): LinkedDao = db.linkedDao()
+
 
     @Provides
     @Singleton
@@ -90,4 +96,30 @@ object AppModule {
     fun provideLocationRepository(
         androidLocationProvider: AndroidLocationProvider
     ): LocationRepository = LocationRepositoryImpl(androidLocationProvider)
+
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            // TODO: Backend hazır olduğunda baseUrl'i kendi API adresinle değiştir
+            .baseUrl("http://10.0.2.2:5001/warning-5d457/us-central1/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideEmergencyRepository(
+        emergencyApi: EmergencyApi
+    ): EmergencyRepository {
+        return EmergencyRepositoryImpl(emergencyApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEmergencyApi(retrofit: Retrofit): EmergencyApi {
+        return retrofit.create(EmergencyApi::class.java)
+    }
+
 }
