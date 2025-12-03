@@ -227,6 +227,10 @@ fun MainScreen(
                 // Ortadaki büyük yuvarlak buton + animasyonlu çemberler
                 AnimatedCircleButton(
                     onClick = { 
+                        // Emergency butonuna basıldığında, izin varsa tek seferlik konum al
+                        if (hasLocationPermission) {
+                            locationViewModel.fetchLocation()
+                        }
                         emergencyViewModel.sendEmergencyMessage()
                     }
                 )
@@ -273,8 +277,14 @@ fun MainScreen(
                                         )
                                     )
                                 } else {
-                                    // İzin varsa tek seferlik konumu çek
-                                    locationViewModel.fetchLocation()
+                                    // İzin varsa her tıklamada konum ayarlarını aç
+                                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                    context.startActivity(intent)
+                                    isLocationTransition = true
+                                    scope.launch {
+                                        delay(400)
+                                        isLocationTransition = false
+                                    }
                                 }
                             }
                     ) {
