@@ -8,6 +8,8 @@ import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.ProfileDao
 
 import com.example.warning.data.location.AndroidLocationProvider
+import com.example.warning.data.remote.api.EmergencyApi
+import com.example.warning.data.repository.EmergencyRepositoryImpl
 import com.example.warning.data.repository.LocationRepositoryImpl
 
 import com.example.warning.data.repository.ProfileRepositoryImpl
@@ -17,7 +19,7 @@ import com.example.warning.domain.repository.LocationRepository
 import com.example.warning.domain.repository.ProfileRepository
 import com.example.warning.domain.usecase.ProfileUseCases
 import com.example.warning.domain.usecase.SendEmergencyMessageUseCase
-import com.example.warning.domain.repository.EmergencyMessageRepository
+
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.functions.FirebaseFunctions
 
