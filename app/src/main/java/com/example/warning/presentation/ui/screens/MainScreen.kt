@@ -58,18 +58,20 @@ import com.example.warning.presentation.ui.theme.AppColorScheme
 import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
 import com.example.warning.presentation.viewModel.EmergencyMessageViewModel
+import com.example.warning.presentation.viewModel.LocationUiState
+import com.example.warning.presentation.viewModel.LocationViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import coil.compose.rememberAsyncImagePainter
 import com.example.warning.domain.usecase.EmergencyState
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navController: NavHostController,
     viewModel: ProfileListenerViewModel= hiltViewModel(),
     contactVm: ContactListenerViewmodel = hiltViewModel(),
-    emergencyViewModel: EmergencyMessageViewModel = hiltViewModel()
+    emergencyViewModel: EmergencyMessageViewModel = hiltViewModel(),
+    locationViewModel: LocationViewModel = hiltViewModel()
 ) {
     // Drawer kontrolü için
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -132,9 +134,12 @@ fun MainScreen(
         }
     }
 
+
+
     val profile by viewModel.profileState.collectAsState()
     val contacts by contactVm.contacts.collectAsState()
     val emergencyState by emergencyViewModel.emergencyMessageState.collectAsState()
+    val locationState by locationViewModel.locationState.collectAsState()
 
     // Bağlantı sayısı (örnek 15)
     var contactCount by remember { mutableStateOf(contacts.size) }
@@ -268,23 +273,24 @@ fun MainScreen(
                                         )
                                     )
                                 } else {
-                                    // İzin varsa her tıklamada konum ayarlarını aç
-                                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                                    context.startActivity(intent)
-                                    isLocationTransition = true
-                                    scope.launch {
-                                        delay(400)
-                                        isLocationTransition = false
-                                    }
+                                    // İzin varsa tek seferlik konumu çek
+                                    locationViewModel.fetchLocation()
                                 }
                             }
                     ) {
-                        val color = when {
+                        val baseColor = when {
                             isLocationTransition -> AppColorScheme.neutralLight
                             !hasLocationPermission -> AppColorScheme.secondary
                             hasLocationPermission && !isLocationEnabled -> AppColorScheme.warning
                             hasLocationPermission && isLocationEnabled -> AppColorScheme.successGreen
                             else -> Color.Gray
+                        }
+
+                        val color = when (locationState) {
+                            is LocationUiState.Loading -> AppColorScheme.neutralLight
+                            is LocationUiState.Success -> AppColorScheme.successGreen
+                            is LocationUiState.Error -> AppColorScheme.warning
+                            LocationUiState.Idle -> baseColor
                         }
 
                         Icon(
@@ -293,7 +299,22 @@ fun MainScreen(
                             tint = color,
                             modifier = Modifier.size(40.dp)
                         )
-                        Text("Konum")
+                        when (val state = locationState) {
+                            is LocationUiState.Success -> {
+                                Text(
+                                    text = "${"%.4f".format(state.location.latitude)}, ${"%.4f".format(state.location.longitude)}"
+                                )
+                            }
+                            is LocationUiState.Loading -> {
+                                Text("Konum alınıyor...")
+                            }
+                            is LocationUiState.Error -> {
+                                Text("Konum hatası")
+                            }
+                            LocationUiState.Idle -> {
+                                Text("Konum")
+                            }
+                        }
                     }
                 }
             }

@@ -108,6 +108,9 @@ dependencies {
     implementation(libs.ui.tooling.preview)
 
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Konum servisleri için Google Play Services Location
+    implementation("com.google.android.gms:play-services-location:21.3.0")
     // Navigation
     implementation(libs.androidx.navigation.compose)
     // Diğer
