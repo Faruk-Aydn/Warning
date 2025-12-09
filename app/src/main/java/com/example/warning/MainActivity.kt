@@ -21,8 +21,7 @@ import com.example.warning.presentation.ui.screens.SettingsScreen
 import com.example.warning.presentation.ui.screens.SplashScreen
 import com.example.warning.presentation.ui.screens.register.SignInScreen
 import com.example.warning.presentation.ui.screens.register.SignUpScreen
-import com.example.warning.presentation.ui.theme.AppTheme
-import com.example.warning.presentation.ui.theme.MyAppTheme
+import com.example.warning.presentation.ui.theme.WarningTheme
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,7 +33,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyAppTheme(theme = AppTheme.OCEAN) {
+            WarningTheme {
                 AppNavigation()
             }
         }
