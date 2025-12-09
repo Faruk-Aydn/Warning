@@ -1,67 +1,103 @@
 package com.example.warning.data.remote.service
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.media.RingtoneManager
+import android.os.Build
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.example.warning.MainActivity
+import com.example.warning.R // R sınıfının doğru import edildiğinden emin ol
+import com.example.warning.domain.usecase.UpdateFCMTokenUseCase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.example.warning.domain.usecase.UpdateFCMTokenUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @AndroidEntryPoint
 class WarningFirebaseMessagingService : FirebaseMessagingService() {
 
-    // Hilt ile Use Case'i enjekte et
-    @Inject lateinit var updateFCMTokenUseCase: UpdateFCMTokenUseCase
+    @Inject
+    lateinit var updateFCMTokenUseCase: UpdateFCMTokenUseCase
 
-    private val TAG = "WarningFCMService"
+    private val TAG = "WarningFCM"
 
-    /**
-     * Yeni bir FCM token'ı oluşturulduğunda veya mevcut token güncellendiğinde çağrılır.
-     * Bu, uygulamanın yeniden yüklenmesi, veri silinmesi, yeni cihaz kullanımı gibi durumlarda olur.
-     */
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
-        // Yeni token'ı kaydetmek için Use Case'i çalıştır
         sendRegistrationToServer(token)
     }
 
-    /**
-     * Gelen FCM mesajlarını (bildirimler ve veri mesajları) işler.
-     */
+    // Uygulama AÇIKKEN (Foreground) mesaj gelirse burası çalışır
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        Log.d(TAG, "From: ${remoteMessage.from}")
+        Log.d(TAG, "Mesaj alındı: ${remoteMessage.from}")
 
-        // Mesajın veri payload'u var mı kontrol et
+        // 1. Data payload kontrolü (Bizim latitude, longitude burada)
         if (remoteMessage.data.isNotEmpty()) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.data)
-
-            // Buraya acil durum bildirimi işleme mantığı gelir
-            // Örneğin: Acil durum mesajıysa, yerel bir bildirim göster, haritayı güncelle vb.
+            Log.d(TAG, "Data Payload: ${remoteMessage.data}")
+            // Buradaki veriyi alıp işlem yapabilirsin (Örn: Haritayı aç)
         }
 
-        // Mesajın bildirim payload'u var mı kontrol et (Notification mesajları için)
+        // 2. Notification payload kontrolü (Başlık ve Gövde)
+        // Backend'den hem 'notification' hem 'data' gönderdiğimiz için burası dolu gelir.
         remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
-            // Genellikle acil durumlar için özel veri mesajları kullanılır,
-            // ancak bildirim de buradan işlenebilir.
+            Log.d(TAG, "Bildirim Başlığı: ${it.title}, Gövde: ${it.body}")
+            // Uygulama açıkken bildirimi elle oluşturup gösteriyoruz
+            sendNotification(it.title, it.body)
         }
     }
 
+    private fun sendNotification(title: String?, messageBody: String?) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+        // PendingIntent güvenliği için FLAG_IMMUTABLE (Android 12+)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent,
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val channelId = "emergency_channel"
+        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(android.R.drawable.ic_dialog_alert) // Kendi ikonunu koyabilirsin (R.drawable.ic_warning gibi)
+            .setContentTitle(title)
+            .setContentText(messageBody)
+            .setAutoCancel(true)
+            .setSound(defaultSoundUri)
+            .setPriority(NotificationCompat.PRIORITY_MAX) // En yüksek öncelik (Heads-up)
+            .setContentIntent(pendingIntent)
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Android Oreo (API 26) ve üzeri için kanal oluşturmak şarttır
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                "Acil Durum Bildirimleri",
+                NotificationManager.IMPORTANCE_HIGH // Yüksek önem
+            )
+            channel.description = "Acil durum mesajlarını gösterir"
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        // Bildirimi göster (ID rastgele olsun ki üst üste binmesin)
+        notificationManager.notify(Random.nextInt(), notificationBuilder.build())
+    }
+
     private fun sendRegistrationToServer(token: String) {
-        // Ağ işlemleri ve veritabanı yazma işlemleri için IO CoroutineScope kullanılır
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val success = updateFCMTokenUseCase.execute(token)
-                if (success) {
-                    Log.i(TAG, "FCM token başarıyla Remote/Local veritabanlarına kaydedildi.")
-                } else {
-                    Log.e(TAG, "FCM token kaydı başarısız.")
-                }
+                updateFCMTokenUseCase.execute(token)
             } catch (e: Exception) {
-                Log.e(TAG, "Token'ı güncellerken beklenmedik hata", e)
+                Log.e(TAG, "Token update error", e)
             }
         }
     }
