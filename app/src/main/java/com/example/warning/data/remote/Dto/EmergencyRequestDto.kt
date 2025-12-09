@@ -6,5 +6,6 @@ package com.example.warning.data.remote.Dto
  */
 data class EmergencyRequestDto(
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val senderId: String // Backend bu ID ile kişileri bulacak
 )

@@ -12,11 +12,12 @@ class EmergencyRepositoryImpl @Inject constructor(
     private val api: EmergencyApi
 ) : EmergencyRepository {
 
-    override suspend fun sendEmergency (location: EmergencyLocation): EmergencySendResult {
+    override suspend fun sendEmergency (location: EmergencyLocation, senderId: String): EmergencySendResult {
         // Domain model -> DTO dönüşümü
         val request = EmergencyRequestDto(
             latitude = location.latitude,
-            longitude = location.longitude
+            longitude = location.longitude,
+            senderId = senderId
         )
 
         // Backend'e istek

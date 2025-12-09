@@ -48,6 +48,8 @@ android {
 
 dependencies {
 
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+
     // refresh için
     implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
 

@@ -10,5 +10,5 @@ interface EmergencyRepository {
      *
      * @param location   - Şimdilik sahte, sonra gerçek GPS verisi gelecek
      */
-    suspend fun sendEmergency(location: EmergencyLocation): EmergencySendResult
+    suspend fun sendEmergency(location: EmergencyLocation, senderId: String): EmergencySendResult
 }
