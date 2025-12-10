@@ -40,6 +40,7 @@ object Routes {
     const val Contacts = "contacts"
     const val Profile= "profile"
     const val AddContact ="addContact"
+    const val EmergencyHistory = "emergencyHistory"
 }
 
 /**

@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.warning.presentation.ui.screens.AddContactScreen
 import com.example.warning.presentation.ui.screens.ContactLinkedScreen
+import com.example.warning.presentation.ui.screens.EmergencyHistoryScreen
 import com.example.warning.presentation.ui.screens.MainScreen
 import com.example.warning.presentation.ui.screens.ProfileScreen
 import com.example.warning.presentation.ui.screens.Routes
@@ -49,45 +50,50 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "splash", // Şu anlık başlangıcı signup yapıyoruz
+            startDestination = Routes.Splash,
             modifier = Modifier.padding(innerPadding)
         ) {
 
             composable(route = Routes.AddContact) {
                 AddContactScreen(navController)
             }
-            composable("splash") {
+            composable(Routes.Splash) {
                 SplashScreen(
                     navController = navController
                 )
             }
-            composable("signIn") {
+            composable(Routes.SignIn) {
                 SignInScreen(
                     navController = navController
                 )
             }
 
-            composable("signUp") {
+            composable(Routes.SignUp) {
                 SignUpScreen(
                     navController = navController
                 )
             }
-            composable("main") {
+            composable(Routes.Main) {
                 MainScreen(
                     navController = navController
                 )
             }
-            composable ("profile"){
+            composable (Routes.Profile){
                 ProfileScreen(
                     navController = navController
                 )
             }
-            composable("settings"){
+            composable(Routes.Settings){
                 SettingsScreen()
             }
-            composable("contacts") {
+            composable(Routes.Contacts) {
                 ContactLinkedScreen(
                     navController= navController
+                )
+            }
+            composable(Routes.EmergencyHistory) {
+                EmergencyHistoryScreen(
+                    navController = navController
                 )
             }
         }

@@ -425,6 +425,9 @@ private fun DrawerContent(navController: NavHostController, drawerState: DrawerS
         TextButton(onClick = { navController.navigate("SettingsScreen") }) {
             Text("Ayarlar", style = MaterialTheme.typography.bodyMedium)
         }
+        TextButton(onClick = { navController.navigate(Routes.EmergencyHistory) }) {
+            Text("Acil Mesaj Geçmişi", style = MaterialTheme.typography.bodyMedium)
+        }
     }
 }
 
