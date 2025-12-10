@@ -7,7 +7,10 @@ import com.example.warning.domain.repository.EmergencyHistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+<<<<<<< HEAD
 import kotlinx.coroutines.flow.catch
+=======
+>>>>>>> 931f11d (feat: add emergency history domain model, repository, viewmodel and screen)
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,6 +47,7 @@ class EmergencyHistoryViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
+
             emergencyHistoryRepository.getAllMessagesForUser(userId)
                 .catch { e ->
                     _uiState.update { state ->
@@ -64,6 +68,7 @@ class EmergencyHistoryViewModel @Inject constructor(
                         )
                     }
                 }
+
         }
     }
 
