@@ -6,6 +6,7 @@ import com.example.warning.data.remote.Dto.UserDto
 import com.example.warning.data.remote.Dto.ContactDto
 import com.example.warning.data.remote.service.FirestoreService
 import com.example.warning.data.remote.listener.ContactRealtimeSyncManager
+import com.example.warning.data.remote.listener.EmergencyHistorySyncManager
 import com.example.warning.data.remote.listener.LinkedRealtimeSyncManager
 import com.example.warning.data.remote.listener.UserRealtimeSyncManager
 import com.example.warning.domain.model.Profile
@@ -17,8 +18,17 @@ class FirebaseRepositoryImpl @Inject constructor(
     private val firestoreService: FirestoreService,
     private val syncManagerUser: UserRealtimeSyncManager,
     private val syncLinked: LinkedRealtimeSyncManager,
-    private val syncContact: ContactRealtimeSyncManager
+    private val syncContact: ContactRealtimeSyncManager,
+    private val syncEmergencyHistory: EmergencyHistorySyncManager //Inject
 ) : FirebaseRepository {
+
+    override suspend fun startEmergencyHistoryListener(userId: String) {
+        syncEmergencyHistory.startListening(userId)
+    }
+
+    override fun stopEmergencyHistoryListener() {
+        syncEmergencyHistory.stopListening()
+    }
 
     override suspend fun updateFCMToken(userId: String, token: String): Boolean {
         return try {

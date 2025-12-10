@@ -1,4 +1,4 @@
-const { FieldValue } = require("firebase-admin/firestore");
+const { FieldValue, GeoPoint } = require("firebase-admin/firestore");
 const { onRequest } = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
@@ -136,10 +136,14 @@ exports.sendEmergency = onRequest(async (req, res) => {
         senderId: senderId,
         receiverId: receiverId,
         receiverName: contactData.name || receiverData.name,
+        senderName: senderName,
         messageContent: finalMessage,
-        locationSent: includeLocation,
-        latitude: includeLocation ? latitude : null,
-        longitude: includeLocation ? longitude : null,
+        error: null, // Hata varsa buraya string olarak gelir
+          // Konum Detayları
+        hasLocation: includeLocation, // UI'da pin ikonu göstermek için hızlı flag
+        location: includeLocation
+             ? new GeoPoint(latitude, longitude) // <-- admin.firestore kısmını sildik
+             : null,
         timestamp: FieldValue.serverTimestamp(),
         status: "attempted"
       });

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.warning.data.local.AppDatabase
 import com.example.warning.data.local.dao.ContactDao
+import com.example.warning.data.local.dao.EmergencyHistoryDao
 import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.remote.api.EmergencyApi
@@ -30,6 +31,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    fun provideEmergencyHistoryDao(db: AppDatabase): EmergencyHistoryDao = db.emergencyHistoryDao()
 
     @Provides
     @Singleton
