@@ -1,15 +1,32 @@
 package com.example.warning.presentation.ui.screens.register
 
-import com.example.warning.presentation.viewModel.RegistrationViewModel
-import com.example.warning.presentation.viewModel.VerificationStep
-import com.example.warning.presentation.viewModel.VerificationViewModel
-
 import android.app.Activity
 import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,10 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.warning.domain.model.Contact
+import com.example.warning.presentation.ui.components.PrimaryButton
 import com.example.warning.presentation.ui.theme.AppColorScheme
 import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
+import com.example.warning.presentation.viewModel.RegistrationViewModel
+import com.example.warning.presentation.viewModel.VerificationStep
+import com.example.warning.presentation.viewModel.VerificationViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -70,9 +90,15 @@ fun SignInScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
+            .padding(horizontal = 24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -124,8 +150,9 @@ fun SignInScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 🔘 Giriş yap butonu
-                Button(
+// 🔘 Giriş yap butonu
+                PrimaryButton(
+                    text = "Giriş Yap",
                     onClick = {
                         if (phoneNumber.length != 10) {
                             // ❌ Numara geçersiz
@@ -146,12 +173,8 @@ fun SignInScreen(
                                 }
                             }
                         }
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = AppColorScheme.primary),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Giriş Yap", color = AppColorScheme.neutralLight)
                 }
+                )
             }
 
             VerificationStep.EnterCode -> {
@@ -166,7 +189,8 @@ fun SignInScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
+                PrimaryButton(
+                    text = "Doğrula",
                     onClick = {
                         verificationViewModel.verifyCode(smsCode)
                         if (verificationViewModel.isVerified == true) {
@@ -176,12 +200,8 @@ fun SignInScreen(
                         } else {
                             errorMessage = verificationViewModel.errorMessage
                         }
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = AppColorScheme.primary),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Doğrula", color = AppColorScheme.neutralLight)
-                }
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -219,7 +239,11 @@ fun SignInScreen(
 
         // ⚠️ Hata mesajı
         errorMessage?.let {
-            Text(it, color = AppColorScheme.error)
+            Text(
+                it,
+                color = AppColorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -233,6 +257,7 @@ fun SignInScreen(
             Text("Kayıt Ol", color = AppColorScheme.info)
         }
     }
+}
 }
 
 @Preview(showBackground = true, showSystemUi = true)

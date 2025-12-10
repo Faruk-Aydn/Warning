@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,8 +39,10 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -55,9 +58,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -65,6 +68,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.warning.domain.usecase.EmergencyState
+import androidx.compose.ui.graphics.Color
 import com.example.warning.presentation.ui.theme.AppColorScheme
 import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.EmergencyMessageViewModel
@@ -219,77 +223,122 @@ fun MainScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(padding)
             ) {
-                AnimatedCircleButton(
-                    onClick = {
-                        emergencyViewModel.sendEmergencyMessage()
-                    }
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Acil Durum",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
 
-                Row(
+                    Spacer(modifier = Modifier.size(16.dp))
+
+                    Text(
+                        text = "Konumunuzu ve kayıtlı kişilerinizi kullanarak tek dokunuşla acil durum bildirimi gönderin.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.size(32.dp))
+
+                    AnimatedCircleButton(
+                        onClick = {
+                            emergencyViewModel.sendEmergencyMessage()
+                        }
+                    )
+                }
+
+                Surface(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 48.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 4.dp,
+                    shadowElevation = 8.dp
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                    Row(
                         modifier = Modifier
-                            .padding(end = 48.dp)
-                            .clickable {
-                                navController.navigate(route = Routes.Contacts)
-                            }
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp, horizontal = 24.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Contacts",
-                            tint = AppColorScheme.successGreen,
-                            modifier = Modifier.size(40.dp)
-                        )
-                        Text("$contactCount bağlantı")
-                    }
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .padding(start = 48.dp)
-                            .clickable {
-                                if (!hasLocationPermission) {
-                                    locationPermissionLauncher.launch(
-                                        arrayOf(
-                                            android.Manifest.permission.ACCESS_FINE_LOCATION,
-                                            android.Manifest.permission.ACCESS_COARSE_LOCATION
-                                        )
-                                    )
-                                } else {
-                                    val intent =
-                                        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                                    context.startActivity(intent)
-                                    isLocationTransition = true
-                                    scope.launch {
-                                        delay(400)
-                                        isLocationTransition = false
-                                    }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate(route = Routes.Contacts)
                                 }
-                            }
-                    ) {
-                        val color = when {
-                            isLocationTransition -> AppColorScheme.neutralLight
-                            !hasLocationPermission -> AppColorScheme.secondary
-                            hasLocationPermission && !isLocationEnabled -> AppColorScheme.warning
-                            hasLocationPermission && isLocationEnabled -> AppColorScheme.successGreen
-                            else -> Color.Gray
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Contacts",
+                                tint = AppColorScheme.successGreen,
+                                modifier = Modifier.size(32.dp)
+                            )
+                            Spacer(modifier = Modifier.size(4.dp))
+                            Text(
+                                "$contactCount bağlantı",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
 
-                        Icon(
-                            imageVector = Icons.Default.LocationOn,
-                            contentDescription = "Location",
-                            tint = color,
-                            modifier = Modifier.size(40.dp)
-                        )
-                        Text("Konum")
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .clickable {
+                                    if (!hasLocationPermission) {
+                                        locationPermissionLauncher.launch(
+                                            arrayOf(
+                                                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                                android.Manifest.permission.ACCESS_COARSE_LOCATION
+                                            )
+                                        )
+                                    } else {
+                                        val intent =
+                                            Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                        context.startActivity(intent)
+                                        isLocationTransition = true
+                                        scope.launch {
+                                            delay(400)
+                                            isLocationTransition = false
+                                        }
+                                    }
+                                }
+                        ) {
+                            val color = when {
+                                isLocationTransition -> AppColorScheme.neutralLight
+                                !hasLocationPermission -> AppColorScheme.secondary
+                                hasLocationPermission && !isLocationEnabled -> AppColorScheme.warning
+                                hasLocationPermission && isLocationEnabled -> AppColorScheme.successGreen
+                                else -> Color.Gray
+                            }
+
+                            Icon(
+                                imageVector = Icons.Default.LocationOn,
+                                contentDescription = "Location",
+                                tint = color,
+                                modifier = Modifier.size(32.dp)
+                            )
+                            Spacer(modifier = Modifier.size(4.dp))
+                            Text(
+                                "Konum",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     }
                 }
             }
@@ -355,15 +404,27 @@ private fun DrawerContent(navController: NavHostController, drawerState: DrawerS
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth(0.7f)
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp)
     ) {
-        TextButton(onClick = { navController.navigate("ProfileScreen") }) { Text("Profil") }
-        TextButton(onClick = { navController.navigate("NotifiScreen") }) { Text("Bildirimler") }
-        TextButton(onClick = { navController.navigate("ContactListScreen") }) { Text("Bağlantılarım") }
-        TextButton(onClick = { navController.navigate("LinkedListScreen") }) { Text("Linked") }
-        TextButton(onClick = { navController.navigate("RequestScreen") }) { Text("İstekler") }
-        TextButton(onClick = { navController.navigate("SettingsScreen") }) { Text("Ayarlar") }
+        TextButton(onClick = { navController.navigate("ProfileScreen") }) {
+            Text("Profil", style = MaterialTheme.typography.bodyMedium)
+        }
+        TextButton(onClick = { navController.navigate("NotifiScreen") }) {
+            Text("Bildirimler", style = MaterialTheme.typography.bodyMedium)
+        }
+        TextButton(onClick = { navController.navigate("ContactListScreen") }) {
+            Text("Bağlantılarım", style = MaterialTheme.typography.bodyMedium)
+        }
+        TextButton(onClick = { navController.navigate("LinkedListScreen") }) {
+            Text("Linked", style = MaterialTheme.typography.bodyMedium)
+        }
+        TextButton(onClick = { navController.navigate("RequestScreen") }) {
+            Text("İstekler", style = MaterialTheme.typography.bodyMedium)
+        }
+        TextButton(onClick = { navController.navigate("SettingsScreen") }) {
+            Text("Ayarlar", style = MaterialTheme.typography.bodyMedium)
+        }
     }
 }
 

@@ -4,8 +4,19 @@ import android.app.Activity
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -24,7 +35,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -166,13 +185,16 @@ fun SignUpScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(padding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
                 Text(
                     text = "Kayıt Ol",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
 
@@ -232,7 +254,11 @@ fun SignUpScreen(
                     }
 
                     VerificationStep.Verified -> {
-                        Text("Doğrulama başarılı, yönlendiriliyorsunuz...")
+                        Text(
+                            "Doğrulama başarılı, yönlendiriliyorsunuz...",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
                         LaunchedEffect(Unit) {   // sadece 1 kere çalışır
                             registrationViewModel.registerUser(
                                 profile = Profile(
@@ -324,11 +350,22 @@ fun PhoneVerificationSection(
                 }
             }
         },
-        modifier = Modifier.fillMaxWidth().height(52.dp),
-        colors = ButtonDefaults.buttonColors(AppColorScheme.neutralLight)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(52.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = AppColorScheme.primary,
+            contentColor = AppColorScheme.neutralLight
+        )
     ) {
-        if (isLoading) CircularProgressIndicator(modifier = Modifier.size(20.dp))
-        else Text("Kayıt Ol")
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.size(20.dp))
+        } else {
+            Text(
+                "Kayıt Ol",
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
     }
 }
 
@@ -482,14 +519,27 @@ fun CodeVerificationSection(
         onValueChange = { onCodeChange(it.filter { ch -> ch.isDigit() }) },
         label = { Text("Doğrulama Kodu") },
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        modifier = Modifier.fillMaxWidth()
     )
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Button(onClick = { verificationViewModel.verifyCode(codeInput) }) {
-            Text("Kodu Onayla")
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Button(
+            onClick = { verificationViewModel.verifyCode(codeInput) },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AppColorScheme.primary,
+                contentColor = AppColorScheme.neutralLight
+            )
+        ) {
+            Text(
+                "Kodu Onayla",
+                style = MaterialTheme.typography.labelLarge
+            )
         }
 
         TextButton(onClick = {
@@ -505,15 +555,26 @@ fun CodeVerificationSection(
         }) {
             Icon(Icons.Default.Refresh, contentDescription = "Tekrar gönder")
             Spacer(modifier = Modifier.width(6.dp))
-            Text("Tekrar Gönder")
+            Text(
+                "Tekrar Gönder",
+                style = MaterialTheme.typography.labelLarge,
+                color = AppColorScheme.info
+            )
         }
     }
 }
 
 @Composable
 fun BottomNavigationSection(navController: NavHostController) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        Text(text = "Zaten hesabın var mı? ")
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Zaten hesabın var mı? ",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
         Text(
             text = "Giriş yap",
             modifier = Modifier.clickable {
@@ -521,7 +582,9 @@ fun BottomNavigationSection(navController: NavHostController) {
                     launchSingleTop = true
                     popUpTo(Routes.SignUp) { inclusive = true }
                 }
-            }
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = AppColorScheme.info
         )
     }
 }

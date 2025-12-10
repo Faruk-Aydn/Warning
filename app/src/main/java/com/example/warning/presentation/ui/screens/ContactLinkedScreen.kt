@@ -1,5 +1,6 @@
 package com.example.warning.presentation.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +24,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -120,7 +123,7 @@ fun ContactLinkedScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Contacts & Linked") },
+                title = { Text("Bağlantılar", style = MaterialTheme.typography.titleLarge) },
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -132,23 +135,37 @@ fun ContactLinkedScreen(
                     IconButton(onClick = {
                         navController.navigate(route = "addContact")
                     }) {
-                        Icon(Icons.Default.Add, contentDescription = "Settings")
+                        Icon(Icons.Default.Add, contentDescription = "Add Contact")
                     }
                 }
             )
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            // Segmented Control
-            SmoothSegmentedToggle(
-                options = listOf("Contacts", "Linked"),
-                selectedIndex = selectedTab,
-                onOptionSelected = { selectedTab = it }
-            )
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = MaterialTheme.shapes.large,
+                tonalElevation = 2.dp,
+                color = MaterialTheme.colorScheme.surface
+            ) {
+                Column(modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp)) {
+                    // Segmented Control
+                    SmoothSegmentedToggle(
+                        options = listOf("Contacts", "Linked"),
+                        selectedIndex = selectedTab,
+                        onOptionSelected = { selectedTab = it }
+                    )
+                }
+            }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(12.dp))
 
             SwipeRefresh(
                 state = rememberSwipeRefreshState(isRefreshing),
@@ -170,6 +187,7 @@ fun ContactLinkedScreen(
                                     actionsViewModel.delete(contact.id)
                                 }
                             )
+                            Spacer(Modifier.height(8.dp))
                         }
                     } else {
                         // LINKED LIST
@@ -180,6 +198,7 @@ fun ContactLinkedScreen(
                                 onAccept = { linkedActionsViewModel.accept(link.id) },
                                 onDelete = { linkedActionsViewModel.delete(link.id) }
                             )
+                            Spacer(Modifier.height(8.dp))
                         }
                     }
                 }
@@ -203,8 +222,25 @@ fun ContactRow(
     var showDialog by remember { mutableStateOf(false) }
 
     ListItem(
-        headlineContent = { Text("${contact.name} (${contact.tag ?: ""}) ${contact.isTop}") },
-        supportingContent = { Text("${contact.country} ${contact.phoneNumber}") },
+        headlineContent = {
+            Text(
+                text = buildString {
+                    append(contact.name)
+                    contact.tag?.takeIf { it.isNotBlank() }?.let {
+                        append(" (")
+                        append(it)
+                        append(")")
+                    }
+                },
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
+        supportingContent = {
+            Text(
+                text = "${contact.country} ${contact.phoneNumber}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
         trailingContent = {
             Row {
                 if (isLoading) {
@@ -224,13 +260,27 @@ fun ContactRow(
                 }
 
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    Text("${contact.name} - ${contact.phoneNumber}", Modifier.padding(8.dp))
+                    Text(
+                        text = "${contact.name} - ${contact.phoneNumber}",
+                        modifier = Modifier.padding(8.dp),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                     DropdownMenuItem(
-                        text = { Text("Bağlantıyı kaldır") },
+                        text = {
+                            Text(
+                                text = "Bağlantıyı kaldır",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        },
                         onClick = { showDialog = true; expanded = false }
                     )
                     DropdownMenuItem(
-                        text = { Text("Düzenle") },
+                        text = {
+                            Text(
+                                text = "Düzenle",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        },
                         onClick = { /* ContactDetailScreen oluşturup genel düzenleme yapabilecek */ }
                     )
                 }
@@ -242,12 +292,22 @@ fun ContactRow(
         AlertDialog(
             onDismissRequest = { showDialog = false },
             confirmButton = {
-                TextButton(onClick = { showDialog = false; onDeleteConfirmed() }) { Text("Evet") }
+                TextButton(onClick = { showDialog = false; onDeleteConfirmed() }) {
+                    Text(
+                        text = "Evet",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Hayır") }
+                TextButton(onClick = { showDialog = false }) {
+                    Text(
+                        text = "Hayır",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
             },
-            title = { Text("Emin misiniz?") }
+            title = { Text("Emin misiniz?", style = MaterialTheme.typography.titleMedium) }
         )
     }
 }
@@ -263,15 +323,30 @@ fun LinkedRow(
     var showDialog by remember { mutableStateOf(false) }
 
     ListItem(
-        headlineContent = { Text(linked.name) },
-        supportingContent = { Text("${linked.country} ${linked.phoneNumber}") },
+        headlineContent = {
+            Text(
+                text = linked.name,
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
+        supportingContent = {
+            Text(
+                text = "${linked.country} ${linked.phoneNumber}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
         trailingContent = {
             Row {
                 if (isLoading) {
                     CircularProgressIndicator()
                 } else {
                     if (!linked.isConfirmed) {
-                        TextButton(onClick = { onAccept() }) { Text("Kabul Et") }
+                        TextButton(onClick = { onAccept() }) {
+                            Text(
+                                text = "Kabul Et",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
                     }
                 }
 
@@ -294,12 +369,22 @@ fun LinkedRow(
         AlertDialog(
             onDismissRequest = { showDialog = false },
             confirmButton = {
-                TextButton(onClick = { showDialog = false; onDelete() }) { Text("Evet") }
+                TextButton(onClick = { showDialog = false; onDelete() }) {
+                    Text(
+                        text = "Evet",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Hayır") }
+                TextButton(onClick = { showDialog = false }) {
+                    Text(
+                        text = "Hayır",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
             },
-            title = { Text("İşlemi onayla") }
+            title = { Text("İşlemi onayla", style = MaterialTheme.typography.titleMedium) }
         )
     }
 }
