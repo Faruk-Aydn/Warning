@@ -98,9 +98,10 @@ fun SplashScreen(
         // ----- DEMO: placeholder -----
         // Bu satırı gerçek kontrol ile değiştirin (ör. authRepository.isUserLoggedIn() suspend çağrısı)
 
-
         // ----- Yönlendirme -----
         if (isLoggedIn != null) {
+            // Kullanıcı zaten giriş yapmış, hemen token'ı kontrol et ve gerekirse güncelle.
+            userview.checkAndRefreshFCMToken()
 
             userview.startUserListener(isLoggedIn.phoneNumber)
             contactview.startContactListener(isLoggedIn.phoneNumber)
