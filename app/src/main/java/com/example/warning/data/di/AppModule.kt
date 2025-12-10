@@ -7,10 +7,14 @@ import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.EmergencyHistoryDao
 import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.ProfileDao
+
 import com.example.warning.data.remote.api.EmergencyApi
+import com.example.warning.data.repository.EmergencyHistoryRepositoryImpl
 import com.example.warning.data.repository.EmergencyRepositoryImpl
 import com.example.warning.data.repository.ProfileRepositoryImpl
+import com.example.warning.domain.repository.EmergencyHistoryRepository
 import com.example.warning.domain.repository.EmergencyRepository
+
 import com.example.warning.domain.repository.FirebaseRepository
 import com.example.warning.domain.repository.ProfileRepository
 import com.example.warning.domain.usecase.ProfileUseCases
@@ -110,5 +114,13 @@ object AppModule {
     @Singleton
     fun provideEmergencyApi(retrofit: Retrofit): EmergencyApi {
         return retrofit.create(EmergencyApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEmergencyHistoryRepository(
+        emergencyHistoryDao: EmergencyHistoryDao
+    ): EmergencyHistoryRepository {
+        return EmergencyHistoryRepositoryImpl(emergencyHistoryDao)
     }
 }

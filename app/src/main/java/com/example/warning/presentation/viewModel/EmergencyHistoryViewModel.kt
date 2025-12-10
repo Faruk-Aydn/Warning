@@ -7,6 +7,7 @@ import com.example.warning.domain.repository.EmergencyHistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,26 +44,26 @@ class EmergencyHistoryViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            runCatching {
-                emergencyHistoryRepository.getAllMessagesForUser(userId)
-            }.onSuccess { list ->
-                _uiState.update { state ->
-                    state.copy(
-                        isLoading = false,
-                        currentUserId = userId,
-                        allMessages = list,
-                        messages = applyFilter(state.filter, list, userId),
-                        errorMessage = null
-                    )
+            emergencyHistoryRepository.getAllMessagesForUser(userId)
+                .catch { e ->
+                    _uiState.update { state ->
+                        state.copy(
+                            isLoading = false,
+                            errorMessage = e.message ?: "Bir hata oluştu"
+                        )
+                    }
                 }
-            }.onFailure { e ->
-                _uiState.update { state ->
-                    state.copy(
-                        isLoading = false,
-                        errorMessage = e.message ?: "Bir hata oluştu"
-                    )
+                .collect { list ->
+                    _uiState.update { state ->
+                        state.copy(
+                            isLoading = false,
+                            currentUserId = userId,
+                            allMessages = list,
+                            messages = applyFilter(state.filter, list, userId),
+                            errorMessage = null
+                        )
+                    }
                 }
-            }
         }
     }
 
