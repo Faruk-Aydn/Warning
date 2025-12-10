@@ -4,9 +4,12 @@ import android.R.attr.phoneNumber
 import androidx.room.TypeConverter
 import com.example.warning.data.remote.Dto.UserDto
 import com.example.warning.data.local.entity.ContactEntity
+import com.example.warning.data.local.entity.IncomingEmergencyEntity
 import com.example.warning.data.local.entity.LinkedEntity
+import com.example.warning.data.local.entity.OutgoingEmergencyEntity
 import com.example.warning.data.local.entity.ProfileEntity
 import com.example.warning.data.remote.Dto.ContactDto
+import com.example.warning.data.remote.Dto.EmergencyHistoryDto
 import com.example.warning.data.remote.Dto.LinkedDto
 import com.example.warning.domain.model.Contact
 import com.example.warning.domain.model.Linked
@@ -19,7 +22,33 @@ import kotlin.contracts.Returns
 // Entity -> DTO
  // gerek yok gibi
 
+// DTO -> Gelen Kutusu Entity
+fun EmergencyHistoryDto.toIncomingEntity(): IncomingEmergencyEntity {
+    return IncomingEmergencyEntity(
+        id = this.id,
+        senderId = this.senderId,
+        senderName = this.senderName ?: "Bilinmiyor",
+        messageContent = this.messageContent,
+        latitude = this.latitude,
+        longitude = this.longitude,
+        date = this.timestamp?.time ?: System.currentTimeMillis()
+    )
+}
 
+// DTO -> Giden Kutusu Entity
+fun EmergencyHistoryDto.toOutgoingEntity(): OutgoingEmergencyEntity {
+    return OutgoingEmergencyEntity(
+        id = this.id,
+        receiverId = this.receiverId,
+        receiverName = this.receiverName,
+        messageContent = this.messageContent,
+        isLocationSent = this.locationSent,
+        status = this.status,
+        success = this.success,
+        error = this.error,
+        date = this.timestamp?.time ?: System.currentTimeMillis()
+    )
+}
 // ENTITY -> DOMAIN
 
 fun ProfileEntity.toDomain(): Profile{

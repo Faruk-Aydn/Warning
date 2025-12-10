@@ -1,10 +1,12 @@
 package com.example.warning.data.di
 
 import com.example.warning.data.local.dao.ContactDao
+import com.example.warning.data.local.dao.EmergencyHistoryDao
 import com.example.warning.data.local.dao.LinkedDao
 import com.example.warning.data.local.dao.ProfileDao
 import com.example.warning.data.remote.service.FirestoreService
 import com.example.warning.data.remote.listener.ContactRealtimeSyncManager
+import com.example.warning.data.remote.listener.EmergencyHistorySyncManager
 import com.example.warning.data.remote.listener.LinkedRealtimeSyncManager
 import com.example.warning.data.remote.listener.UserRealtimeSyncManager
 import com.example.warning.data.repository.FirebaseRepositoryImpl
@@ -63,6 +65,15 @@ object FirebaseModule {
 
     @Provides
     @Singleton
+    fun provideEmergencyHistorySyncManager(
+        firestore: FirebaseFirestore,
+        dao: EmergencyHistoryDao
+    ): EmergencyHistorySyncManager {
+        return EmergencyHistorySyncManager(firestore, dao)
+    }
+
+    @Provides
+    @Singleton
     fun provideFirestoreService(firestore: FirebaseFirestore): FirestoreService {
         return FirestoreService(firestore)
     }
@@ -73,13 +84,15 @@ object FirebaseModule {
         firestoreService: FirestoreService,
         syncContact: ContactRealtimeSyncManager,
         syncManagerUser: UserRealtimeSyncManager,
-        syncLinked: LinkedRealtimeSyncManager
+        syncLinked: LinkedRealtimeSyncManager,
+        syncEmergencyHistory: EmergencyHistorySyncManager
     ): FirebaseRepository {
         return FirebaseRepositoryImpl(
             firestoreService,
             syncManagerUser,
             syncLinked,
-            syncContact
+            syncContact,
+            syncEmergencyHistory
         )
     }
 }

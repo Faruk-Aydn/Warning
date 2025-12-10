@@ -6,6 +6,9 @@ import com.example.warning.domain.model.Profile
 interface FirebaseRepository {
 
 
+    suspend fun startEmergencyHistoryListener(userId: String)
+    fun stopEmergencyHistoryListener()
+
     //Kayıt        => Firebase (succes) -> local
     suspend fun getUser(phone: String): UserDto?
     suspend fun addUser(user: Profile): Boolean
