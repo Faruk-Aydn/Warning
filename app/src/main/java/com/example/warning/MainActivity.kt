@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             WarningTheme {
                 AppNavigation()
+                //                WarningNavGraph(modifier = Modifier.fillMaxSize())
             }
         }
     }
