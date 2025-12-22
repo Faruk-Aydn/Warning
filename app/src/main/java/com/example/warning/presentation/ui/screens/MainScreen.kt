@@ -71,6 +71,19 @@ import com.example.warning.domain.model.Profile
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.example.warning.presentation.ui.navigation.Routes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material3.Divider
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,7 +99,7 @@ fun MainScreen(
     onEmergencyClick: () -> Unit,
     onEmergencyDialogDismiss: () -> Unit
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    var isDrawerOpen by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -140,21 +153,13 @@ fun MainScreen(
         }
     }
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            DrawerContent(
-                drawerState = drawerState,
-                onDestinationClick = { route -> onDrawerDestinationClick(route) }
-            )
-        }
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = {},
                     navigationIcon = {
-                        Row {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(onClick = {
                                 onProfileClick()
                             }) {
@@ -162,7 +167,8 @@ fun MainScreen(
                                     Icon(
                                         imageVector = Icons.Default.Person,
                                         contentDescription = "Profile",
-                                        modifier = Modifier.size(40.dp)
+                                        modifier = Modifier.size(40.dp),
+                                        tint = MaterialTheme.colorScheme.primary
                                     )
                                 } else {
                                     val painter =
@@ -182,7 +188,8 @@ fun MainScreen(
                                                 Icon(
                                                     imageVector = Icons.Default.Person,
                                                     contentDescription = "Profile",
-                                                    modifier = Modifier.matchParentSize()
+                                                    modifier = Modifier.matchParentSize(),
+                                                    tint = MaterialTheme.colorScheme.primary
                                                 )
                                             }
 
@@ -204,16 +211,17 @@ fun MainScreen(
                             }) {
                                 Icon(
                                     Icons.Default.Notifications,
-                                    contentDescription = "Notifications"
+                                    contentDescription = "Notifications",
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
                             }
                         }
                     },
                     actions = {
                         IconButton(onClick = {
-                            scope.launch { drawerState.open() }
+                            isDrawerOpen = true
                         }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menu")
+                            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = MaterialTheme.colorScheme.primary)
                         }
                     }
                 )
@@ -336,6 +344,31 @@ fun MainScreen(
                 }
             }
         }
+
+        if (isDrawerOpen) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { isDrawerOpen = false }
+            )
+        }
+
+        AnimatedVisibility(
+            visible = isDrawerOpen,
+            enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(),
+            exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut(),
+            modifier = Modifier.align(Alignment.CenterEnd)
+        ) {
+            RightSideDrawerContent(
+                profile = profile,
+                onDestinationClick = onDrawerDestinationClick,
+                onClose = { isDrawerOpen = false }
+            )
+        }
     }
 
     val currentEmergencyState = emergencyState
@@ -451,41 +484,145 @@ private fun AnimatedCircleButton(onClick: () -> Unit) {
     }
 }
 @Composable
-private fun DrawerContent(
-    drawerState: DrawerState,
-    onDestinationClick: (String) -> Unit
+private fun RightSideDrawerContent(
+    profile: Profile?,
+    onDestinationClick: (String) -> Unit,
+    onClose: () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-
-    Column(
+    Surface(
         modifier = Modifier
             .fillMaxHeight()
-            .fillMaxWidth(0.7f)
+            .widthIn(min = 280.dp, max = 320.dp)
             .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {},
+        shape = MaterialTheme.shapes.extraLarge.copy(topEnd = CornerSize(0.dp), bottomEnd = CornerSize(0.dp)),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 6.dp
     ) {
-        DrawerItem("Profil", Routes.PROFILE, drawerState, onDestinationClick)
-        DrawerItem("Bağlantılarım", Routes.CONTACTS, drawerState, onDestinationClick)
-        DrawerItem("Ayarlar", Routes.SETTINGS, drawerState, onDestinationClick)
-        DrawerItem("Acil Mesaj Geçmişi", Routes.EMERGENCY_HISTORY, drawerState, onDestinationClick)
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(24.dp)
+        ) {
+            // Header
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp)
+            ) {
+                if (profile?.profilePhoto.isNullOrEmpty()) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Profile",
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(12.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = profile?.profilePhoto),
+                        contentDescription = "Profile Image",
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.size(16.dp))
+                
+                Column {
+                    Text(
+                        text = profile?.name ?: "Kullanıcı",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "Profili Düzenle",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.clickable {
+                            onClose()
+                            onDestinationClick(Routes.PROFILE)
+                        }
+                    )
+                }
+            }
+
+            Divider(color = MaterialTheme.colorScheme.outlineVariant)
+            Spacer(modifier = Modifier.size(16.dp))
+
+            // Items
+            DrawerMenuItem(
+                label = "Profil",
+                icon = Icons.Outlined.Person,
+                onClick = {
+                    onClose()
+                    onDestinationClick(Routes.PROFILE)
+                }
+            )
+            DrawerMenuItem(
+                label = "Bağlantılarım",
+                icon = Icons.Default.Face,
+                onClick = {
+                    onClose()
+                    onDestinationClick(Routes.CONTACTS)
+                }
+            )
+            DrawerMenuItem(
+                label = "Acil Mesaj Geçmişi",
+                icon = Icons.Default.List,
+                onClick = {
+                    onClose()
+                    onDestinationClick(Routes.EMERGENCY_HISTORY)
+                }
+            )
+            
+            Spacer(modifier = Modifier.weight(1f))
+            Divider(color = MaterialTheme.colorScheme.outlineVariant)
+            
+             DrawerMenuItem(
+                label = "Ayarlar",
+                icon = Icons.Outlined.Settings,
+                onClick = {
+                    onClose()
+                    onDestinationClick(Routes.SETTINGS)
+                }
+            )
+        }
     }
 }
 
 @Composable
-private fun DrawerItem(
+private fun DrawerMenuItem(
     label: String,
-    route: String,
-    drawerState: DrawerState,
-    onDestinationClick: (String) -> Unit
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    onClick: () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-    TextButton(
-        onClick = {
-            scope.launch { drawerState.close() }
-            onDestinationClick(route)
-        },
-        modifier = Modifier.fillMaxWidth()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(label, style = MaterialTheme.typography.bodyMedium)
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }

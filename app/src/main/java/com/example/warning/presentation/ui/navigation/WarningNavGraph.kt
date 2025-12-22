@@ -187,7 +187,13 @@ fun WarningNavGraph(
 
         // Ayarlar Ekranı
         composable(Routes.SETTINGS) {
-            SettingsScreen()
+            SettingsScreen(
+                onLogout = {
+                    navController.navigate(Routes.SIGN_IN) {
+                        popUpTo(0)
+                    }
+                }
+            )
         }
 
         // Bağlantılar/Kişiler Ekranı

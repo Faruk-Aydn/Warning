@@ -25,6 +25,8 @@ import com.example.warning.presentation.ui.screens.register.SignInScreen
 import com.example.warning.presentation.ui.screens.register.SignUpScreen
 import com.example.warning.presentation.ui.theme.WarningTheme
 import com.google.firebase.firestore.FirebaseFirestore
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,7 +37,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            WarningTheme {
+            val mainViewModel: com.example.warning.presentation.viewModel.MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+            val isDarkTheme by mainViewModel.isDarkTheme.collectAsState(initial = false)
+
+            WarningTheme(darkTheme = isDarkTheme) {
                 val navController = rememberNavController()
                 WarningNavGraph(
                     modifier = Modifier.fillMaxSize(),
