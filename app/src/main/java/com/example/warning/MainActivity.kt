@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.warning.presentation.ui.navigation.WarningNavGraph
 import com.example.warning.presentation.ui.screens.AddContactScreen
 import com.example.warning.presentation.ui.screens.ContactLinkedScreen
 import com.example.warning.presentation.ui.screens.EmergencyHistoryScreen
@@ -35,72 +36,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WarningTheme {
-                AppNavigation()
-                //                WarningNavGraph(modifier = Modifier.fillMaxSize())
-            }
-        }
-    }
-}
-
-@Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
-
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Routes.Splash,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-
-            composable(route = Routes.AddContact) {
-                AddContactScreen(navController)
-            }
-            composable(Routes.Splash) {
-                SplashScreen(
-                    navController = navController
-                )
-            }
-            composable(Routes.SignIn) {
-                SignInScreen(
-                    navController = navController
-                )
-            }
-
-            composable(Routes.SignUp) {
-                SignUpScreen(
-                    navController = navController
-                )
-            }
-            composable(Routes.Main) {
-                MainScreen(
-                    navController = navController
-                )
-            }
-            composable (Routes.Profile){
-                ProfileScreen(
-                    navController = navController
-                )
-            }
-            composable(Routes.Settings){
-                SettingsScreen()
-            }
-            composable(Routes.Contacts) {
-                ContactLinkedScreen(
-                    navController= navController
-                )
-            }
-            composable(Routes.EmergencyHistory) {
-                EmergencyHistoryScreen(
+                val navController = rememberNavController()
+                WarningNavGraph(
+                    modifier = Modifier.fillMaxSize(),
                     navController = navController
                 )
             }
         }
     }
 }
-
 
 /*
 📁 app

@@ -49,7 +49,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,26 +62,29 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.warning.domain.usecase.EmergencyState
 import androidx.compose.ui.graphics.Color
 import com.example.warning.presentation.ui.theme.AppColorScheme
-import com.example.warning.presentation.viewModel.ContactListenerViewmodel
-import com.example.warning.presentation.viewModel.EmergencyMessageViewModel
-import com.example.warning.presentation.viewModel.ProfileListenerViewModel
+import com.example.warning.domain.model.Profile
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.example.warning.presentation.ui.navigation.Routes
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    navController: NavHostController,
-    viewModel: ProfileListenerViewModel = hiltViewModel(),
-    contactVm: ContactListenerViewmodel = hiltViewModel(),
-    emergencyViewModel: EmergencyMessageViewModel = hiltViewModel()
+    profile: Profile?,
+    contactCount: Int,
+    emergencyState: EmergencyState,
+    onProfileClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
+    onContactsClick: () -> Unit,
+    onDrawerDestinationClick: (String) -> Unit,
+    onEmergencyClick: () -> Unit,
+    onEmergencyDialogDismiss: () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -138,16 +140,13 @@ fun MainScreen(
         }
     }
 
-    val profile by viewModel.profileState.collectAsState()
-    val contacts by contactVm.contacts.collectAsState()
-    val emergencyState by emergencyViewModel.emergencyMessageState.collectAsState()
-
-    val contactCount = contacts.size
-
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            DrawerContent(navController = navController, drawerState = drawerState)
+            DrawerContent(
+                drawerState = drawerState,
+                onDestinationClick = { route -> onDrawerDestinationClick(route) }
+            )
         }
     ) {
         Scaffold(
@@ -157,7 +156,7 @@ fun MainScreen(
                     navigationIcon = {
                         Row {
                             IconButton(onClick = {
-                                navController.navigate("profile")
+                                onProfileClick()
                             }) {
                                 if (profile?.profilePhoto.isNullOrEmpty()) {
                                     Icon(
@@ -201,7 +200,7 @@ fun MainScreen(
                                 }
                             }
                             IconButton(onClick = {
-                                navController.navigate("NotifiScreen")
+                                onNotificationsClick()
                             }) {
                                 Icon(
                                     Icons.Default.Notifications,
@@ -250,11 +249,7 @@ fun MainScreen(
 
                     Spacer(modifier = Modifier.size(32.dp))
 
-                    AnimatedCircleButton(
-                        onClick = {
-                            emergencyViewModel.sendEmergencyMessage()
-                        }
-                    )
+                    AnimatedCircleButton(onClick = onEmergencyClick)
                 }
 
                 Surface(
@@ -277,9 +272,7 @@ fun MainScreen(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
-                                .clickable {
-                                    navController.navigate(route = Routes.Contacts)
-                                }
+                                .clickable { onContactsClick() }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Person,
@@ -365,7 +358,7 @@ fun MainScreen(
 
         is EmergencyState.Success -> {
             AlertDialog(
-                onDismissRequest = { emergencyViewModel.resetState() },
+                onDismissRequest = onEmergencyDialogDismiss,
                 title = { Text("Başarılı") },
                 text = {
                     Text(
@@ -374,7 +367,7 @@ fun MainScreen(
                     )
                 },
                 confirmButton = {
-                    Button(onClick = { emergencyViewModel.resetState() }) {
+                    Button(onClick = onEmergencyDialogDismiss) {
                         Text("Tamam")
                     }
                 }
@@ -383,11 +376,11 @@ fun MainScreen(
 
         is EmergencyState.Error -> {
             AlertDialog(
-                onDismissRequest = { emergencyViewModel.resetState() },
+                onDismissRequest = onEmergencyDialogDismiss,
                 title = { Text("Hata") },
                 text = { Text(currentEmergencyState.message) },
                 confirmButton = {
-                    Button(onClick = { emergencyViewModel.resetState() }) {
+                    Button(onClick = onEmergencyDialogDismiss) {
                         Text("Tamam")
                     }
                 }
@@ -395,39 +388,6 @@ fun MainScreen(
         }
 
         EmergencyState.Idle -> Unit
-    }
-}
-
-@Composable
-private fun DrawerContent(navController: NavHostController, drawerState: DrawerState) {
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.7f)
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
-    ) {
-        TextButton(onClick = { navController.navigate("ProfileScreen") }) {
-            Text("Profil", style = MaterialTheme.typography.bodyMedium)
-        }
-        TextButton(onClick = { navController.navigate("NotifiScreen") }) {
-            Text("Bildirimler", style = MaterialTheme.typography.bodyMedium)
-        }
-        TextButton(onClick = { navController.navigate("ContactListScreen") }) {
-            Text("Bağlantılarım", style = MaterialTheme.typography.bodyMedium)
-        }
-        TextButton(onClick = { navController.navigate("LinkedListScreen") }) {
-            Text("Linked", style = MaterialTheme.typography.bodyMedium)
-        }
-        TextButton(onClick = { navController.navigate("RequestScreen") }) {
-            Text("İstekler", style = MaterialTheme.typography.bodyMedium)
-        }
-        TextButton(onClick = { navController.navigate("SettingsScreen") }) {
-            Text("Ayarlar", style = MaterialTheme.typography.bodyMedium)
-        }
-        TextButton(onClick = { navController.navigate(Routes.EmergencyHistory) }) {
-            Text("Acil Mesaj Geçmişi", style = MaterialTheme.typography.bodyMedium)
-        }
     }
 }
 
@@ -488,5 +448,44 @@ private fun AnimatedCircleButton(onClick: () -> Unit) {
                 modifier = Modifier.size(48.dp)
             )
         }
+    }
+}
+@Composable
+private fun DrawerContent(
+    drawerState: DrawerState,
+    onDestinationClick: (String) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(0.7f)
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(16.dp)
+    ) {
+        DrawerItem("Profil", Routes.PROFILE, drawerState, onDestinationClick)
+        DrawerItem("Bağlantılarım", Routes.CONTACTS, drawerState, onDestinationClick)
+        DrawerItem("Ayarlar", Routes.SETTINGS, drawerState, onDestinationClick)
+        DrawerItem("Acil Mesaj Geçmişi", Routes.EMERGENCY_HISTORY, drawerState, onDestinationClick)
+    }
+}
+
+@Composable
+private fun DrawerItem(
+    label: String,
+    route: String,
+    drawerState: DrawerState,
+    onDestinationClick: (String) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    TextButton(
+        onClick = {
+            scope.launch { drawerState.close() }
+            onDestinationClick(route)
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(label, style = MaterialTheme.typography.bodyMedium)
     }
 }
