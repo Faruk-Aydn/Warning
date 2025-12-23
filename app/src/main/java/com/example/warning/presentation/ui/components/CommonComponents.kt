@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.warning.presentation.ui.theme.AppColorScheme
 
 @Composable
 fun PrimaryButton(
@@ -23,8 +22,8 @@ fun PrimaryButton(
             .fillMaxWidth()
             .height(52.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = AppColorScheme.primary,
-            contentColor = AppColorScheme.neutralLight
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ),
         shape = MaterialTheme.shapes.medium
     ) {
