@@ -18,6 +18,10 @@ class LinkedActionsUseCase @Inject constructor(
     private val profileRepository: ProfileRepository
 ) {
     suspend fun accept(contactId: String): Flow<LinkedActionResult> = flow {
+        if (contactId.isBlank()) {
+            emit(LinkedActionResult.Error("İstek bulunamadı"))
+            return@flow
+        }
         emit(LinkedActionResult.Loading)
         val me = profileRepository.getCurrentUserOnce()
         if (me == null) {
@@ -38,6 +42,10 @@ class LinkedActionsUseCase @Inject constructor(
     }
 
     suspend fun delete(contactId: String): Flow<LinkedActionResult> = flow {
+        if (contactId.isBlank()) {
+            emit(LinkedActionResult.Error("Kayıt bulunamadı"))
+            return@flow
+        }
         emit(LinkedActionResult.Loading)
         val ok = firebaseRepository.deleteLinked(contactId)
         if (!ok) {

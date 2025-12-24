@@ -1,0 +1,127 @@
+[debug] [2025-12-24T16:30:31.445Z] ----------------------------------------------------------------------
+[debug] [2025-12-24T16:30:31.458Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ASUS\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start
+[debug] [2025-12-24T16:30:31.459Z] CLI Version:   14.27.0
+[debug] [2025-12-24T16:30:31.459Z] Platform:      win32
+[debug] [2025-12-24T16:30:31.459Z] Node Version:  v22.15.0
+[debug] [2025-12-24T16:30:31.459Z] Time:          Wed Dec 24 2025 19:30:31 GMT+0300 (GMT+03:00)
+[debug] [2025-12-24T16:30:31.459Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-12-24T16:30:31.461Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2025-12-24T16:30:31.663Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-12-24T16:30:31.663Z] > authorizing via signed-in user (farukaydin8245@gmail.com)
+[debug] [2025-12-24T16:30:31.759Z] java version "21" 2023-09-19 LTS
+Java(TM) SE Runtime Environment (build 21+35-LTS-2513)
+Java HotSpot(TM) 64-Bit Server VM (build 21+35-LTS-2513, mixed mode, sharing)
+
+[debug] [2025-12-24T16:30:31.797Z] Parsed Java major version: 21
+[info] i  emulators: Starting emulators: auth, functions, firestore, extensions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, firestore, extensions"}}
+[debug] [2025-12-24T16:30:31.799Z] Checked if tokens are valid: false, expires at: 1766511383212
+[debug] [2025-12-24T16:30:31.799Z] Checked if tokens are valid: false, expires at: 1766511383212
+[debug] [2025-12-24T16:30:31.799Z] > refreshing access token with scopes: []
+[debug] [2025-12-24T16:30:31.801Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-12-24T16:30:31.801Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-12-24T16:30:32.253Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-12-24T16:30:32.253Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-12-24T16:30:32.258Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 [none]
+[debug] [2025-12-24T16:30:32.260Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2025-12-24T16:30:32.260Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2025-12-24T16:30:33.452Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 200
+[debug] [2025-12-24T16:30:33.453Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 {"projectNumber":"557249414775","projectId":"warning-5d457","lifecycleState":"ACTIVE","name":"Warning","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-07-08T17:47:05.745971Z"}
+[debug] [2025-12-24T16:30:33.465Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-24T16:30:33.465Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-24T16:30:33.465Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-24T16:30:33.465Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-24T16:30:33.465Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2025-12-24T16:30:33.469Z] Emulator locator file path: C:\Users\ASUS\AppData\Local\Temp\hub-warning-5d457.json
+[debug] [2025-12-24T16:30:33.469Z] [hub] writing locator at C:\Users\ASUS\AppData\Local\Temp\hub-warning-5d457.json
+[debug] [2025-12-24T16:30:33.473Z] [Extensions] Started Extensions emulator, this is a noop.
+[debug] [2025-12-24T16:30:33.477Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-24T16:30:33.477Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-24T16:30:33.477Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-24T16:30:33.477Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] !  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, database, hosting, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mapphosting, database, hosting, pubsub, storage, dataconnect\u001b[22m"}}
+[debug] [2025-12-24T16:30:33.601Z] defaultcredentials: writing to file C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json
+[debug] [2025-12-24T16:30:33.605Z] Setting GAC to C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\ASUS\\AppData\\Roaming\\firebase\\farukaydin8245_gmail_com_application_default_credentials.json"}}
+[debug] [2025-12-24T16:30:33.606Z] Checked if tokens are valid: true, expires at: 1766597431253
+[debug] [2025-12-24T16:30:33.606Z] Checked if tokens are valid: true, expires at: 1766597431253
+[debug] [2025-12-24T16:30:33.606Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig [none]
+[debug] [2025-12-24T16:30:34.275Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig 200
+[debug] [2025-12-24T16:30:34.276Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig {"projectId":"warning-5d457","storageBucket":"warning-5d457.firebasestorage.app"}
+[warn] !  firestore: Cloud Firestore Emulator does not support multiple databases yet. {"metadata":{"emulator":{"name":"firestore"},"message":"Cloud Firestore Emulator does not support multiple databases yet."}}
+[warn] !  firestore: Did not find a Cloud Firestore rules file specified in a firebase.json config file. {"metadata":{"emulator":{"name":"firestore"},"message":"Did not find a Cloud Firestore rules file specified in a firebase.json config file."}}
+[warn] !  firestore: The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration. {"metadata":{"emulator":{"name":"firestore"},"message":"The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration."}}
+[debug] [2025-12-24T16:30:34.287Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2025-12-24T16:30:34.288Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
+[debug] [2025-12-24T16:30:34.288Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","C:\\Users\\ASUS\\.cache\\firebase\\emulators\\cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","warning-5d457","--single_project_mode",true,"--functions_emulator","127.0.0.1:5001"],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8080} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\ASUS\\\\.cache\\\\firebase\\\\emulators\\\\cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"warning-5d457\",\"--single_project_mode\",true,\"--functions_emulator\",\"127.0.0.1:5001\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8080}"}}
+[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
+[info] +  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
+[debug] [2025-12-24T16:30:44.176Z] [Extensions] Connecting Extensions emulator, this is a noop.
+[info] i  functions: Watching "C:\Warning\warning-backend" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"C:\\Warning\\warning-backend\" for Cloud Functions..."}}
+[debug] [2025-12-24T16:30:44.187Z] Validating nodejs source
+[warn] !  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] !  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2025-12-24T16:30:45.862Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase": "^12.7.0",
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^6.0.1",
+    "function": "^0.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2025-12-24T16:30:45.863Z] Building nodejs source
+[debug] [2025-12-24T16:30:45.863Z] Failed to find version of module node: reached end of search path C:\Warning\warning-backend\node_modules
+[info] +  functions: Using node@22 from host. 
+[debug] [2025-12-24T16:30:45.865Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-12-24T16:30:45.871Z] Found firebase-functions binary at 'C:\Warning\warning-backend\node_modules\.bin\firebase-functions'
+[info] Serving at port 8568
+
+[debug] [2025-12-24T16:30:46.673Z] Got response from /__/functions.yaml {"endpoints":{"sendEmergency":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"httpsTrigger":{},"entryPoint":"sendEmergency"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[debug] [2025-12-24T16:30:50.713Z] defaultcredentials: writing to file C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json
+[debug] [2025-12-24T16:30:50.714Z] Setting GAC to C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\ASUS\\AppData\\Roaming\\firebase\\farukaydin8245_gmail_com_application_default_credentials.json"}}
+[info] +  functions: Loaded functions definitions from source: sendEmergency. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: sendEmergency."}}
+[info] +  functions[us-central1-sendEmergency]: http function initialized (http://127.0.0.1:5001/warning-5d457/us-central1/sendEmergency). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://127.0.0.1:5001/warning-5d457/us-central1/sendEmergency)."}}
+[debug] [2025-12-24T16:30:50.724Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬──────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI              │
+├────────────────┼────────────────┼──────────────────────────────────┤
+│ Authentication │ 127.0.0.1:9099 │ http://127.0.0.1:4000/auth       │
+├────────────────┼────────────────┼──────────────────────────────────┤
+│ Functions      │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions  │
+├────────────────┼────────────────┼──────────────────────────────────┤
+│ Firestore      │ 127.0.0.1:8080 │ http://127.0.0.1:4000/firestore  │
+├────────────────┼────────────────┼──────────────────────────────────┤
+│ Extensions     │ 127.0.0.1:5001 │ http://127.0.0.1:4000/extensions │
+└────────────────┴────────────────┴──────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500, 9150
+┌─────────────────────────┬───────────────┬─────────────────────┐
+│ Extension Instance Name │ Extension Ref │ View in Emulator UI │
+└─────────────────────────┴───────────────┴─────────────────────┘
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 

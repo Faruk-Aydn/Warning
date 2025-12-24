@@ -27,6 +27,9 @@ class ContactListenerViewmodel @Inject constructor(
     private val _linked = MutableStateFlow<List<Linked>>(emptyList())
     val linked: StateFlow<List<Linked>> = _linked
 
+    private var contactsCollectStarted: Boolean = false
+    private var linkedCollectStarted: Boolean = false
+
     init {
         // Eğer uygulama açıldığında phoneNumber mevcutsa listener başlat
         viewModelScope.launch {
@@ -34,37 +37,41 @@ class ContactListenerViewmodel @Inject constructor(
                 if (profile != null) {
                     val phoneNumber = profile.phoneNumber
                     startContactListener(phoneNumber)
-
+                    startCollectContactsIfNeeded()
+                    startCollectLinkedIfNeeded()
                 }
             }
         }
     }
-    fun loadContact() {
+
+    private fun startCollectContactsIfNeeded() {
+        if (contactsCollectStarted) return
+        contactsCollectStarted = true
         viewModelScope.launch {
             profileUseCases.getAllContact().collectLatest {
-                if (it != null) {
-                    _contacts.value = it
-                }
+                _contacts.value = it ?: emptyList()
             }
         }
-        Log.i("loadContact", "listener yükledi")
+    }
+
+    private fun startCollectLinkedIfNeeded() {
+        if (linkedCollectStarted) return
+        linkedCollectStarted = true
         viewModelScope.launch {
             profileUseCases.getAllLinked().collectLatest {
-                if (it != null) {
-                    _linked.value = it
-                }
+                _linked.value = it ?: emptyList()
             }
         }
+    }
+
+    fun loadContact() {
+        startCollectContactsIfNeeded()
+        startCollectLinkedIfNeeded()
+        Log.i("loadContact", "listener yükledi")
         Log.i("loadLinked", "listener yükledi")
     }
     fun loadLinked() {
-        viewModelScope.launch {
-            profileUseCases.getAllLinked().collectLatest {
-                if (it != null) {
-                    _linked.value = it
-                }
-            }
-        }
+        startCollectLinkedIfNeeded()
         Log.i("loadLinked", "listener yükledi")
     }
 

@@ -28,10 +28,13 @@ class UserRealtimeSyncManager @Inject constructor(
                     Log.w("UserRealtimeSync", "Dinleme hatası", error)
                     return@addSnapshotListener
                 }
-                snapshot?.documents?.firstOrNull()?.toObject(UserDto::class.java)?.let { dto ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        Log.i("UserRealtimeSync", "Dinleme başlatıldı: ${dto.phoneNumber}")
-                        profileDao.insertProfile(dto.toEntity())
+                snapshot?.documents?.firstOrNull()?.let { doc ->
+                    doc.toObject(UserDto::class.java)?.let { dto ->
+                        dto.id = doc.id
+                        CoroutineScope(Dispatchers.IO).launch {
+                            Log.i("UserRealtimeSync", "Dinleme başlatıldı: ${dto.phoneNumber}")
+                            profileDao.insertProfile(dto.toEntity())
+                        }
                     }
                 }
 
