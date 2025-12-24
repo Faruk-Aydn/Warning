@@ -1,7 +1,6 @@
 package com.example.warning.presentation.ui.screens
 
 import android.util.Log
-import com.example.warning.presentation.ui.theme.AppColorScheme
 
 // - NavHostController : androidx.navigation.NavHostController (Navigation Compose)
 // - LaunchedEffect, delay  : compose runtime coroutine scope
@@ -19,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,8 +28,6 @@ import com.example.warning.domain.model.Profile
 import com.example.warning.presentation.viewModel.AuthViewModel
 import com.example.warning.presentation.viewModel.ContactListenerViewmodel
 import com.example.warning.presentation.viewModel.ProfileListenerViewModel
-import dagger.hilt.android.scopes.ViewScoped
-import okhttp3.internal.http2.Settings
 
 // Basit route sabitleri (NavGraph'teki route isimleri ile eşleşmeli)
 object Routes {
@@ -46,8 +45,8 @@ object Routes {
 /**
  * SplashScreen
  *
- * - Arka plan: AppColorScheme.BackgroundDark
- * - Ortadaki küçük ilerleme halkası: AppColorScheme.PrimaryRed
+ * - Arka plan: MaterialTheme.colorScheme.background
+ * - Ortadaki küçük ilerleme halkası: MaterialTheme.colorScheme.primary
  * - Açıldığında kısa süre görünür; sonra kullanıcı durumuna göre yönlendirir.
  *
  * NOT: Bu composable sadece arayüzü gösterir ve yönlendirme tetikler.
@@ -66,13 +65,13 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppColorScheme.backgroundDark), // merkezi renk dosyanızdan alınıyor
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         // Küçük bir CircularProgressIndicator (yükleniyor göstergesi)
         CircularProgressIndicator(
             modifier = Modifier.size(36.dp), // küçük boyut
-            color = AppColorScheme.primary, // merkezi renk dosyanızdan alınıyor
+            color = MaterialTheme.colorScheme.primary,
             strokeWidth = 3.dp
         )
     }

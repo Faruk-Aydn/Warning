@@ -123,4 +123,12 @@ object AppModule {
     ): EmergencyHistoryRepository {
         return EmergencyHistoryRepositoryImpl(emergencyHistoryDao)
     }
+
+    @Provides
+    @Singleton
+    fun provideThemeRepository(
+        @ApplicationContext context: Context
+    ): com.example.warning.domain.repository.ThemeRepository {
+        return com.example.warning.data.repository.ThemeRepositoryImpl(context)
+    }
 }

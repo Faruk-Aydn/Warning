@@ -11,14 +11,15 @@ import com.example.warning.data.remote.listener.LinkedRealtimeSyncManager
 import com.example.warning.data.remote.listener.UserRealtimeSyncManager
 import com.example.warning.data.repository.FirebaseRepositoryImpl
 import com.example.warning.domain.repository.FirebaseRepository
+
 import com.google.firebase.auth.FirebaseAuth
+import com.example.warning.BuildConfig
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -27,13 +28,22 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth {
-        return FirebaseAuth.getInstance()
+        val auth = FirebaseAuth.getInstance()
+        if (BuildConfig.DEBUG) {
+            auth.useEmulator("10.0.2.2", 9099)
+            auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
+        }
+        return auth
     }
 
     @Provides
     @Singleton
     fun provideFirestore(): FirebaseFirestore {
-        return FirebaseFirestore.getInstance()
+        val firestore = FirebaseFirestore.getInstance()
+        if (BuildConfig.DEBUG) {
+            firestore.useEmulator("10.0.2.2", 8080)
+        }
+        return firestore
     }
 
     @Provides

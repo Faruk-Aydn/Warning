@@ -32,17 +32,17 @@ class LinkedRealtimeSyncManager @Inject constructor(
                     return@addSnapshotListener
                 }
 
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val linkedList = snapshot.documents.mapNotNull { doc ->
-                        doc.toObject(ContactDto::class.java)?.let { dto ->
-                            dto.toLinked().toEntity()
-                        }
-                    }
+                if (snapshot == null) return@addSnapshotListener
 
-                    CoroutineScope(Dispatchers.IO).launch {
-                        linkedDao.insertLinked(linkedList)
-
+                val linkedList = snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(ContactDto::class.java)?.let { dto ->
+                        dto.id = doc.id
+                        dto.toLinked().toEntity()
                     }
+                }
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    linkedDao.replaceAll(linkedList)
                 }
             }
         Log.i("LinkedSync", "LinkedSync dinleyici başlatıldı: $phone")

@@ -1,81 +1,50 @@
 package com.example.warning.presentation.ui.screens.register
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.warning.domain.model.Profile
-import com.example.warning.presentation.ui.theme.AppColorScheme
-import com.example.warning.presentation.viewModel.RegistrationViewModel
-import com.example.warning.presentation.viewModel.VerificationStep
-import com.example.warning.presentation.viewModel.VerificationViewModel
-import kotlinx.coroutines.launch
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import com.example.warning.presentation.ui.screens.Routes
-import com.example.warning.presentation.viewModel.ContactListenerViewmodel
-import com.example.warning.presentation.viewModel.ProfileListenerViewModel
-import com.example.warning.presentation.viewModel.UserRegistrationState
-import kotlinx.coroutines.CoroutineScope
+import com.example.warning.presentation.viewModel.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-// NOTE: Bu dosya SignUp ekranını içerir.
-// Dosya konumu: ui/screens/SignUpScreen.kt
-
-
-
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SignUpScreen(
-    navController: NavHostController ,
+    navController: NavHostController,
     verificationViewModel: VerificationViewModel = hiltViewModel(),
     registrationViewModel: RegistrationViewModel = hiltViewModel(),
     userview: ProfileListenerViewModel = hiltViewModel(),
@@ -86,38 +55,31 @@ fun SignUpScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    // Konum izin kontrolü
     fun checkLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
             android.Manifest.permission.ACCESS_FINE_LOCATION
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(
-                    context,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
     }
 
-    // --- UI State ---
+    // State
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var selectedCountry by remember { mutableStateOf("+90") }
-    var countryQuery by remember { mutableStateOf("") }
-    val countryList = listOf("+1", "+90")
-
-    var locationPermission by remember { 
-        mutableStateOf(checkLocationPermission()) 
-    }
+    var countryExpanded by remember { mutableStateOf(false) }
+    var locationPermission by remember { mutableStateOf(checkLocationPermission()) }
     var contactPermission by remember { mutableStateOf(false) }
+    var verificationStep by remember { mutableStateOf(VerificationStep.EnterPhone) }
+    var codeInput by remember { mutableStateOf("") }
 
-    // Konum izni isteme launcher
+    val isLoading by remember { derivedStateOf { verificationViewModel.isLoading } }
+    val isVerified by remember { derivedStateOf { verificationViewModel.isVerified } }
+    val state by registrationViewModel.state.collectAsState()
+
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val fineLocationGranted = permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        val coarseLocationGranted = permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
-        locationPermission = fineLocationGranted || coarseLocationGranted
-        
+        locationPermission = permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] ?: false
         if (!locationPermission) {
             coroutineScope.launch {
                 snackbarHostState.showSnackbar("Konum izni verilmedi")
@@ -125,475 +87,895 @@ fun SignUpScreen(
         }
     }
 
-    var expanded by remember { mutableStateOf(false) }
-    var verificationStep by remember { mutableStateOf(VerificationStep.EnterPhone) }
-    var codeInput by remember { mutableStateOf("") }
-
-    val isLoading by remember { derivedStateOf { verificationViewModel.isLoading } }
-    val isVerified by remember { derivedStateOf { verificationViewModel.isVerified } }
-    val errorMessage by remember { derivedStateOf { verificationViewModel.errorMessage } }
-
-    // --- Registration State ---
-    val state by registrationViewModel.state.collectAsState()
-    // Flow'u Compose state'e çeviriyoruz
-
     LaunchedEffect(state) {
-        if(state is UserRegistrationState.RegistrationSuccess) {
-            navController.navigate("main"){
+        if (state is UserRegistrationState.RegistrationSuccess) {
+            navController.navigate("main") {
                 launchSingleTop = true
                 popUpTo(Routes.SignUp) { inclusive = true }
             }
         }
     }
 
-    when (state) {
-        is UserRegistrationState.CheckingRegistration -> {
-            Log.i("kontrol", "Kayıt kontrol ediliyor...")
-            // burada loading gösterebilirsin
-        }
-
-        is UserRegistrationState.RegistrationConfirmed -> {
-            Log.i("ontrol", "Firebase kaydı bekleniyor...")
-            // belki "Kayıt yapılıyor..." text
-        }
-
-        is UserRegistrationState.LoadingFromRoom -> {
-            Log.i("Veriler yükleniyor...", "")
-            // burada progress bar
-        }
-
-        is UserRegistrationState.Error -> {
-            val message = (state as UserRegistrationState.Error).message
-            Log.w("Hata: ", message)
-            // hata mesajını ekranda göster
-        }
-
-        is UserRegistrationState.RegistrationSuccess -> {
-            // LaunchedEffect zaten yönlendirme yapıyor ama UI tarafında da info gösterebilirsin
-            Log.i("Success", "Kayıt başarılı!")
-        }
-
-        UserRegistrationState.Idle -> {
-            // İlk açılışta boş state, hiçbir şey göstermeyebilirsin
+    LaunchedEffect(isVerified) {
+        if (isVerified == true) {
+            verificationStep = VerificationStep.Verified
         }
     }
 
+    // Animated gradient background
+    val infiniteTransition = rememberInfiniteTransition(label = "gradient")
+    val gradientOffset by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 15000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "gradient offset"
+    )
+
+    val animatedBrush = Brush.linearGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f),
+            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.10f),
+            MaterialTheme.colorScheme.background,
+        ),
+        start = Offset(gradientOffset, gradientOffset),
+        end = Offset(gradientOffset + 600f, gradientOffset + 600f)
+    )
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color.Transparent
     ) { padding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(animatedBrush)
                 .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
-                Text(
-                    text = "Kayıt Ol",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(32.dp))
 
-                UserFormSection(
-                    name = name,
-                    onNameChange = { name = it },
-                    phone = phone,
-                    onPhoneChange = { input ->
-                        val digits = input.filter { it.isDigit() }
-                        if (digits.length <= 10) phone = digits
-                    },
-                    selectedCountry = selectedCountry,
-                    onCountryChange = { selectedCountry = it },
-                    countryQuery = countryQuery,
-                    onCountryQueryChange = { countryQuery = it },
-                    expanded = expanded,
-                    onExpandedChange = { expanded = it },
-                    countryList = countryList,
-                    locationPermission = locationPermission,
-                    onLocationPermissionChange = { locationPermission = it },
-                    contactPermission = contactPermission,
-                    onContactPermissionChange = { contactPermission = it },
-                    onRequestLocationPermissions = { permissions ->
-                        locationPermissionLauncher.launch(permissions)
-                    }
-                )
+                // Hero Section
+                PremiumSignUpHero()
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                when (verificationStep) {
-                    VerificationStep.EnterPhone -> {
-                        PhoneVerificationSection(
-                            isLoading = isLoading,
-                            phone = phone,
-                            selectedCountry = selectedCountry,
-                            name = name,
-                            activity = activity,
-                            registrationViewModel = registrationViewModel,
-                            verificationViewModel = verificationViewModel,
-                            snackbarHostState = snackbarHostState,
-                            coroutineScope = coroutineScope,
-                            onVerificationStepChange = { verificationStep = it }
-                        )
-                    }
-
-                    VerificationStep.EnterCode -> {
-                        CodeVerificationSection(
-                            codeInput = codeInput,
-                            onCodeChange = { codeInput = it },
-                            selectedCountry = selectedCountry,
-                            activity = activity,
-                            verificationViewModel = verificationViewModel,
-                            snackbarHostState = snackbarHostState,
-                            coroutineScope = coroutineScope,
-                            phone = phone
-                        )
-                    }
-
-                    VerificationStep.Verified -> {
-                        Text(
-                            "Doğrulama başarılı, yönlendiriliyorsunuz...",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        LaunchedEffect(Unit) {   // sadece 1 kere çalışır
-                            registrationViewModel.registerUser(
-                                profile = Profile(
-                                    id = null,
-                                    phoneNumber = phone,
-                                    country = selectedCountry,
-                                    profilePhoto = "",
+                // Main Content Card
+                GlassCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    shadowElevation = 16.dp
+                ) {
+                    AnimatedContent(
+                        targetState = verificationStep,
+                        transitionSpec = {
+                            fadeIn(animationSpec = tween(300)) with
+                                    fadeOut(animationSpec = tween(300))
+                        },
+                        label = "verification step"
+                    ) { step ->
+                        when (step) {
+                            VerificationStep.EnterPhone -> {
+                                EnterPhoneContent(
                                     name = name,
-                                    emergencyMessage = null,
+                                    onNameChange = { name = it },
+                                    phone = phone,
+                                    onPhoneChange = { phone = it },
+                                    selectedCountry = selectedCountry,
+                                    countryExpanded = countryExpanded,
+                                    onCountryExpandedChange = { countryExpanded = it },
+                                    onCountrySelected = { selectedCountry = it; countryExpanded = false },
                                     locationPermission = locationPermission,
-                                    fcmToken = null
-                                )
-                            )
-                            delay(500)
-                        }
-                    }
-                }
-
-
-                LaunchedEffect(isVerified) {
-                    if (isVerified == true) {
-                    verificationStep = VerificationStep.Verified
-                    Log.i("signup ", "registrationSuccess is true. loading is start")
-                    }
-                    if (isVerified == false) {
-                        coroutineScope.launch { snackbarHostState.showSnackbar(errorMessage ?: "Doğrulama başarısız") }
-                    }
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                BottomNavigationSection(navController)
-            }
-
-
-        }
-    }
-}
-
-@Composable
-fun PhoneVerificationSection(
-    isLoading: Boolean,
-    phone: String,
-    selectedCountry: String,
-    name: String,
-    activity: Activity?,
-    registrationViewModel: RegistrationViewModel,
-    verificationViewModel: VerificationViewModel,
-    snackbarHostState: SnackbarHostState,
-    coroutineScope: CoroutineScope,
-    onVerificationStepChange: (VerificationStep) -> Unit
-) {
-    Button(
-        onClick = {
-            when {
-                name.isBlank() -> coroutineScope.launch { snackbarHostState.showSnackbar("İsim boş bırakılamaz") }
-                phone.length != 10 -> coroutineScope.launch { snackbarHostState.showSnackbar("Telefon 10 hane olmalı") }
-                else -> {
-                    val fullNumber = selectedCountry + phone
-                    coroutineScope.launch {
-                        try {
-                            val exists = registrationViewModel.checkingUser(phone).await()
-                            if (exists) {
-                                snackbarHostState.showSnackbar("Bu telefon zaten kayıtlı")
-                            } else {
-                                coroutineScope.launch {
-                                    if (activity != null) {
-                                        verificationViewModel.sendVerificationCode(
-                                            phoneNumber = fullNumber,
-                                            activity = activity,
-                                            onSuccess = { onVerificationStepChange(VerificationStep.EnterCode) },
-                                            onFailure = {
+                                    onLocationPermissionChange = {
+                                        if (it) {
+                                            locationPermissionLauncher.launch(
+                                                arrayOf(
+                                                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                                                )
+                                            )
+                                        } else {
+                                            locationPermission = false
+                                        }
+                                    },
+                                    contactPermission = contactPermission,
+                                    onContactPermissionChange = { contactPermission = it },
+                                    isLoading = isLoading,
+                                    onSubmit = {
+                                        when {
+                                            name.isBlank() -> coroutineScope.launch {
+                                                snackbarHostState.showSnackbar("İsim boş bırakılamaz")
+                                            }
+                                            phone.length != 10 -> coroutineScope.launch {
+                                                snackbarHostState.showSnackbar("Telefon 10 hane olmalı")
+                                            }
+                                            else -> {
+                                                val fullNumber = selectedCountry + phone
                                                 coroutineScope.launch {
-                                                    snackbarHostState.showSnackbar("Doğrulama kodu gönderilemedi")
+                                                    try {
+                                                        val exists = registrationViewModel.checkingUser(phone).await()
+                                                        if (exists) {
+                                                            snackbarHostState.showSnackbar("Bu telefon zaten kayıtlı")
+                                                        } else {
+                                                            if (activity != null) {
+                                                                verificationViewModel.sendVerificationCode(
+                                                                    phoneNumber = fullNumber,
+                                                                    activity = activity,
+                                                                    onSuccess = { verificationStep = VerificationStep.EnterCode },
+                                                                    onFailure = {
+                                                                        coroutineScope.launch {
+                                                                            snackbarHostState.showSnackbar("Kod gönderilemedi")
+                                                                        }
+                                                                    }
+                                                                )
+                                                            }
+                                                        }
+                                                    } catch (e: Exception) {
+                                                        snackbarHostState.showSnackbar("Bir hata oluştu")
+                                                    }
                                                 }
                                             }
-                                        )
-                                    } else {
-                                        coroutineScope.launch {
-                                            snackbarHostState.showSnackbar("Activity bulunamadı")
                                         }
                                     }
-                                }
-
+                                )
                             }
-                        } catch (e: Exception) {
-                            Log.e("SignUp", "checkUser hata: ${e.message}")
-                            snackbarHostState.showSnackbar("Kullanıcı kontrolünde hata")
+
+                            VerificationStep.EnterCode -> {
+                                EnterCodeContent(
+                                    codeInput = codeInput,
+                                    onCodeChange = { codeInput = it },
+                                    onVerify = {
+                                        verificationViewModel.verifyCode(codeInput)
+                                    },
+                                    onResend = {
+                                        val fullNumber = selectedCountry + phone
+                                        if (activity != null) {
+                                            verificationViewModel.sendVerificationCode(
+                                                phoneNumber = fullNumber,
+                                                activity = activity,
+                                                onSuccess = {
+                                                    coroutineScope.launch {
+                                                        snackbarHostState.showSnackbar("Kod tekrar gönderildi")
+                                                    }
+                                                },
+                                                onFailure = {
+                                                    coroutineScope.launch {
+                                                        snackbarHostState.showSnackbar("Tekrar gönderilemedi")
+                                                    }
+                                                }
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+
+                            VerificationStep.Verified -> {
+                                VerifiedContent()
+                                LaunchedEffect(Unit) {
+                                    registrationViewModel.registerUser(
+                                        profile = Profile(
+                                            id = null,
+                                            phoneNumber = phone,
+                                            country = selectedCountry,
+                                            profilePhoto = "",
+                                            name = name,
+                                            emergencyMessage = null,
+                                            locationPermission = locationPermission,
+                                            fcmToken = null
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Sign In Link
+                PremiumSignInLink(
+                    onClick = {
+                        navController.navigate("SignIn") {
+                            launchSingleTop = true
+                            popUpTo(Routes.SignUp) { inclusive = true }
+                        }
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
             }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(52.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = AppColorScheme.primary,
-            contentColor = AppColorScheme.neutralLight
-        )
-    ) {
-        if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.size(20.dp))
-        } else {
-            Text(
-                "Kayıt Ol",
-                style = MaterialTheme.typography.labelLarge
-            )
         }
     }
 }
 
 @Composable
-fun UserFormSection(
+private fun PremiumSignUpHero() {
+    val infiniteTransition = rememberInfiniteTransition(label = "hero rotation")
+    val rotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(20000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "rotation"
+    )
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Box(
+            modifier = Modifier.size(80.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .graphicsLayer { rotationZ = rotation }
+                    .background(
+                        Brush.sweepGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.tertiary,
+                                MaterialTheme.colorScheme.primary,
+                            )
+                        ),
+                        CircleShape
+                    )
+            )
+
+            Surface(
+                modifier = Modifier.size(72.dp),
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                tonalElevation = 4.dp
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        Icons.Default.PersonAdd,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+            }
+        }
+
+        Text(
+            text = "Hesap Oluştur",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
+        Text(
+            text = "Acil durum sistemi için kayıt olun",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EnterPhoneContent(
     name: String,
     onNameChange: (String) -> Unit,
     phone: String,
     onPhoneChange: (String) -> Unit,
     selectedCountry: String,
-    onCountryChange: (String) -> Unit,
-    countryQuery: String,
-    onCountryQueryChange: (String) -> Unit,
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
-    countryList: List<String>,
+    countryExpanded: Boolean,
+    onCountryExpandedChange: (Boolean) -> Unit,
+    onCountrySelected: (String) -> Unit,
     locationPermission: Boolean,
     onLocationPermissionChange: (Boolean) -> Unit,
     contactPermission: Boolean,
     onContactPermissionChange: (Boolean) -> Unit,
-    onRequestLocationPermissions: ((Array<String>) -> Unit)? = null
+    isLoading: Boolean,
+    onSubmit: () -> Unit
 ) {
-    // İsim
-    OutlinedTextField(
-        value = name,
-        onValueChange = onNameChange,
-        label = { Text("İsim") },
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Next,
-            keyboardType = KeyboardType.Text
+    Column(
+        modifier = Modifier.padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        Text(
+            text = "Bilgileriniz",
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = MaterialTheme.colorScheme.onSurface
         )
-    )
 
-    Spacer(modifier = Modifier.height(12.dp))
+        PremiumNameInput(name = name, onNameChange = onNameChange)
 
-    // Ülke kodu + telefon
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box {
-            OutlinedButton(
-                onClick = { onExpandedChange(true) },
-                modifier = Modifier.height(56.dp)
+        PremiumCountryDropdown(
+            selectedCode = selectedCountry,
+            expanded = countryExpanded,
+            onExpandedChange = onCountryExpandedChange,
+            onCountrySelected = onCountrySelected
+        )
+
+        PremiumPhoneInput(phone = phone, onPhoneChange = onPhoneChange)
+
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+        Text(
+            text = "İzinler",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.SemiBold
+            ),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
+        PremiumPermissionRow(
+            icon = Icons.Default.LocationOn,
+            title = "Konum İzni",
+            subtitle = "Acil durumda konumunuzu paylaşın",
+            checked = locationPermission,
+            onCheckedChange = onLocationPermissionChange
+        )
+
+        PremiumPermissionRow(
+            icon = Icons.Default.Contacts,
+            title = "Rehber Erişimi",
+            subtitle = "Kişilerinizi senkronize edin",
+            checked = contactPermission,
+            onCheckedChange = onContactPermissionChange
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        PremiumButton(
+            text = "Devam Et",
+            icon = Icons.Default.ArrowForward,
+            onClick = onSubmit,
+            enabled = !isLoading && name.isNotBlank() && phone.length == 10,
+            isLoading = isLoading
+        )
+    }
+}
+
+@Composable
+private fun PremiumNameInput(name: String, onNameChange: (String) -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+        tonalElevation = 2.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(selectedCountry)
-                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Ülke kodu aç")
-                }
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(8.dp)
+                )
             }
 
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { onExpandedChange(false) }
-            ) {
-                OutlinedTextField(
-                    value = countryQuery,
-                    onValueChange = onCountryQueryChange,
-                    label = { Text("Ara") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth().padding(8.dp)
-                )
+            TextField(
+                value = name,
+                onValueChange = onNameChange,
+                modifier = Modifier.weight(1f),
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Medium
+                ),
+                placeholder = { Text("Adınız Soyadınız") },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Text
+                ),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                singleLine = true
+            )
+        }
+    }
+}
 
-                val filtered = if (countryQuery.isBlank()) countryList else countryList.filter { it.contains(countryQuery) }
-                filtered.forEach { code ->
-                    DropdownMenuItem(
-                        text = { Text(code) },
-                        onClick = {
-                            onCountryChange(code)
-                            onExpandedChange(false)
-                            onCountryQueryChange("")
-                        }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PremiumCountryDropdown(
+    selectedCode: String,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    onCountrySelected: (String) -> Unit
+) {
+    val countries = listOf(
+        "+90" to "🇹🇷 Türkiye",
+        "+1" to "🇺🇸 Amerika"
+    )
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { onExpandedChange(!expanded) }
+    ) {
+        Surface(
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+            tonalElevation = 2.dp
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                    ) {
+                        Icon(
+                            Icons.Default.Flag,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                    Text(
+                        text = countries.find { it.first == selectedCode }?.second ?: selectedCode,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
                     )
                 }
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             }
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
-
-        OutlinedTextField(
-            value = phone,
-            onValueChange = onPhoneChange,
-            label = { Text("Telefon (10 hane)") },
-            singleLine = true,
-            modifier = Modifier.weight(1f).height(56.dp),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
-        )
-    }
-
-    Spacer(modifier = Modifier.height(12.dp))
-
-    // İzinler
-    PermissionSwitchRow(
-        "Konum izni", 
-        locationPermission, 
-        onLocationPermissionChange,
-        onRequestLocationPermissions = onRequestLocationPermissions
-    )
-    PermissionSwitchRow("Rehber erişim izni", contactPermission, onContactPermissionChange)
-}
-
-@Composable
-fun PermissionSwitchRow(
-    label: String, 
-    checked: Boolean, 
-    onCheckedChange: (Boolean) -> Unit,
-    onRequestLocationPermissions: ((Array<String>) -> Unit)? = null
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(modifier = Modifier.weight(1f), text = label)
-        Switch(checked = checked, onCheckedChange = { newValue ->
-            if (label == "Konum izni" && newValue && onRequestLocationPermissions != null) {
-                // Konum izni switch'i açılıyorsa gerçek izin iste
-                // State güncelleme launcher callback'inde yapılacak
-                onRequestLocationPermissions(
-                    arrayOf(
-                        android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { onExpandedChange(false) }
+        ) {
+            countries.forEach { (code, name) ->
+                DropdownMenuItem(
+                    text = { Text(name) },
+                    onClick = { onCountrySelected(code) },
+                    leadingIcon = {
+                        if (code == selectedCode) {
+                            Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary)
+                        }
+                    }
                 )
-            } else if (label == "Konum izni" && !newValue) {
-                // Switch kapatılıyorsa state'i güncelle
-                onCheckedChange(false)
-            } else if (label != "Konum izni") {
-                // Konum izni değilse direkt state'i güncelle
-                onCheckedChange(newValue)
             }
-            // Konum izni açılıyorsa ve launcher null ise normal state güncellemesi
-            if (label == "Konum izni" && newValue && onRequestLocationPermissions == null) {
-                onCheckedChange(newValue)
-            }
-        })
-        if (checked) Icon(Icons.Default.Check, contentDescription = "$label onaylandı", modifier = Modifier.padding(start = 8.dp))
+        }
     }
 }
+
 @Composable
-fun CodeVerificationSection(
+private fun PremiumPhoneInput(phone: String, onPhoneChange: (String) -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+        tonalElevation = 2.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+            ) {
+                Icon(
+                    Icons.Default.Phone,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
+            TextField(
+                value = phone,
+                onValueChange = { input ->
+                    val filtered = input.filter { it.isDigit() }
+                    if (filtered.length <= 10) {
+                        onPhoneChange(filtered)
+                    }
+                },
+                modifier = Modifier.weight(1f),
+                textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                placeholder = { Text("5XX XXX XX XX") },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                singleLine = true
+            )
+
+            AnimatedVisibility(
+                visible = phone.isNotEmpty(),
+                enter = fadeIn() + scaleIn(),
+                exit = fadeOut() + scaleOut()
+            ) {
+                Text(
+                    text = "${phone.length}/10",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PremiumPermissionRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    subtitle: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = if (checked) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                }
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = if (checked) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Switch(checked = checked, onCheckedChange = onCheckedChange)
+        }
+    }
+}
+
+@Composable
+private fun EnterCodeContent(
     codeInput: String,
     onCodeChange: (String) -> Unit,
-    selectedCountry: String,
-    activity: Activity?,
-    verificationViewModel: VerificationViewModel,
-    snackbarHostState: SnackbarHostState,
-    coroutineScope: CoroutineScope,
-    phone: String
+    onVerify: () -> Unit,
+    onResend: () -> Unit
 ) {
-    OutlinedTextField(
-        value = codeInput,
-        onValueChange = { onCodeChange(it.filter { ch -> ch.isDigit() }) },
-        label = { Text("Doğrulama Kodu") },
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        modifier = Modifier.fillMaxWidth()
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+    Column(
+        modifier = Modifier.padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Button(
-            onClick = { verificationViewModel.verifyCode(codeInput) },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = AppColorScheme.primary,
-                contentColor = AppColorScheme.neutralLight
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                "Kodu Onayla",
-                style = MaterialTheme.typography.labelLarge
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.tertiaryContainer,
+                tonalElevation = 4.dp
+            ) {
+                Icon(
+                    Icons.Default.MarkEmailRead,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .size(32.dp)
+                )
+            }
+        }
+
+        Text(
+            text = "Kod Gönderildi",
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Text(
+            text = "Telefonunuza gelen 6 haneli kodu girin",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        PremiumCodeInput(code = codeInput, onCodeChange = onCodeChange)
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            PremiumButton(
+                text = "Doğrula",
+                icon = Icons.Default.CheckCircle,
+                onClick = onVerify,
+                enabled = codeInput.length == 6,
+                modifier = Modifier.weight(1f)
             )
         }
 
-        TextButton(onClick = {
-            val fullNumber = selectedCountry + phone
-            if (activity != null) {
-                verificationViewModel.sendVerificationCode(
-                    phoneNumber = fullNumber,
-                    activity = activity,
-                    onSuccess = { coroutineScope.launch { snackbarHostState.showSnackbar("Kod tekrar gönderildi") } },
-                    onFailure = { coroutineScope.launch { snackbarHostState.showSnackbar("Tekrar gönderilemedi") } }
+        PremiumTextButton(
+            text = "Tekrar Gönder",
+            icon = Icons.Default.Refresh,
+            onClick = onResend
+        )
+    }
+}
+
+@Composable
+private fun PremiumCodeInput(code: String, onCodeChange: (String) -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+        tonalElevation = 2.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
+            ) {
+                Icon(
+                    Icons.Default.Password,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier.padding(8.dp)
                 )
             }
-        }) {
-            Icon(Icons.Default.Refresh, contentDescription = "Tekrar gönder")
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                "Tekrar Gönder",
-                style = MaterialTheme.typography.labelLarge,
-                color = AppColorScheme.info
+
+            TextField(
+                value = code,
+                onValueChange = { input ->
+                    val filtered = input.filter { it.isDigit() }
+                    if (filtered.length <= 6) {
+                        onCodeChange(filtered)
+                    }
+                },
+                modifier = Modifier.weight(1f),
+                textStyle = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = androidx.compose.ui.unit.TextUnit(8f, androidx.compose.ui.unit.TextUnitType.Sp)
+                ),
+                placeholder = { Text("● ● ● ● ● ●") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                singleLine = true
             )
         }
     }
 }
 
 @Composable
-fun BottomNavigationSection(navController: NavHostController) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+private fun VerifiedContent() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        Surface(
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.tertiaryContainer,
+            tonalElevation = 4.dp
+        ) {
+            Icon(
+                Icons.Default.CheckCircle,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                modifier = Modifier
+                    .padding(24.dp)
+                    .size(48.dp)
+            )
+        }
+
         Text(
-            text = "Zaten hesabın var mı? ",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground
+            text = "Kayıt Başarılı!",
+            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onSurface
         )
+
         Text(
-            text = "Giriş yap",
-            modifier = Modifier.clickable {
-                navController.navigate("SignIn"){
-                    launchSingleTop = true
-                    popUpTo(Routes.SignUp) { inclusive = true }
-                }
-            },
-            style = MaterialTheme.typography.bodyMedium,
-            color = AppColorScheme.info
+            text = "Hesabınız oluşturuluyor...",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        CircularProgressIndicator(
+            modifier = Modifier.padding(top = 16.dp)
         )
     }
 }
 
-// -------------------------
-// AppColorScheme placeholder - projenizde merkezi renk dosyanız zaten varsa bunu kullanın.
-// Burada sadece örnek olması için tanımladım. Projenizde ui/theme/ColorScheme.kt dosyanızda tanımlı olmalı.
+@Composable
+private fun PremiumSignInLink(onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Zaten hesabınız var mı? ",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
 
-// -------------------------
-// NOT: Bu örnekte bazı kısımlar (registrationState'in detayları vb.) genel tutulmuştur.
-// Gerçekte RegistrationViewModel'in state modeline göre collectAsState/LaunchedEffect ile tam kontrol ekleyin.
-// Ayrıca hata durumları, network hataları ve edge-case senaryoları için ekstra kullanıcı geri bildirimleri eklemenizi öneririm.
+        Text(
+            text = "Giriş Yap",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .clickableWithRipple(onClick = onClick)
+                .padding(4.dp)
+        )
+    }
+}
+
+@Composable
+private fun PremiumButton(
+    text: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    isLoading: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        enabled = enabled && !isLoading,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        } else {
+            Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun PremiumTextButton(
+    text: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    onClick: () -> Unit
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp))
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = FontWeight.SemiBold
+            )
+        )
+    }
+}
+
+@Composable
+private fun GlassCard(
+    modifier: Modifier = Modifier,
+    shape: RoundedCornerShape = RoundedCornerShape(24.dp),
+    shadowElevation: androidx.compose.ui.unit.Dp = 8.dp,
+    content: @Composable () -> Unit
+) {
+    Surface(
+        modifier = modifier,
+        shape = shape,
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
+        tonalElevation = 4.dp,
+        shadowElevation = shadowElevation
+    ) {
+        content()
+    }
+}
+
+@Composable
+private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier {
+    return this.pointerInput(Unit) {
+        detectTapGestures(onTap = { onClick() })
+    }
+}

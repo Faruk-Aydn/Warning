@@ -73,8 +73,6 @@ class AddContactUseCase @Inject constructor(
             emit(AddContactResult.Error("Sunucuya kaydedilemedi"))
             return@flow
         }
-
-        profileRepository.insertContact(dto.toEntity())
         emit(AddContactResult.Success)
     }
 }

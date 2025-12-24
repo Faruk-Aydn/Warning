@@ -278,6 +278,7 @@ class FirestoreService(
     // Generic update by document id on contacts
     suspend fun updateContactById(contactId: String, fields: Map<String, Any?>): Boolean {
         return try {
+            if (contactId.isBlank()) return false
             firestore.collection("contacts")
                 .document(contactId)
                 .update(fields)
@@ -294,6 +295,7 @@ class FirestoreService(
 
     suspend fun deleteContactById(contactId: String): Boolean {
         return try {
+            if (contactId.isBlank()) return false
             firestore.collection("contacts")
                 .document(contactId)
                 .delete()
