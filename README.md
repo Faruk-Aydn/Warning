@@ -438,36 +438,30 @@ Proje şu anda temel test yapılandırmasına sahiptir:
 
 ## Known Issues & Limitations
 
-1. **Konum Servisi**
-   - Acil durum mesajlarında şu an sahte (fake) konum kullanılıyor
-   - `SendEmergencyMessageUseCase.kt` içinde gerçek LocationProvider entegrasyonu yapılmalı
-
-2. **Backend URL**
+1. **Backend URL**
    - Retrofit base URL şu an emulator için yapılandırılmış
    - Production için Firebase Functions URL'i güncellenmeli (`AppModule.kt`)
 
-3. **ProGuard**
+2. **ProGuard**
    - Release build'de ProGuard devre dışı
    - Production'a geçmeden önce ProGuard kuralları eklenmeli
 
-4. **Database Migration**
+3. **Database Migration**
    - `fallbackToDestructiveMigration(true)` kullanılıyor (geliştirme aşamasında)
    - Production için proper migration stratejisi uygulanmalı
 
-5. **Error Handling**
+4. **Error Handling**
    - Bazı hata mesajları standardize edilmemiş
    - Network hataları için kullanıcı dostu mesajlar geliştirilmeli
 
-6. **Test Coverage**
+5. **Test Coverage**
    - Unit test coverage düşük
    - ViewModel ve UseCase'ler için testler yazılmalı
 
-7. **Offline Support**
+6. **Offline Support**
    - Room database mevcut ancak offline-first stratejisi tam uygulanmamış
    - Firestore offline persistence etkinleştirilebilir
 
-8. **Splash Screen**
-   - `SplashScreen.kt` içinde TODO notu var: gerçek authentication check yapılmalı
 
 ## Future Improvements
 
