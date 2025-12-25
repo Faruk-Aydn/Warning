@@ -1,66 +1,106 @@
-[debug] [2025-12-24T16:30:31.445Z] ----------------------------------------------------------------------
-[debug] [2025-12-24T16:30:31.458Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ASUS\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start
-[debug] [2025-12-24T16:30:31.459Z] CLI Version:   14.27.0
-[debug] [2025-12-24T16:30:31.459Z] Platform:      win32
-[debug] [2025-12-24T16:30:31.459Z] Node Version:  v22.15.0
-[debug] [2025-12-24T16:30:31.459Z] Time:          Wed Dec 24 2025 19:30:31 GMT+0300 (GMT+03:00)
-[debug] [2025-12-24T16:30:31.459Z] ----------------------------------------------------------------------
+[debug] [2025-12-25T10:11:22.491Z] ----------------------------------------------------------------------
+[debug] [2025-12-25T10:11:22.499Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ASUS\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init emulators
+[debug] [2025-12-25T10:11:22.500Z] CLI Version:   14.27.0
+[debug] [2025-12-25T10:11:22.500Z] Platform:      win32
+[debug] [2025-12-25T10:11:22.500Z] Node Version:  v22.15.0
+[debug] [2025-12-25T10:11:22.500Z] Time:          Thu Dec 25 2025 13:11:22 GMT+0300 (GMT+03:00)
+[debug] [2025-12-25T10:11:22.500Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2025-12-24T16:30:31.461Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
-[debug] [2025-12-24T16:30:31.663Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2025-12-24T16:30:31.663Z] > authorizing via signed-in user (farukaydin8245@gmail.com)
-[debug] [2025-12-24T16:30:31.759Z] java version "21" 2023-09-19 LTS
-Java(TM) SE Runtime Environment (build 21+35-LTS-2513)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Warning
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[debug] [2025-12-25T10:11:26.095Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-12-25T10:11:26.095Z] > authorizing via signed-in user (farukaydin8245@gmail.com)
+[debug] [2025-12-25T10:11:26.096Z] Checked if tokens are valid: true, expires at: 1766658470126
+[debug] [2025-12-25T10:11:26.096Z] Checked if tokens are valid: true, expires at: 1766658470126
+[debug] [2025-12-25T10:11:26.098Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457 [none]
+[debug] [2025-12-25T10:11:26.872Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457 200
+[debug] [2025-12-25T10:11:26.873Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457 {"projectId":"warning-5d457","projectNumber":"557249414775","displayName":"Warning","name":"projects/warning-5d457","resources":{"hostingSite":"warning-5d457"},"state":"ACTIVE","etag":"1_f641060f-40a3-45f3-b0f8-97d0eaeff571"}
+[info] i  Using project warning-5d457 (Warning) . 
+[info] 
+=== Emulators Setup
+[debug] [2025-12-25T11:12:34.447Z] ----------------------------------------------------------------------
+[debug] [2025-12-25T11:12:34.452Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ASUS\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start
+[debug] [2025-12-25T11:12:34.453Z] CLI Version:   14.27.0
+[debug] [2025-12-25T11:12:34.453Z] Platform:      win32
+[debug] [2025-12-25T11:12:34.454Z] Node Version:  v22.15.0
+[debug] [2025-12-25T11:12:34.454Z] Time:          Thu Dec 25 2025 14:12:34 GMT+0300 (GMT+03:00)
+[debug] [2025-12-25T11:12:34.454Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-12-25T11:12:34.711Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-12-25T11:12:34.712Z] > authorizing via signed-in user (farukaydin8245@gmail.com)
+[debug] [2025-12-25T11:12:34.904Z] java version "21" 2023-09-19 LTS
+
+[debug] [2025-12-25T11:12:34.905Z] Java(TM) SE Runtime Environment (build 21+35-LTS-2513)
 Java HotSpot(TM) 64-Bit Server VM (build 21+35-LTS-2513, mixed mode, sharing)
 
-[debug] [2025-12-24T16:30:31.797Z] Parsed Java major version: 21
+[debug] [2025-12-25T11:12:34.962Z] Parsed Java major version: 21
 [info] i  emulators: Starting emulators: auth, functions, firestore, extensions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, firestore, extensions"}}
-[debug] [2025-12-24T16:30:31.799Z] Checked if tokens are valid: false, expires at: 1766511383212
-[debug] [2025-12-24T16:30:31.799Z] Checked if tokens are valid: false, expires at: 1766511383212
-[debug] [2025-12-24T16:30:31.799Z] > refreshing access token with scopes: []
-[debug] [2025-12-24T16:30:31.801Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
-[debug] [2025-12-24T16:30:31.801Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
-[debug] [2025-12-24T16:30:32.253Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
-[debug] [2025-12-24T16:30:32.253Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
-[debug] [2025-12-24T16:30:32.258Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 [none]
-[debug] [2025-12-24T16:30:32.260Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
-[debug] [2025-12-24T16:30:32.260Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
-[debug] [2025-12-24T16:30:33.452Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 200
-[debug] [2025-12-24T16:30:33.453Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 {"projectNumber":"557249414775","projectId":"warning-5d457","lifecycleState":"ACTIVE","name":"Warning","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-07-08T17:47:05.745971Z"}
-[debug] [2025-12-24T16:30:33.465Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-12-24T16:30:33.465Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-12-24T16:30:33.465Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-12-24T16:30:33.465Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-12-24T16:30:33.465Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2025-12-24T16:30:33.469Z] Emulator locator file path: C:\Users\ASUS\AppData\Local\Temp\hub-warning-5d457.json
-[debug] [2025-12-24T16:30:33.469Z] [hub] writing locator at C:\Users\ASUS\AppData\Local\Temp\hub-warning-5d457.json
-[debug] [2025-12-24T16:30:33.473Z] [Extensions] Started Extensions emulator, this is a noop.
-[debug] [2025-12-24T16:30:33.477Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-12-24T16:30:33.477Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-12-24T16:30:33.477Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-12-24T16:30:33.477Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[debug] [2025-12-25T11:12:34.965Z] Checked if tokens are valid: false, expires at: 1766658470126
+[debug] [2025-12-25T11:12:34.965Z] Checked if tokens are valid: false, expires at: 1766658470126
+[debug] [2025-12-25T11:12:34.966Z] > refreshing access token with scopes: []
+[debug] [2025-12-25T11:12:34.968Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-12-25T11:12:34.969Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-12-25T11:12:35.482Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-12-25T11:12:35.482Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-12-25T11:12:35.491Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 [none]
+[debug] [2025-12-25T11:12:36.778Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 200
+[debug] [2025-12-25T11:12:36.778Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/warning-5d457 {"projectNumber":"557249414775","projectId":"warning-5d457","lifecycleState":"ACTIVE","name":"Warning","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-07-08T17:47:05.745971Z"}
+[debug] [2025-12-25T11:12:36.796Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-25T11:12:36.796Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-25T11:12:36.796Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-25T11:12:36.796Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-25T11:12:36.796Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2025-12-25T11:12:36.800Z] Emulator locator file path: C:\Users\ASUS\AppData\Local\Temp\hub-warning-5d457.json
+[debug] [2025-12-25T11:12:36.800Z] [hub] writing locator at C:\Users\ASUS\AppData\Local\Temp\hub-warning-5d457.json
+[debug] [2025-12-25T11:12:36.812Z] [Extensions] Started Extensions emulator, this is a noop.
+[debug] [2025-12-25T11:12:36.823Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-25T11:12:36.824Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-25T11:12:36.824Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-25T11:12:36.824Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
 [warn] !  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, database, hosting, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mapphosting, database, hosting, pubsub, storage, dataconnect\u001b[22m"}}
-[debug] [2025-12-24T16:30:33.601Z] defaultcredentials: writing to file C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json
-[debug] [2025-12-24T16:30:33.605Z] Setting GAC to C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\ASUS\\AppData\\Roaming\\firebase\\farukaydin8245_gmail_com_application_default_credentials.json"}}
-[debug] [2025-12-24T16:30:33.606Z] Checked if tokens are valid: true, expires at: 1766597431253
-[debug] [2025-12-24T16:30:33.606Z] Checked if tokens are valid: true, expires at: 1766597431253
-[debug] [2025-12-24T16:30:33.606Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig [none]
-[debug] [2025-12-24T16:30:34.275Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig 200
-[debug] [2025-12-24T16:30:34.276Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig {"projectId":"warning-5d457","storageBucket":"warning-5d457.firebasestorage.app"}
+[debug] [2025-12-25T11:12:36.873Z] defaultcredentials: writing to file C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json
+[debug] [2025-12-25T11:12:36.876Z] Setting GAC to C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\ASUS\\AppData\\Roaming\\firebase\\farukaydin8245_gmail_com_application_default_credentials.json"}}
+[debug] [2025-12-25T11:12:36.877Z] Checked if tokens are valid: true, expires at: 1766664754482
+[debug] [2025-12-25T11:12:36.877Z] Checked if tokens are valid: true, expires at: 1766664754482
+[debug] [2025-12-25T11:12:36.877Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig [none]
+[debug] [2025-12-25T11:12:37.391Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig 200
+[debug] [2025-12-25T11:12:37.391Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/warning-5d457/adminSdkConfig {"projectId":"warning-5d457","storageBucket":"warning-5d457.firebasestorage.app"}
 [warn] !  firestore: Cloud Firestore Emulator does not support multiple databases yet. {"metadata":{"emulator":{"name":"firestore"},"message":"Cloud Firestore Emulator does not support multiple databases yet."}}
 [warn] !  firestore: Did not find a Cloud Firestore rules file specified in a firebase.json config file. {"metadata":{"emulator":{"name":"firestore"},"message":"Did not find a Cloud Firestore rules file specified in a firebase.json config file."}}
 [warn] !  firestore: The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration. {"metadata":{"emulator":{"name":"firestore"},"message":"The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration."}}
-[debug] [2025-12-24T16:30:34.287Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2025-12-24T16:30:34.288Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2025-12-24T16:30:34.288Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","C:\\Users\\ASUS\\.cache\\firebase\\emulators\\cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","warning-5d457","--single_project_mode",true,"--functions_emulator","127.0.0.1:5001"],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8080} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\ASUS\\\\.cache\\\\firebase\\\\emulators\\\\cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"warning-5d457\",\"--single_project_mode\",true,\"--functions_emulator\",\"127.0.0.1:5001\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8080}"}}
+[debug] [2025-12-25T11:12:37.405Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2025-12-25T11:12:37.405Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
+[debug] [2025-12-25T11:12:37.405Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","C:\\Users\\ASUS\\.cache\\firebase\\emulators\\cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","warning-5d457","--single_project_mode",true,"--functions_emulator","127.0.0.1:5001"],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8080} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\ASUS\\\\.cache\\\\firebase\\\\emulators\\\\cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"warning-5d457\",\"--single_project_mode\",true,\"--functions_emulator\",\"127.0.0.1:5001\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8080}"}}
 [info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
 [info] +  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[debug] [2025-12-24T16:30:44.176Z] [Extensions] Connecting Extensions emulator, this is a noop.
+[debug] [2025-12-25T11:12:51.133Z] [Extensions] Connecting Extensions emulator, this is a noop.
+[info] i  functions: Watching "C:\Warning\functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"C:\\Warning\\functions\" for Cloud Functions..."}}
+[error] !!  functions: Failed to load function definition from source: FirebaseError: could not deploy functions because the "functions" directory was not found. Please create it or specify a different source directory in firebase.json {"metadata":{"emulator":{"name":"functions"},"message":"Failed to load function definition from source: FirebaseError: could not deploy functions because the \u001b[1m\"functions\"\u001b[22m directory was not found. Please create it or specify a different source directory in firebase.json"}}
 [info] i  functions: Watching "C:\Warning\warning-backend" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"C:\\Warning\\warning-backend\" for Cloud Functions..."}}
-[debug] [2025-12-24T16:30:44.187Z] Validating nodejs source
+[debug] [2025-12-25T11:12:51.149Z] Validating nodejs source
 [warn] !  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
 [warn] !  functions: Please note that there will be breaking changes when you upgrade. 
-[debug] [2025-12-24T16:30:45.862Z] > [functions] package.json contents: {
+[debug] [2025-12-25T11:12:53.168Z] > [functions] package.json contents: {
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
@@ -88,19 +128,19 @@ Java HotSpot(TM) 64-Bit Server VM (build 21+35-LTS-2513, mixed mode, sharing)
   },
   "private": true
 }
-[debug] [2025-12-24T16:30:45.863Z] Building nodejs source
-[debug] [2025-12-24T16:30:45.863Z] Failed to find version of module node: reached end of search path C:\Warning\warning-backend\node_modules
+[debug] [2025-12-25T11:12:53.169Z] Building nodejs source
+[debug] [2025-12-25T11:12:53.169Z] Failed to find version of module node: reached end of search path C:\Warning\warning-backend\node_modules
 [info] +  functions: Using node@22 from host. 
-[debug] [2025-12-24T16:30:45.865Z] Could not find functions.yaml. Must use http discovery
-[debug] [2025-12-24T16:30:45.871Z] Found firebase-functions binary at 'C:\Warning\warning-backend\node_modules\.bin\firebase-functions'
-[info] Serving at port 8568
+[debug] [2025-12-25T11:12:53.173Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-12-25T11:12:53.182Z] Found firebase-functions binary at 'C:\Warning\warning-backend\node_modules\.bin\firebase-functions'
+[info] Serving at port 8780
 
-[debug] [2025-12-24T16:30:46.673Z] Got response from /__/functions.yaml {"endpoints":{"sendEmergency":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"httpsTrigger":{},"entryPoint":"sendEmergency"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
-[debug] [2025-12-24T16:30:50.713Z] defaultcredentials: writing to file C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json
-[debug] [2025-12-24T16:30:50.714Z] Setting GAC to C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\ASUS\\AppData\\Roaming\\firebase\\farukaydin8245_gmail_com_application_default_credentials.json"}}
+[debug] [2025-12-25T11:12:54.326Z] Got response from /__/functions.yaml {"endpoints":{"sendEmergency":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"httpsTrigger":{},"entryPoint":"sendEmergency"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[debug] [2025-12-25T11:12:58.367Z] defaultcredentials: writing to file C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json
+[debug] [2025-12-25T11:12:58.368Z] Setting GAC to C:\Users\ASUS\AppData\Roaming\firebase\farukaydin8245_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\ASUS\\AppData\\Roaming\\firebase\\farukaydin8245_gmail_com_application_default_credentials.json"}}
 [info] +  functions: Loaded functions definitions from source: sendEmergency. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: sendEmergency."}}
 [info] +  functions[us-central1-sendEmergency]: http function initialized (http://127.0.0.1:5001/warning-5d457/us-central1/sendEmergency). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://127.0.0.1:5001/warning-5d457/us-central1/sendEmergency)."}}
-[debug] [2025-12-24T16:30:50.724Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[debug] [2025-12-25T11:12:58.377Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
 [info] 
 ┌─────────────────────────────────────────────────────────────┐
 │ ✔  All emulators ready! It is now safe to connect your app. │
@@ -125,3 +165,121 @@ Java HotSpot(TM) 64-Bit Server VM (build 21+35-LTS-2513, mixed mode, sharing)
 └─────────────────────────┴───────────────┴─────────────────────┘
 Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
  
+[debug] [2025-12-25T11:13:04.446Z] [work-queue] {"queuedWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:13:04.445Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-25T11:13:04.446Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:13:04.445Z"],"workRunningCount":1}
+[debug] [2025-12-25T11:13:04.446Z] Accepted request POST /warning-5d457/us-central1/sendEmergency --> us-central1-sendEmergency
+[debug] [2025-12-25T11:13:04.447Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2025-12-25T11:13:04.447Z] [functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/ {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/"}}
+[debug] [2025-12-25T11:13:04.462Z] [worker-pool] addWorker(us-central1-sendEmergency) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] addWorker(us-central1-sendEmergency)"}}
+[debug] [2025-12-25T11:13:04.464Z] [worker-pool] Adding worker with key us-central1-sendEmergency, total=1 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Adding worker with key us-central1-sendEmergency, total=1"}}
+[debug] [2025-12-25T11:13:06.262Z] [runtime-status] [1892] Resolved module firebase-admin {"declared":true,"installed":true,"version":"12.7.0","resolution":"C:\\Warning\\warning-backend\\node_modules\\firebase-admin\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"12.7.0\",\"resolution\":\"C:\\\\Warning\\\\warning-backend\\\\node_modules\\\\firebase-admin\\\\lib\\\\index.js\"}"}}
+[debug] [2025-12-25T11:13:06.264Z] [runtime-status] [1892] Resolved module firebase-functions {"declared":true,"installed":true,"version":"6.6.0","resolution":"C:\\Warning\\warning-backend\\node_modules\\firebase-functions\\lib\\v2\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"6.6.0\",\"resolution\":\"C:\\\\Warning\\\\warning-backend\\\\node_modules\\\\firebase-functions\\\\lib\\\\v2\\\\index.js\"}"}}
+[debug] [2025-12-25T11:13:06.265Z] [runtime-status] [1892] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] Outgoing network have been stubbed. [{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"net\",\"status\":\"mocked\"}]"}}
+[debug] [2025-12-25T11:13:06.266Z] [runtime-status] [1892] Resolved module firebase-functions {"declared":true,"installed":true,"version":"6.6.0","resolution":"C:\\Warning\\warning-backend\\node_modules\\firebase-functions\\lib\\v2\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"6.6.0\",\"resolution\":\"C:\\\\Warning\\\\warning-backend\\\\node_modules\\\\firebase-functions\\\\lib\\\\v2\\\\index.js\"}"}}
+[debug] [2025-12-25T11:13:06.989Z] [runtime-status] [1892] Checked functions.config() {"config":{}} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] Checked functions.config() {\"config\":{}}"}}
+[debug] [2025-12-25T11:13:06.989Z] [runtime-status] [1892] firebase-functions has been stubbed. {"functionsResolution":{"declared":true,"installed":true,"version":"6.6.0","resolution":"C:\\Warning\\warning-backend\\node_modules\\firebase-functions\\lib\\v2\\index.js"}} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] firebase-functions has been stubbed. {\"functionsResolution\":{\"declared\":true,\"installed\":true,\"version\":\"6.6.0\",\"resolution\":\"C:\\\\Warning\\\\warning-backend\\\\node_modules\\\\firebase-functions\\\\lib\\\\v2\\\\index.js\"}}"}}
+[debug] [2025-12-25T11:13:06.991Z] [runtime-status] [1892] Resolved module firebase-functions {"declared":true,"installed":true,"version":"6.6.0","resolution":"C:\\Warning\\warning-backend\\node_modules\\firebase-functions\\lib\\v2\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"6.6.0\",\"resolution\":\"C:\\\\Warning\\\\warning-backend\\\\node_modules\\\\firebase-functions\\\\lib\\\\v2\\\\index.js\"}"}}
+[debug] [2025-12-25T11:13:07.002Z] [runtime-status] [1892] Resolved module firebase-admin {"declared":true,"installed":true,"version":"12.7.0","resolution":"C:\\Warning\\warning-backend\\node_modules\\firebase-admin\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"12.7.0\",\"resolution\":\"C:\\\\Warning\\\\warning-backend\\\\node_modules\\\\firebase-admin\\\\lib\\\\index.js\"}"}}
+[debug] [2025-12-25T11:13:07.008Z] [runtime-status] [1892] Resolved module firebase-functions {"declared":true,"installed":true,"version":"6.6.0","resolution":"C:\\Warning\\warning-backend\\node_modules\\firebase-functions\\lib\\v2\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"6.6.0\",\"resolution\":\"C:\\\\Warning\\\\warning-backend\\\\node_modules\\\\firebase-functions\\\\lib\\\\v2\\\\index.js\"}"}}
+[debug] [2025-12-25T11:13:07.009Z] [runtime-status] [1892] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"12.7.0","resolution":"C:\\Warning\\warning-backend\\node_modules\\firebase-admin\\lib\\index.js"}} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] firebase-admin has been stubbed. {\"adminResolution\":{\"declared\":true,\"installed\":true,\"version\":\"12.7.0\",\"resolution\":\"C:\\\\Warning\\\\warning-backend\\\\node_modules\\\\firebase-admin\\\\lib\\\\index.js\"}}"}}
+[debug] [2025-12-25T11:13:07.012Z] [runtime-status] [1892] initializeApp(DEFAULT) {"storageBucket":"warning-5d457.firebasestorage.app","projectId":"warning-5d457"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] initializeApp(DEFAULT) {\"storageBucket\":\"warning-5d457.firebasestorage.app\",\"projectId\":\"warning-5d457\"}"}}
+[debug] [2025-12-25T11:13:07.043Z] [runtime-status] [1892] Functions runtime initialized. {"cwd":"C:\\Warning\\warning-backend","node_version":"22.15.0"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] Functions runtime initialized. {\"cwd\":\"C:\\\\Warning\\\\warning-backend\",\"node_version\":\"22.15.0\"}"}}
+[debug] [2025-12-25T11:13:07.043Z] [runtime-status] [1892] Listening to port: \\?\pipe\fire_emu_4b95e345267d177b {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[runtime-status] [1892] Listening to port: \\\\?\\pipe\\fire_emu_4b95e345267d177b"}}
+[debug] [2025-12-25T11:13:07.085Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE"}}
+[debug] [2025-12-25T11:13:07.086Z] [worker-pool] submitRequest(triggerId=us-central1-sendEmergency) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-sendEmergency)"}}
+[info] i  functions: Beginning execution of "us-central1-sendEmergency" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Beginning execution of \"us-central1-sendEmergency\""}}
+[debug] [2025-12-25T11:13:07.086Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY"}}
+[info] >  {"senderId":"DoBQhmZ1nbxx3JfXqtOs","severity":"INFO","message":"Acil durum süreci başladı:"} {"user":{"senderId":"DoBQhmZ1nbxx3JfXqtOs","severity":"INFO","message":"Acil durum süreci başladı:"},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"senderId\":\"DoBQhmZ1nbxx3JfXqtOs\",\"severity\":\"INFO\",\"message\":\"Acil durum süreci başladı:\"}"}}
+[debug] [2025-12-25T11:13:09.054Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-sendEmergency" in 1967.6873ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finished \"us-central1-sendEmergency\" in 1967.6873ms"}}
+[debug] [2025-12-25T11:13:09.055Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE"}}
+[debug] [2025-12-25T11:13:09.055Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2025-12-25T11:13:09.056Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2025-12-25T11:13:09.056Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-25T11:14:03.481Z] [work-queue] {"queuedWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:14:03.481Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-25T11:14:03.481Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:14:03.481Z"],"workRunningCount":1}
+[debug] [2025-12-25T11:14:03.482Z] Accepted request POST /warning-5d457/us-central1/sendEmergency --> us-central1-sendEmergency
+[debug] [2025-12-25T11:14:03.482Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2025-12-25T11:14:03.483Z] [functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/ {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/"}}
+[debug] [2025-12-25T11:14:03.483Z] [worker-pool] submitRequest(triggerId=us-central1-sendEmergency) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-sendEmergency)"}}
+[info] i  functions: Beginning execution of "us-central1-sendEmergency" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Beginning execution of \"us-central1-sendEmergency\""}}
+[debug] [2025-12-25T11:14:03.483Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY"}}
+[info] >  {"senderId":"mQLTc5ZbQWVqB3QNeEQJ","severity":"INFO","message":"Acil durum süreci başladı:"} {"user":{"senderId":"mQLTc5ZbQWVqB3QNeEQJ","severity":"INFO","message":"Acil durum süreci başladı:"},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"senderId\":\"mQLTc5ZbQWVqB3QNeEQJ\",\"severity\":\"INFO\",\"message\":\"Acil durum süreci başladı:\"}"}}
+[debug] [2025-12-25T11:14:03.510Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-sendEmergency" in 26.8603ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finished \"us-central1-sendEmergency\" in 26.8603ms"}}
+[debug] [2025-12-25T11:14:03.511Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE"}}
+[debug] [2025-12-25T11:14:03.511Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2025-12-25T11:14:03.511Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2025-12-25T11:14:03.511Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[info] i  To verify the phone number +905402408245, use the code 947420. {"metadata":{"emulator":{"name":"auth"},"message":"To verify the phone number +905402408245, use the code 947420."}}
+[debug] [2025-12-25T11:15:18.220Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/warning-5d457/trigger_multicast [none]
+[debug] [2025-12-25T11:15:18.221Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/warning-5d457/trigger_multicast {"eventId":"07fb3cef-20ab-4b0c-a000-e4f657c6c144","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/warning-5d457","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2025-12-25T11:15:18.220Z","data":{"uid":"J53SZ0vfySAZYenNjhBtR1a3NhKA","phoneNumber":"+905402408245","metadata":{"creationTime":"2025-12-25T11:15:18.219Z","lastSignInTime":"2025-12-25T11:15:18.219Z"},"customClaims":{},"providerData":[{"rawId":"+905402408245","providerId":"phone","phoneNumber":"+905402408245"}]}}
+[debug] [2025-12-25T11:15:18.233Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/warning-5d457/trigger_multicast 200
+[debug] [2025-12-25T11:15:18.233Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/warning-5d457/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2025-12-25T11:15:35.903Z] [work-queue] {"queuedWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:15:35.903Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-25T11:15:35.903Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:15:35.903Z"],"workRunningCount":1}
+[debug] [2025-12-25T11:15:35.903Z] Accepted request POST /warning-5d457/us-central1/sendEmergency --> us-central1-sendEmergency
+[debug] [2025-12-25T11:15:35.903Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2025-12-25T11:15:35.904Z] [functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/ {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/"}}
+[debug] [2025-12-25T11:15:35.904Z] [worker-pool] submitRequest(triggerId=us-central1-sendEmergency) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-sendEmergency)"}}
+[info] i  functions: Beginning execution of "us-central1-sendEmergency" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Beginning execution of \"us-central1-sendEmergency\""}}
+[debug] [2025-12-25T11:15:35.904Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY"}}
+[info] >  {"senderId":"DoBQhmZ1nbxx3JfXqtOs","severity":"INFO","message":"Acil durum süreci başladı:"} {"user":{"senderId":"DoBQhmZ1nbxx3JfXqtOs","severity":"INFO","message":"Acil durum süreci başladı:"},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"senderId\":\"DoBQhmZ1nbxx3JfXqtOs\",\"severity\":\"INFO\",\"message\":\"Acil durum süreci başladı:\"}"}}
+[debug] [2025-12-25T11:15:35.922Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-sendEmergency" in 17.4047ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finished \"us-central1-sendEmergency\" in 17.4047ms"}}
+[debug] [2025-12-25T11:15:35.922Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE"}}
+[debug] [2025-12-25T11:15:35.923Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2025-12-25T11:15:35.923Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2025-12-25T11:15:35.923Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-25T11:15:38.797Z] [work-queue] {"queuedWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:15:38.797Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-25T11:15:38.797Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:15:38.797Z"],"workRunningCount":1}
+[debug] [2025-12-25T11:15:38.797Z] Accepted request POST /warning-5d457/us-central1/sendEmergency --> us-central1-sendEmergency
+[debug] [2025-12-25T11:15:38.797Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2025-12-25T11:15:38.797Z] [functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/ {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/"}}
+[debug] [2025-12-25T11:15:38.797Z] [worker-pool] submitRequest(triggerId=us-central1-sendEmergency) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-sendEmergency)"}}
+[info] i  functions: Beginning execution of "us-central1-sendEmergency" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Beginning execution of \"us-central1-sendEmergency\""}}
+[debug] [2025-12-25T11:15:38.798Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY"}}
+[info] >  {"senderId":"mQLTc5ZbQWVqB3QNeEQJ","severity":"INFO","message":"Acil durum süreci başladı:"} {"user":{"senderId":"mQLTc5ZbQWVqB3QNeEQJ","severity":"INFO","message":"Acil durum süreci başladı:"},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"senderId\":\"mQLTc5ZbQWVqB3QNeEQJ\",\"severity\":\"INFO\",\"message\":\"Acil durum süreci başladı:\"}"}}
+[debug] [2025-12-25T11:15:38.822Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-sendEmergency" in 24.5791ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finished \"us-central1-sendEmergency\" in 24.5791ms"}}
+[debug] [2025-12-25T11:15:38.823Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE"}}
+[debug] [2025-12-25T11:15:38.823Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2025-12-25T11:15:38.823Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2025-12-25T11:15:38.823Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[info] i  To verify the phone number +905402408245, use the code 961779. {"metadata":{"emulator":{"name":"auth"},"message":"To verify the phone number +905402408245, use the code 961779."}}
+[info] i  To verify the phone number +905402408246, use the code 812176. {"metadata":{"emulator":{"name":"auth"},"message":"To verify the phone number +905402408246, use the code 812176."}}
+[debug] [2025-12-25T11:18:43.655Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/warning-5d457/trigger_multicast [none]
+[debug] [2025-12-25T11:18:43.655Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/warning-5d457/trigger_multicast {"eventId":"46788c8f-27f7-4d04-83c6-3902a68ca840","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/warning-5d457","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2025-12-25T11:18:43.654Z","data":{"uid":"YLh3VHF8Eq40k3f8Vgf0vU4bGYax","phoneNumber":"+905402408246","metadata":{"creationTime":"2025-12-25T11:18:43.654Z","lastSignInTime":"2025-12-25T11:18:43.654Z"},"customClaims":{},"providerData":[{"rawId":"+905402408246","providerId":"phone","phoneNumber":"+905402408246"}]}}
+[debug] [2025-12-25T11:18:43.661Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/warning-5d457/trigger_multicast 200
+[debug] [2025-12-25T11:18:43.661Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/warning-5d457/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2025-12-25T11:19:50.856Z] [work-queue] {"queuedWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:19:50.856Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-25T11:19:50.856Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:19:50.856Z"],"workRunningCount":1}
+[debug] [2025-12-25T11:19:50.856Z] Accepted request POST /warning-5d457/us-central1/sendEmergency --> us-central1-sendEmergency
+[debug] [2025-12-25T11:19:50.857Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2025-12-25T11:19:50.858Z] [functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/ {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/"}}
+[debug] [2025-12-25T11:19:50.858Z] [worker-pool] submitRequest(triggerId=us-central1-sendEmergency) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-sendEmergency)"}}
+[info] i  functions: Beginning execution of "us-central1-sendEmergency" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Beginning execution of \"us-central1-sendEmergency\""}}
+[debug] [2025-12-25T11:19:50.858Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY"}}
+[info] >  {"senderId":"MjwIIq4YxlYUAbO1nrcq","severity":"INFO","message":"Acil durum süreci başladı:"} {"user":{"senderId":"MjwIIq4YxlYUAbO1nrcq","severity":"INFO","message":"Acil durum süreci başladı:"},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"senderId\":\"MjwIIq4YxlYUAbO1nrcq\",\"severity\":\"INFO\",\"message\":\"Acil durum süreci başladı:\"}"}}
+[info] >  {"severity":"INFO","message":"Kriterlere uyan (Onaylı, Favori, Aktif) kişi bulunamadı."} {"user":{"severity":"INFO","message":"Kriterlere uyan (Onaylı, Favori, Aktif) kişi bulunamadı."},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"severity\":\"INFO\",\"message\":\"Kriterlere uyan (Onaylı, Favori, Aktif) kişi bulunamadı.\"}"}}
+[debug] [2025-12-25T11:19:50.934Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-sendEmergency" in 75.3356ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finished \"us-central1-sendEmergency\" in 75.3356ms"}}
+[debug] [2025-12-25T11:19:50.935Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE"}}
+[debug] [2025-12-25T11:19:50.935Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2025-12-25T11:19:50.936Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2025-12-25T11:19:50.936Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-25T11:20:12.745Z] [work-queue] {"queuedWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:20:12.745Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-25T11:20:12.745Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/warning-5d457/us-central1/sendEmergency-2025-12-25T11:20:12.745Z"],"workRunningCount":1}
+[debug] [2025-12-25T11:20:12.745Z] Accepted request POST /warning-5d457/us-central1/sendEmergency --> us-central1-sendEmergency
+[debug] [2025-12-25T11:20:12.745Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2025-12-25T11:20:12.745Z] [functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/ {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/warning-5d457/us-central1/sendEmergency, mapping to path=/"}}
+[debug] [2025-12-25T11:20:12.745Z] [worker-pool] submitRequest(triggerId=us-central1-sendEmergency) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-sendEmergency)"}}
+[info] i  functions: Beginning execution of "us-central1-sendEmergency" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Beginning execution of \"us-central1-sendEmergency\""}}
+[debug] [2025-12-25T11:20:12.746Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: BUSY"}}
+[info] >  {"senderId":"MjwIIq4YxlYUAbO1nrcq","severity":"INFO","message":"Acil durum süreci başladı:"} {"user":{"senderId":"MjwIIq4YxlYUAbO1nrcq","severity":"INFO","message":"Acil durum süreci başladı:"},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"senderId\":\"MjwIIq4YxlYUAbO1nrcq\",\"severity\":\"INFO\",\"message\":\"Acil durum süreci başladı:\"}"}}
+[debug] [2025-12-25T11:20:13.497Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-sendEmergency" in 751.5901ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finished \"us-central1-sendEmergency\" in 751.5901ms"}}
+[debug] [2025-12-25T11:20:13.498Z] [worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"[worker-us-central1-sendEmergency-7a1df18c-0b00-4f2c-bc2d-1cc393d089cc]: IDLE"}}
+[debug] [2025-12-25T11:20:13.498Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2025-12-25T11:20:13.498Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-sendEmergency"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2025-12-25T11:20:13.498Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
