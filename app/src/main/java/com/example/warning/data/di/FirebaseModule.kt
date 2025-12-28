@@ -27,7 +27,8 @@ object FirebaseModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth(): FirebaseAuth {
+    fun provideFirebaseAuth():
+            FirebaseAuth {
         val auth = FirebaseAuth.getInstance()
         if (BuildConfig.DEBUG) {
             auth.useEmulator("10.0.2.2", 9099)
@@ -38,7 +39,8 @@ object FirebaseModule {
 
     @Provides
     @Singleton
-    fun provideFirestore(): FirebaseFirestore {
+    fun provideFirestore():
+            FirebaseFirestore {
         val firestore = FirebaseFirestore.getInstance()
         if (BuildConfig.DEBUG) {
             firestore.useEmulator("10.0.2.2", 8080)
