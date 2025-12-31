@@ -3,6 +3,12 @@ const { onRequest } = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 const { FieldValue, GeoPoint } = require("firebase-admin/firestore");
 
+// EĞER LOCALDE ÇALIŞIYORSAN EMULATORÜ KULLANMASINI SÖYLE
+if (process.env.FUNCTIONS_EMULATOR === "true") {
+    process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080";
+    process.env.FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099";
+}
+
 admin.initializeApp();
 
 const db = admin.firestore();

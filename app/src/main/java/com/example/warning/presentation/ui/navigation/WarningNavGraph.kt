@@ -167,11 +167,12 @@ fun WarningNavGraph(
             val profile by profileViewModel.profileState.collectAsState()
             val contacts by contactViewModel.contacts.collectAsState()
             val emergencyState by emergencyViewModel.emergencyMessageState.collectAsState()
+            val stats by emergencyViewModel.statsState.collectAsState()
 
             MainScreen(
                 profile = profile,
                 contactCount = contacts.size,
-                stats = Stats(),
+                stats = stats,
                 emergencyState = emergencyState,
                 onNotificationsClick = { navController.navigate(Routes.NOTIFICATIONS) },
                 onContactsClick = { navController.navigate(Routes.CONTACTS) },
