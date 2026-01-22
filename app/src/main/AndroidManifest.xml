@@ -21,6 +21,10 @@
         android:theme="@style/Theme.Warning"
         tools:targetApi="31">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCpHT0G4C-bHV6Ef9VGtd7gp7mUwwBHvQg" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

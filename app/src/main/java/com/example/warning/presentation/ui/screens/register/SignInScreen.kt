@@ -24,6 +24,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.warning.presentation.viewModel.VerificationStep
@@ -96,7 +97,7 @@ fun SignInScreen(
             GlassCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
-                shadowElevation = 16.dp
+                shadowElevation = 10.dp
             ) {
                 AnimatedContent(
                     targetState = state.step,
@@ -233,6 +234,7 @@ private fun EnterPhoneContent(
 ) {
     Column(
         modifier = Modifier.padding(24.dp),
+        shape = RoundedCornerShape(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
@@ -240,11 +242,15 @@ private fun EnterPhoneContent(
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            // Başlığın kartın üst sınırına çok yapışmaması için margin eklendi
+            modifier = Modifier
+                .padding(top = 8.dp)
+
         )
 
         Text(
-            text = "SMS ile doğrulama kodu göndereceğiz",
+            text = "SMS ile doğrulama kodu göndereceğiz.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -821,5 +827,26 @@ private fun GlassCard(
         ) {
             content()
         }
+    }
+}
+
+
+// Preview için sahte veri ve fonksiyon
+@Preview(showBackground = false)
+@Composable
+fun SignInScreenPreview() {
+    MaterialTheme {
+        SignInScreen(
+            state = SignInUiState(phoneNumber = "5551234567"),
+            onExpandedChange = {},
+            onCountrySelected = {},
+            onPhoneNumberChange = {},
+            onRequestCodeClick = {},
+            onSmsCodeChange = {},
+            onVerifyClick = {},
+            onResendClick = {},
+            onErrorDismiss = {},
+            onSignUpClick = {}
+        )
     }
 }
