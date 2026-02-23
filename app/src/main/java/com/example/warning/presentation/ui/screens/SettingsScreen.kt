@@ -20,6 +20,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -88,19 +89,28 @@ fun SettingsScreen(
         initialValue = 0f,
         targetValue = 1000f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 15000, easing = LinearEasing),
+            animation = tween(durationMillis = 8000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
 
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val animatedBrush = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.15f),
-            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.10f),
-            MaterialTheme.colorScheme.background,
-        ),
+        colors = if (isDark) {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+            )
+        } else {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f),
+            )
+        },
         start = Offset(gradientOffset, gradientOffset),
-        end = Offset(gradientOffset + 600f, gradientOffset + 600f)
+        end = Offset(gradientOffset + 1200f, gradientOffset + 1200f)
     )
 
     Scaffold(
@@ -547,8 +557,8 @@ private fun PremiumLogoutButton(onClick: () -> Unit) {
                 .background(
                     Brush.horizontalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.error,
-                            MaterialTheme.colorScheme.errorContainer
+                            MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
+                            MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.8f)
                         )
                     )
                 ),
@@ -638,17 +648,18 @@ private fun GlassCard(
     Surface(
         modifier = modifier,
         shape = shape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f),
+        color = Color.Transparent, // Tamamen şeffaf taban
         tonalElevation = 0.dp,
-        shadowElevation = shadowElevation,
+        shadowElevation = 0.dp // Etrafa gölge yayılmasını önlemek için 0
     ) {
         Box(
             modifier = Modifier
+                .clip(shape) // İçindeki gradient arka planı da aynı köşelere yuvarlar
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color.White.copy(alpha = 0.08f),
-                            Color.White.copy(alpha = 0.03f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
                         )
                     )
                 )

@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,19 +64,28 @@ fun EmergencyHistoryScreen(
         initialValue = 0f,
         targetValue = 1000f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 12000, easing = LinearEasing),
+            animation = tween(durationMillis = 8000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
 
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val animatedBrush = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.12f),
-            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.08f),
-            MaterialTheme.colorScheme.background,
-        ),
+        colors = if (isDark) {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+            )
+        } else {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f),
+            )
+        },
         start = Offset(gradientOffset, gradientOffset),
-        end = Offset(gradientOffset + 500f, gradientOffset + 500f)
+        end = Offset(gradientOffset + 1200f, gradientOffset + 1200f)
     )
 
     Scaffold(
@@ -239,7 +249,8 @@ private fun StatItem(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(top = 8.dp)
     ) {
         Surface(
             shape = CircleShape,
@@ -280,7 +291,7 @@ private fun PremiumFilterBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(6.dp),
+                .padding(top = 10.dp, bottom = 6.dp, start = 6.dp, end = 6.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             PremiumFilterChip(
@@ -534,8 +545,15 @@ private fun PremiumMessageCard(
                                 tint = statusColor,
                                 modifier = Modifier.size(14.dp)
                             )
+                            val statusText = when (message.status.name) {
+                                "DELIVERED" -> "İLETİLDİ"
+                                "SENT" -> "GÖNDERİLDİ"
+                                "FAILED" -> "HATA"
+                                "READ" -> "OKUNDU"
+                                else -> message.status.name
+                            }
                             Text(
-                                text = if (!message.isSuccess) "HATA" else message.status.name,
+                                text = if (!message.isSuccess) "HATA" else statusText,
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
@@ -571,7 +589,7 @@ private fun PremiumMessageCard(
 
                 // Message Content
                 Surface(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(start = 36.dp),
                     shape = RoundedCornerShape(12.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                 ) {
@@ -712,17 +730,18 @@ private fun GlassCard(
     Surface(
         modifier = modifier,
         shape = shape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f),
+        color = Color.Transparent, // Tamamen şeffaf taban
         tonalElevation = 0.dp,
-        shadowElevation = shadowElevation,
+        shadowElevation = 0.dp // Etrafa gölge yayılmasını önlemek için 0
     ) {
         Box(
             modifier = Modifier
+                .clip(shape) // İçindeki gradient arka planı da aynı köşelere yuvarlar
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color.White.copy(alpha = 0.08f),
-                            Color.White.copy(alpha = 0.03f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
                         )
                     )
                 )

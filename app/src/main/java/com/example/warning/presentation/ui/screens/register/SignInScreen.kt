@@ -83,14 +83,14 @@ fun SignInScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 24.dp),
+                .padding(vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             // Logo/Hero Section
             PremiumSignInHero()
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Content Card
             GlassCard(
@@ -232,8 +232,15 @@ private fun EnterPhoneContent(
     onRequestCodeClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        modifier = Modifier.padding(
+            PaddingValues(
+                start = 28.dp,
+                end = 28.dp,
+                top = 32.dp,
+                bottom = 28.dp
+            )
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
             text = "Telefon Numaranız",
@@ -244,34 +251,40 @@ private fun EnterPhoneContent(
         )
 
         Text(
-            text = "SMS ile doğrulama kodu göndereceğiz",
+            text = "SMS ile doğrulama kodu göndereceğiz.",
             style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(start = 16.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        // Country Code Dropdown
-        PremiumCountryDropdown(
-            selectedCode = state.selectedCountryCode,
-            expanded = state.expanded,
-            onExpandedChange = onExpandedChange,
-            onCountrySelected = onCountrySelected
-        )
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Country Code Dropdown
+            PremiumCountryDropdown(
+                selectedCode = state.selectedCountryCode,
+                expanded = state.expanded,
+                onExpandedChange = onExpandedChange,
+                onCountrySelected = onCountrySelected
+            )
 
-        // Phone Number Input
-        PremiumPhoneInput(
-            phone = state.phoneNumber,
-            onPhoneChange = onPhoneNumberChange
-        )
+            // Phone Number Input
+            PremiumPhoneInput(
+                phone = state.phoneNumber,
+                onPhoneChange = onPhoneNumberChange
+            )
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        // Submit Button
-        PremiumButton(
-            text = "Kod Gönder",
-            icon = Icons.Default.Send,
-            onClick = onRequestCodeClick,
-            enabled = state.phoneNumber.length >= 10
-        )
+            // Submit Button
+            PremiumButton(
+                text = "Kod Gönder",
+                icon = Icons.Default.Send,
+                onClick = onRequestCodeClick,
+                enabled = state.phoneNumber.length >= 10
+            )
+        }
     }
 }
 
@@ -804,17 +817,18 @@ private fun GlassCard(
     Surface(
         modifier = modifier,
         shape = shape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f),
+        color = Color.Transparent, // Tamamen şeffaf taban
         tonalElevation = 0.dp,
-        shadowElevation = shadowElevation,
+        shadowElevation = 0.dp // Etrafa gölge yayılmasını önlemek için 0
     ) {
         Box(
             modifier = Modifier
+                .clip(shape)
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color.White.copy(alpha = 0.08f),
-                            Color.White.copy(alpha = 0.03f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
                         )
                     )
                 )

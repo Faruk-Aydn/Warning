@@ -386,8 +386,15 @@ private fun EnterPhoneContent(
     onSubmit: () -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        modifier = Modifier.padding(
+            PaddingValues(
+                start = 28.dp,
+                end = 28.dp,
+                top = 32.dp,
+                bottom = 28.dp
+            )
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
             text = "Bilgileriniz",
@@ -397,16 +404,21 @@ private fun EnterPhoneContent(
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        PremiumNameInput(name = name, onNameChange = onNameChange)
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            PremiumNameInput(name = name, onNameChange = onNameChange)
 
-        PremiumCountryDropdown(
-            selectedCode = selectedCountry,
-            expanded = countryExpanded,
-            onExpandedChange = onCountryExpandedChange,
-            onCountrySelected = onCountrySelected
-        )
+            PremiumCountryDropdown(
+                selectedCode = selectedCountry,
+                expanded = countryExpanded,
+                onExpandedChange = onCountryExpandedChange,
+                onCountrySelected = onCountrySelected
+            )
 
-        PremiumPhoneInput(phone = phone, onPhoneChange = onPhoneChange)
+            PremiumPhoneInput(phone = phone, onPhoneChange = onPhoneChange)
+        }
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
@@ -418,31 +430,36 @@ private fun EnterPhoneContent(
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        PremiumPermissionRow(
-            icon = Icons.Default.LocationOn,
-            title = "Konum İzni",
-            subtitle = "Acil durumda konumunuzu paylaşın",
-            checked = locationPermission,
-            onCheckedChange = onLocationPermissionChange
-        )
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            PremiumPermissionRow(
+                icon = Icons.Default.LocationOn,
+                title = "Konum İzni",
+                subtitle = "Acil durumda konumunuzu paylaşın",
+                checked = locationPermission,
+                onCheckedChange = onLocationPermissionChange
+            )
 
-        PremiumPermissionRow(
-            icon = Icons.Default.Contacts,
-            title = "Rehber Erişimi",
-            subtitle = "Kişilerinizi senkronize edin",
-            checked = contactPermission,
-            onCheckedChange = onContactPermissionChange
-        )
+            PremiumPermissionRow(
+                icon = Icons.Default.Contacts,
+                title = "Rehber Erişimi",
+                subtitle = "Kişilerinizi senkronize edin",
+                checked = contactPermission,
+                onCheckedChange = onContactPermissionChange
+            )
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        PremiumButton(
-            text = "Devam Et",
-            icon = Icons.Default.ArrowForward,
-            onClick = onSubmit,
-            enabled = !isLoading && name.isNotBlank() && phone.length == 10,
-            isLoading = isLoading
-        )
+            PremiumButton(
+                text = "Devam Et",
+                icon = Icons.Default.ArrowForward,
+                onClick = onSubmit,
+                enabled = !isLoading && name.isNotBlank() && phone.length == 10,
+                isLoading = isLoading
+            )
+        }
     }
 }
 
@@ -965,11 +982,24 @@ private fun GlassCard(
     Surface(
         modifier = modifier,
         shape = shape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
-        tonalElevation = 4.dp,
-        shadowElevation = shadowElevation
+        color = Color.Transparent, // Tamamen şeffaf taban
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp // Etrafa gölge yayılmasını önlemek için 0
     ) {
-        content()
+        Box(
+            modifier = Modifier
+                .clip(shape)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
+                        )
+                    )
+                )
+        ) {
+            content()
+        }
     }
 }
 

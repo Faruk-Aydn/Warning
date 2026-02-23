@@ -41,11 +41,16 @@ class MainActivity : ComponentActivity() {
             val isDarkTheme by mainViewModel.isDarkTheme.collectAsState(initial = false)
 
             WarningTheme(darkTheme = isDarkTheme) {
-                val navController = rememberNavController()
-                WarningNavGraph(
+                androidx.compose.material3.Surface(
                     modifier = Modifier.fillMaxSize(),
-                    navController = navController
-                )
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    WarningNavGraph(
+                        modifier = Modifier.fillMaxSize(),
+                        navController = navController
+                    )
+                }
             }
         }
     }
