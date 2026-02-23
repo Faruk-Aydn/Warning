@@ -48,8 +48,13 @@ android {
 }
 
 dependencies {
+     // google-maps-compose -> google.maps.compose
+    // google-play-services-maps -> google.play.services.maps
+    // libs... üzerinden değil, direkt adres üzerinden ekleyelim
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
 
-    implementation("com.google.android.gms:play-services-location:21.2.0")
+    // Konum servisleri için (Opsiyonel ama önerilir)
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     // refresh için
     implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
@@ -81,6 +86,7 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
     implementation(libs.firebase.messaging)
+    implementation(libs.androidx.appcompat)
     // TODO: implementation(libs.firebase.functions.ktx)
     kapt(libs.room.compiler)
 

@@ -8,6 +8,14 @@
 
 **Warning**, acil durumlarda hızlı bir şekilde yakınlarınıza acil durum mesajı göndermenizi sağlayan bir Android uygulamasıdır. Uygulama, kullanıcıların acil durum butonuna basarak konum bilgileriyle birlikte önceden tanımladıkları kişilere otomatik olarak mesaj göndermesine olanak tanır.
 
+<p align="center">
+  <img src="Screenshots/main.png" width="30%" />
+  <img src="Screenshots/main%20iki.png" width="30%" />
+  <img src="Screenshots/main%20üç.png" width="30%" />
+  <br>
+  <em>Ana Ekran, Hazırlık Durumu Görünümü</em>
+</p>
+
 Uygulama, Firebase Authentication ile telefon numarası tabanlı kimlik doğrulama kullanır. Kullanıcılar kayıt olduktan sonra acil durum mesajı gönderebilecekleri kişileri (contact) ekleyebilir, bu kişilerle bağlantı kurarak (linked) karşılıklı acil durum bildirimleri alabilirler. Uygulama, gerçek zamanlı veri senkronizasyonu için Firebase Firestore kullanır ve offline çalışma desteği için Room veritabanı ile yerel veri saklama sağlar.
 
 **Hedef Kullanıcı Kitlesi**: Acil durumlarda hızlı yardım çağrısı yapmak isteyen tüm kullanıcılar. Özellikle yalnız yaşayanlar, yaşlılar, kronik hastalığı olanlar veya riskli işlerde çalışanlar için tasarlanmıştır.
@@ -26,12 +34,28 @@ Uygulama, Firebase Authentication ile telefon numarası tabanlı kimlik doğrula
   - Firebase Authentication ile telefon numarası tabanlı giriş
   - SMS doğrulama kodu ile güvenli kayıt/giriş
   - Otomatik oturum yönetimi
+    
+<p align="center">
+  <img src="Screenshots/kayıt.png" width="45%" />
+  <img src="Screenshots/sms.png" width="45%" />
+  <img src="Screenshots/giriş.png" width="45%" />
+  <br>
+  <em> giriş / kayıt ve doğrulama ekranları e</em>
+</p>
 
 - **Acil Durum Mesajı Gönderme**
   - Tek dokunuşla acil durum mesajı gönderme
   - Otomatik konum bilgisi ekleme
   - Tüm kayıtlı kişilere toplu mesaj gönderme
   - Gönderim durumu takibi (başarılı/başarısız sayıları)
+
+<p align="center">
+  <img src="Screenshots/başarı.png" width="45%" />
+  <img src="Screenshots/çıktı.png" width="45%" />  
+  <img src="Screenshots/loading.png" width="45%" />
+  <br>
+  <em> Tek tuşla acil durum mesajı</em>
+</p>
 
 - **Kişi Yönetimi**
   - Kişi ekleme, düzenleme ve silme
@@ -40,10 +64,24 @@ Uygulama, Firebase Authentication ile telefon numarası tabanlı kimlik doğrula
   - Kişi etiketleme (tag) sistemi
   - Konum paylaşımı tercihi yönetimi
 
+<p align="center">
+  <img src="Screenshots/add.png" width="45%" />
+  <br>
+  <em>bağlantı ekleme</em>
+</p>
+
 - **Bağlantı (Linked) Sistemi**
   - Karşılıklı bağlantı kurma
   - Bağlantı istekleri gönderme/alma
   - Bağlantı onaylama/reddetme
+
+<p align="center">
+  <img src="Screenshots/kişiler.png" width="32%" />
+  <img src="Screenshots/bağlantılar.png" width="32%" />
+  <img src="Screenshots/profile.png" width="32%" />
+  <br>
+  <em>Kişiler Listesi, Aktif Bağlantılar ve Kullanıcı Profili</em>
+</p>
 
 - **Gerçek Zamanlı Senkronizasyon**
   - Firebase Firestore ile gerçek zamanlı veri senkronizasyonu
@@ -55,6 +93,14 @@ Uygulama, Firebase Authentication ile telefon numarası tabanlı kimlik doğrula
   - Acil durum bildirimleri alma
   - Bildirim izinleri yönetimi
 
+<p align="center">
+  <img src="Screenshots/çıktı.png" width="32%" />
+  <img src="Screenshots/başarı.png" width="32%" />
+  <img src="Screenshots/loading.png" width="45%" />
+  <br>
+  <em> karşı kullanıcıya iletilen bildirim </em>
+</p>
+
 - **Konum Servisleri**
   - Konum izinleri yönetimi
   - GPS durumu kontrolü
@@ -64,6 +110,12 @@ Uygulama, Firebase Authentication ile telefon numarası tabanlı kimlik doğrula
   - Profil fotoğrafı yükleme/güncelleme
   - İsim ve acil durum mesajı düzenleme
   - Konum izni tercihleri
+
+<p align="center">
+  <img src="Screenshots/profile.png" width="32%" />
+  <br>
+  <em> profil ekranı </em>
+</p>
 
 - **Ayarlar**
   - Uygulama ayarları yönetimi
@@ -217,16 +269,34 @@ Splash Screen
    - Uygulama açılışında gösterilen ilk ekran
    - Kullanıcı oturum durumunu kontrol eder
    - Giriş yapılmışsa Main Screen'e, yapılmamışsa Sign In Screen'e yönlendirir
+   - 
+<p align="center">
+  <img src="Screenshots/add.png" width="45%" />
+  <br>
+  <em>bağlantı ekleme</em>
+</p>
 
 2. **Sign In Screen** (`signIn`)
    - Telefon numarası ile giriş ekranı
    - Firebase Authentication ile SMS doğrulama
    - Sign Up Screen'e geçiş linki
 
+<p align="center">
+  <img src="Screenshots/giriş.png" width="45%" />
+  <br>
+  <em>giriş</em>
+</p>
+
 3. **Sign Up Screen** (`signUp`)
    - Yeni kullanıcı kayıt ekranı
    - Telefon numarası, isim, ülke bilgileri
    - Kayıt sonrası otomatik giriş
+
+<p align="center">
+  <img src="Screenshots/kayıt.png" width="45%" />
+  <br>
+  <em>kayıt</em>
+</p>
 
 4. **Main Screen** (`main`)
    - Ana ekran, acil durum butonu
@@ -235,10 +305,24 @@ Splash Screen
    - Drawer menü ile diğer ekranlara erişim
    - Acil durum mesajı gönderme işlevi
 
+<p align="center">
+  <img src="Screenshots/main.png" width="30%" />
+  <img src="Screenshots/main%20iki.png" width="30%" />
+  <img src="Screenshots/main%20üç.png" width="30%" />
+  <br>
+  <em>Ana Ekran, Hazırlık Durumu Görünümü</em>
+</p>
+
 5. **Profile Screen** (`profile`)
    - Kullanıcı profil bilgileri
    - Profil fotoğrafı, isim düzenleme
    - Acil durum mesajı özelleştirme
+
+<p align="center">
+  <img src="Screenshots/profile.png" width="45%" />
+  <br>
+  <em>profil ekranı</em>
+</p>
 
 6. **Settings Screen** (`settings`)
    - Uygulama ayarları
@@ -249,9 +333,22 @@ Splash Screen
    - Bağlantılar (linked) listesi
    - Kişi ekleme/düzenleme/silme işlemleri
 
+<p align="center">
+  <img src="Screenshots/kişiler.png" width="45%" />
+  <img src="Screenshots/bağlantılar.png" width="45%" />
+  <br>
+  <em>kişiler ve bağlantılar</em>
+</p>
+
 8. **Add Contact Screen** (`addContact`)
    - Yeni kişi ekleme formu
    - Telefon numarası, isim, özel mesaj girişi
+
+<p align="center">
+  <img src="Screenshots/add.png" width="45%" />
+  <br>
+  <em>kişi ekleme</em>
+</p>
 
 ## Data Layer & APIs
 

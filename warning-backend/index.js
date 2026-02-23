@@ -1,11 +1,19 @@
-const { FieldValue, GeoPoint } = require("firebase-admin/firestore");
+const admin = require("firebase-admin");
 const { onRequest } = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
-const admin = require("firebase-admin");
+const { FieldValue, GeoPoint } = require("firebase-admin/firestore");
+
+// EĞER LOCALDE ÇALIŞIYORSAN EMULATORÜ KULLANMASINI SÖYLE
+if (process.env.FUNCTIONS_EMULATOR === "true") {
+    process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080";
+    process.env.FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099";
+}
 
 admin.initializeApp();
+
 const db = admin.firestore();
 const messaging = admin.messaging();
+
 
 exports.sendEmergency = onRequest(async (req, res) => {
   if (req.method !== "POST") {

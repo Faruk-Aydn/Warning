@@ -4,17 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.warning.domain.model.EmergencyMessage
 import com.example.warning.domain.repository.EmergencyHistoryRepository
+import com.example.warning.domain.repository.FirebaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-
 import kotlinx.coroutines.flow.catch
-
-
-import kotlinx.coroutines.flow.catch
-
-
-
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,11 +36,31 @@ enum class MessageFilter {
 @HiltViewModel
 class EmergencyHistoryViewModel @Inject constructor(
     private val emergencyHistoryRepository: EmergencyHistoryRepository,
+    private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EmergencyHistoryUiState())
     val uiState: StateFlow<EmergencyHistoryUiState> = _uiState
 
+    fun refreshHistory(userId: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            // 1. Önce eski listener'ı durdur (Eğer varsa)
+            firebaseRepository.stopEmergencyHistoryListener()
+
+            // 2. Listener'ı tekrar başlat
+            firebaseRepository.startEmergencyHistoryListener(userId)
+
+            // 3. Local verileri tekrar yükle (Repository zaten Flow olduğu için
+            // Room'a yeni veri düştüğü anda UI otomatik güncellenecektir)
+            loadHistory(userId)
+
+            // Yapay bir gecikme ekleyerek loading animasyonunun görünmesini sağlayabiliriz
+            delay(1000)
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
  
     fun loadHistory(userId: String) {
         viewModelScope.launch {

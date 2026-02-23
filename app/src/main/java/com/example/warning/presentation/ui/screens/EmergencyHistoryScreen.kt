@@ -3,7 +3,6 @@ package com.example.warning.presentation.ui.screens
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,9 +29,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.warning.domain.model.EmergencyMessage
 import com.example.warning.presentation.viewModel.AuthViewModel
-import com.example.warning.presentation.viewModel.EmergencyHistoryUiState
 import com.example.warning.presentation.viewModel.EmergencyHistoryViewModel
 import com.example.warning.presentation.viewModel.MessageFilter
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,6 +44,7 @@ fun EmergencyHistoryScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var userId by remember { mutableStateOf<String?>(null) }
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = uiState.isLoading)
 
     LaunchedEffect(Unit) {
         val profile = authViewModel.isLoggedIn()
@@ -104,39 +105,43 @@ fun EmergencyHistoryScreen(
                 .background(animatedBrush)
                 .padding(innerPadding)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                // Stats Card
-                PremiumStatsCard(
-                    totalCount = uiState.messages.size,
-                    sentCount = uiState.messages.count { it.senderId == userId },
-                    receivedCount = uiState.messages.count { it.senderId != userId }
-                )
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = {
+                    userId?.let { viewModel.refreshHistory(it) }
+                }
+            ){
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                ) {
 
-                // Filter Bar
-                PremiumFilterBar(
-                    selectedFilter = uiState.filter,
-                    onFilterSelected = { viewModel.changeFilter(it) }
-                )
+                    // Stats Card
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Content
-                if (uiState.isLoading && uiState.messages.isEmpty()) {
-                    PremiumLoadingState()
-                } else if (uiState.messages.isEmpty()) {
-                    PremiumEmptyState(filter = uiState.filter)
-                } else {
-                    PremiumHistoryList(
-                        messages = uiState.messages,
-                        onItemClick = { viewModel.onMessageClick(it) },
-                        currentUserId = userId ?: ""
+                    PremiumStatsCard(
+                        totalCount = uiState.messages.size,
+                        sentCount = uiState.messages.count { it.senderId == userId },
+                        receivedCount = uiState.messages.count { it.senderId != userId }
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    // Filter Bar
+                    PremiumFilterBar(
+                        selectedFilter = uiState.filter,
+                        onFilterSelected = { viewModel.changeFilter(it) }
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    // Content
+                    if (uiState.isLoading && uiState.messages.isEmpty()) {
+                        PremiumLoadingState()
+                    } else {
+                        PremiumHistoryList(
+                            messages = uiState.messages,
+                            onItemClick = { viewModel.onMessageClick(it) },
+                            currentUserId = userId ?: ""
+                        )
+                    }
                 }
             }
         }

@@ -1,7 +1,5 @@
 package com.example.warning.data.di
 
-import android.util.Log
-import com.example.warning.BuildConfig
 import com.example.warning.data.local.dao.ContactDao
 import com.example.warning.data.local.dao.EmergencyHistoryDao
 import com.example.warning.data.local.dao.LinkedDao
@@ -15,9 +13,8 @@ import com.example.warning.data.repository.FirebaseRepositoryImpl
 import com.example.warning.domain.repository.FirebaseRepository
 
 import com.google.firebase.auth.FirebaseAuth
-
+import com.example.warning.BuildConfig
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,44 +25,28 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object FirebaseModule {
 
-@Provides
-@Singleton
-fun provideFirebaseAuth(): FirebaseAuth {
-    return FirebaseAuth.getInstance().apply {
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth():
+            FirebaseAuth {
+        val auth = FirebaseAuth.getInstance()
         if (BuildConfig.DEBUG) {
-            try {
-                useEmulator("10.0.2.2", 9099)
-                Log.d("FirebaseModule", "Auth emulator connected")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            auth.useEmulator("10.0.2.2", 9099)
+            auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
         }
+        return auth
     }
-}
 
     @Provides
     @Singleton
-    fun provideFirestore(): FirebaseFirestore {
-        return FirebaseFirestore.getInstance().apply {
-            if (BuildConfig.DEBUG) {
-                try {
-                    useEmulator("10.0.2.2", 8080)
-
-                    // Firestore ayarlarını builder ile yap
-                    val settings = FirebaseFirestoreSettings.Builder()
-                        .setPersistenceEnabled(false) // offline persistence kapalı
-                        .build()
-                    this.firestoreSettings = settings
-
-                    Log.d("FirebaseModule", "Firestore emulator connected")
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+    fun provideFirestore():
+            FirebaseFirestore {
+        val firestore = FirebaseFirestore.getInstance()
+        if (BuildConfig.DEBUG) {
+            firestore.useEmulator("10.0.2.2", 8080)
         }
+        return firestore
     }
-
-
 
     @Provides
     @Singleton

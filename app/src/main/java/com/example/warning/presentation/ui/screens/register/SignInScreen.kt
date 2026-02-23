@@ -24,6 +24,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.warning.presentation.viewModel.VerificationStep
@@ -96,7 +97,7 @@ fun SignInScreen(
             GlassCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
-                shadowElevation = 16.dp
+                shadowElevation = 10.dp
             ) {
                 AnimatedContent(
                     targetState = state.step,
@@ -232,6 +233,7 @@ private fun EnterPhoneContent(
     onRequestCodeClick: () -> Unit
 ) {
     Column(
+
         modifier = Modifier.padding(
             PaddingValues(
                 start = 28.dp,
@@ -241,13 +243,18 @@ private fun EnterPhoneContent(
             )
         ),
         verticalArrangement = Arrangement.spacedBy(16.dp)
+
     ) {
         Text(
             text = "Telefon Numaranız",
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            // Başlığın kartın üst sınırına çok yapışmaması için margin eklendi
+            modifier = Modifier
+                .padding(top = 8.dp)
+
         )
 
         Text(
@@ -835,5 +842,26 @@ private fun GlassCard(
         ) {
             content()
         }
+    }
+}
+
+
+// Preview için sahte veri ve fonksiyon
+@Preview(showBackground = false)
+@Composable
+fun SignInScreenPreview() {
+    MaterialTheme {
+        SignInScreen(
+            state = SignInUiState(phoneNumber = "5551234567"),
+            onExpandedChange = {},
+            onCountrySelected = {},
+            onPhoneNumberChange = {},
+            onRequestCodeClick = {},
+            onSmsCodeChange = {},
+            onVerifyClick = {},
+            onResendClick = {},
+            onErrorDismiss = {},
+            onSignUpClick = {}
+        )
     }
 }

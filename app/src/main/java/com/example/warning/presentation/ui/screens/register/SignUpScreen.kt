@@ -1,6 +1,8 @@
 package com.example.warning.presentation.ui.screens.register
 
+import android.Manifest
 import android.app.Activity
+import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
@@ -25,12 +27,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -58,8 +65,8 @@ fun SignUpScreen(
     fun checkLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     // State
@@ -79,7 +86,7 @@ fun SignUpScreen(
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        locationPermission = permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        locationPermission = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
         if (!locationPermission) {
             coroutineScope.launch {
                 snackbarHostState.showSnackbar("Konum izni verilmedi")
@@ -178,8 +185,8 @@ fun SignUpScreen(
                                         if (it) {
                                             locationPermissionLauncher.launch(
                                                 arrayOf(
-                                                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                                                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                                    Manifest.permission.ACCESS_COARSE_LOCATION
                                                 )
                                             )
                                         } else {
@@ -657,7 +664,7 @@ private fun PremiumPhoneInput(phone: String, onPhoneChange: (String) -> Unit) {
 
 @Composable
 private fun PremiumPermissionRow(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     title: String,
     subtitle: String,
     checked: Boolean,
@@ -665,13 +672,13 @@ private fun PremiumPermissionRow(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(18.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Surface(
@@ -826,7 +833,7 @@ private fun PremiumCodeInput(code: String, onCodeChange: (String) -> Unit) {
                 modifier = Modifier.weight(1f),
                 textStyle = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
-                    letterSpacing = androidx.compose.ui.unit.TextUnit(8f, androidx.compose.ui.unit.TextUnitType.Sp)
+                    letterSpacing = TextUnit(8f, TextUnitType.Sp)
                 ),
                 placeholder = { Text("● ● ● ● ● ●") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -915,7 +922,7 @@ private fun PremiumSignInLink(onClick: () -> Unit) {
 @Composable
 private fun PremiumButton(
     text: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     onClick: () -> Unit,
     enabled: Boolean = true,
     isLoading: Boolean = false,
@@ -954,7 +961,7 @@ private fun PremiumButton(
 @Composable
 private fun PremiumTextButton(
     text: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     onClick: () -> Unit
 ) {
     TextButton(
@@ -976,7 +983,7 @@ private fun PremiumTextButton(
 private fun GlassCard(
     modifier: Modifier = Modifier,
     shape: RoundedCornerShape = RoundedCornerShape(24.dp),
-    shadowElevation: androidx.compose.ui.unit.Dp = 8.dp,
+    shadowElevation: Dp = 8.dp,
     content: @Composable () -> Unit
 ) {
     Surface(
@@ -1007,5 +1014,49 @@ private fun GlassCard(
 private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier {
     return this.pointerInput(Unit) {
         detectTapGestures(onTap = { onClick() })
+    }
+}
+
+@Preview(showBackground = true, name = "Kayıt Ekranı - Bilgi Girişi")
+@Composable
+fun SignUpScreenPreview() {
+    MaterialTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            // Stateless olan içeriği preview ediyoruz
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                PremiumSignUpHero()
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // GlassCard ve içeriği manuel olarak simüle ediyoruz
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
+                    shadowElevation = 8.dp
+                ) {
+                    EnterPhoneContent(
+                        name = "Hakan Kuru",
+                        onNameChange = {},
+                        phone = "5551234567",
+                        onPhoneChange = {},
+                        selectedCountry = "+90",
+                        countryExpanded = false,
+                        onCountryExpandedChange = {},
+                        onCountrySelected = {},
+                        locationPermission = true,
+                        onLocationPermissionChange = {},
+                        contactPermission = false,
+                        onContactPermissionChange = {},
+                        isLoading = false,
+                        onSubmit = {}
+                    )
+                }
+            }
+        }
     }
 }
