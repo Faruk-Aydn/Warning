@@ -234,7 +234,6 @@ private fun EnterPhoneContent(
 ) {
     Column(
         modifier = Modifier.padding(24.dp),
-        shape = RoundedCornerShape(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(

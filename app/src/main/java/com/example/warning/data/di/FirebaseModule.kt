@@ -43,7 +43,7 @@ object FirebaseModule {
             FirebaseFirestore {
         val firestore = FirebaseFirestore.getInstance()
         if (BuildConfig.DEBUG) {
-            firestore.useEmulator("10.0.2.2", 8080)
+            firestore.useEmulator("10.0.2.2", 8085)
         }
         return firestore
     }
