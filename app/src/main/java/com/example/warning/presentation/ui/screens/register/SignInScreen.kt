@@ -14,7 +14,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -95,9 +94,7 @@ fun SignInScreen(
 
             // Content Card
             GlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
-                shadowElevation = 10.dp
+                modifier = Modifier.fillMaxWidth()
             ) {
                 AnimatedContent(
                     targetState = state.step,
@@ -233,7 +230,8 @@ private fun EnterPhoneContent(
     onRequestCodeClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(24.dp),
+        // Yatay padding 30.dp yaparak giriş alanlarını iyice merkeze aldık
+        modifier = Modifier.padding(30.dp, vertical = 28.dp), // 24'ten 28'e çıkardık
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
@@ -242,11 +240,10 @@ private fun EnterPhoneContent(
                 fontWeight = FontWeight.Bold
             ),
             color = MaterialTheme.colorScheme.onSurface,
-            // Başlığın kartın üst sınırına çok yapışmaması için margin eklendi
             modifier = Modifier
                 .padding(
-                    top = 8.dp,
-                    start = 4.dp
+                    top = 20.dp, // Üstten margin artırıldı (8'den 20'ye)
+                    start = 2.dp
                 )
 
         )
@@ -254,10 +251,12 @@ private fun EnterPhoneContent(
         Text(
             text = "SMS ile doğrulama kodu göndereceğiz.",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            // Altındaki TextField ikonuyla tam hizalanması için start padding
+            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp) // Soldan tık içeride, hizalı
         )
 
-        // Country Code Dropdown
+//      Dropdown, Input ve Button alanları artık Column padding'i sayesinde daha içeride duracak
         PremiumCountryDropdown(
             selectedCode = state.selectedCountryCode,
             expanded = state.expanded,
@@ -271,7 +270,7 @@ private fun EnterPhoneContent(
             onPhoneChange = onPhoneNumberChange
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp)) // Kartın en altında da biraz nefes alma alanı
 
         // Submit Button
         PremiumButton(
@@ -801,37 +800,6 @@ private fun ErrorCard(message: String) {
         }
     }
 }
-
-@Composable
-private fun GlassCard(
-    modifier: Modifier = Modifier,
-    shape: RoundedCornerShape,
-    shadowElevation: androidx.compose.ui.unit.Dp,
-    content: @Composable () -> Unit,
-) {
-    Surface(
-        modifier = modifier,
-        shape = shape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f),
-        tonalElevation = 0.dp,
-        shadowElevation = shadowElevation,
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0.08f),
-                            Color.White.copy(alpha = 0.03f),
-                        )
-                    )
-                )
-        ) {
-            content()
-        }
-    }
-}
-
 
 // Preview için sahte veri ve fonksiyon
 @Preview(showBackground = false)

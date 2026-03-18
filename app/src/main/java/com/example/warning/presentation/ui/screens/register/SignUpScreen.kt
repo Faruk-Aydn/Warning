@@ -21,8 +21,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -45,7 +43,6 @@ import androidx.navigation.NavHostController
 import com.example.warning.domain.model.Profile
 import com.example.warning.presentation.ui.screens.Routes
 import com.example.warning.presentation.viewModel.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -158,8 +155,6 @@ fun SignUpScreen(
                 // Main Content Card
                 GlassCard(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
-                    shadowElevation = 16.dp
                 ) {
                     AnimatedContent(
                         targetState = verificationStep,
@@ -226,7 +221,7 @@ fun SignUpScreen(
                                                             }
                                                         }
                                                     } catch (e: Exception) {
-                                                        snackbarHostState.showSnackbar("Bir hata oluştu")
+                                                        snackbarHostState.showSnackbar("Bir hata oluştu${e}")
                                                     }
                                                 }
                                             }
@@ -393,7 +388,8 @@ private fun EnterPhoneContent(
     onSubmit: () -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(24.dp),
+        // Yatay padding 24'ten 30'a çıkarıldı (Daha lüks bir hava için)
+        modifier = Modifier.padding(horizontal = 30.dp, vertical = 28.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
@@ -401,7 +397,8 @@ private fun EnterPhoneContent(
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(top = 20.dp, start = 2.dp) // hizalamayı buraya da verdik
         )
 
         PremiumNameInput(name = name, onNameChange = onNameChange)
@@ -441,7 +438,7 @@ private fun EnterPhoneContent(
             onCheckedChange = onContactPermissionChange
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         PremiumButton(
             text = "Devam Et",
@@ -962,23 +959,7 @@ private fun PremiumTextButton(
     }
 }
 
-@Composable
-private fun GlassCard(
-    modifier: Modifier = Modifier,
-    shape: RoundedCornerShape = RoundedCornerShape(24.dp),
-    shadowElevation: Dp = 8.dp,
-    content: @Composable () -> Unit
-) {
-    Surface(
-        modifier = modifier,
-        shape = shape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
-        tonalElevation = 4.dp,
-        shadowElevation = shadowElevation
-    ) {
-        content()
-    }
-}
+
 
 @Composable
 private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier {
@@ -992,7 +973,6 @@ private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier {
 fun SignUpScreenPreview() {
     MaterialTheme {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-            // Stateless olan içeriği preview ediyoruz
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -1002,7 +982,6 @@ fun SignUpScreenPreview() {
                 PremiumSignUpHero()
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // GlassCard ve içeriği manuel olarak simüle ediyoruz
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(24.dp),
