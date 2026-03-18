@@ -244,7 +244,10 @@ private fun EnterPhoneContent(
             color = MaterialTheme.colorScheme.onSurface,
             // Başlığın kartın üst sınırına çok yapışmaması için margin eklendi
             modifier = Modifier
-                .padding(top = 8.dp)
+                .padding(
+                    top = 8.dp,
+                    start = 4.dp
+                )
 
         )
 
