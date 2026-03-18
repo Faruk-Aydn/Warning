@@ -87,8 +87,7 @@ object AppModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            // TODO: Backend hazır olduğunda baseUrl'i kendi API adresinle değiştir
-            .baseUrl("http://10.0.2.2:5001/warning-5d457/us-central1/")
+            .baseUrl("https://us-central1-warning-5d457.cloudfunctions.net/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
