@@ -29,7 +29,7 @@ fun GlassCard(
     ) {
         Box(
             modifier = Modifier
-                .clip(shape)
+                .clip(shape )
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
@@ -38,6 +38,7 @@ fun GlassCard(
                         )
                     )
                 )
+
         ){
             content()
         }

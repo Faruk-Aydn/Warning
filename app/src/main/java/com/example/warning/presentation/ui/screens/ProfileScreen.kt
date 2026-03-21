@@ -1,10 +1,7 @@
 package com.example.warning.presentation.ui.screens
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,9 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -31,31 +26,30 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.warning.presentation.viewModel.ProfileScreenViewModel
 import com.example.warning.presentation.viewModel.ProfileUiState
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.PI
+import com.example.warning.presentation.ui.screens.register.GlassCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileRoute(
-    navController: NavController,
     viewModel: ProfileScreenViewModel = hiltViewModel(),
+    onContactsClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    ProfileScreen(navController = navController, uiState = uiState)
+    ProfileScreen(
+        uiState = uiState,
+        onContactsClick = onContactsClick
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navController: NavController,
     uiState: ProfileUiState,
+    onContactsClick: () -> Unit
 ) {
     val profile = uiState.profile
     val contacts = uiState.contacts
@@ -168,7 +162,10 @@ fun ProfileScreen(
                                 contentPadding = PaddingValues(horizontal = 4.dp)
                             ) {
                                 items(linked) { link ->
-                                    PremiumLinkedAccountCard(phone = link.phoneNumber)
+                                    PremiumLinkedAccountCard(
+                                        phone = link.phoneNumber,
+                                        name = link.name
+                                        )
                                 }
                             }
                         }
@@ -186,7 +183,10 @@ fun ProfileScreen(
                         items(contacts) { contact ->
                             PremiumContactItem(
                                 name = contact.name,
-                                phone = contact.phoneNumber
+                                phone = contact.phoneNumber,
+                                onClick = {
+                                    onContactsClick()
+                                }
                             )
                         }
                     } else {
@@ -209,20 +209,24 @@ fun ProfileScreen(
 @Composable
 private fun PremiumProfileHeader(name: String, country: String, phone: String) {
     GlassCard(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        shadowElevation = 16.dp
+        modifier = Modifier
+            .fillMaxWidth(),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(
+                    start= 16.dp,
+                    top= 40.dp,
+                    end = 16.dp,
+                    bottom = 24.dp
+                )
+            ,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Animated Profile Circle
             AnimatedProfileCircle(initial = name.take(1).uppercase())
-
-            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 text = name,
@@ -475,7 +479,10 @@ private fun PremiumSectionTitle(title: String, icon: ImageVector) {
 }
 
 @Composable
-private fun PremiumLinkedAccountCard(phone: String) {
+private fun PremiumLinkedAccountCard(
+    phone: String,
+    name: String
+) {
     var pressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (pressed) 0.95f else 1f,
@@ -484,7 +491,8 @@ private fun PremiumLinkedAccountCard(phone: String) {
 
     GlassCard(
         modifier = Modifier
-            .width(180.dp)
+            .width(150.dp)
+            .wrapContentHeight()
             .scale(scale)
             .pointerInput(Unit) {
                 detectTapGestures(
@@ -495,15 +503,21 @@ private fun PremiumLinkedAccountCard(phone: String) {
                     }
                 )
             },
-        shape = RoundedCornerShape(16.dp),
-        shadowElevation = 10.dp
+        shape = RoundedCornerShape(20.dp),
+        shadowElevation = 8.dp
     ) {
         Box(
             modifier = Modifier
+                .padding(
+                    start= 16.dp,
+                    top= 16.dp,
+                    end = 0.dp,
+                    bottom = 8.dp
+                )
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.6f),
                             MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f)
                         )
                     )
@@ -534,7 +548,17 @@ private fun PremiumLinkedAccountCard(phone: String) {
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = phone,
-                    style = MaterialTheme.typography.bodyLarge.copy(
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     color = MaterialTheme.colorScheme.onSurface,
@@ -547,7 +571,11 @@ private fun PremiumLinkedAccountCard(phone: String) {
 }
 
 @Composable
-private fun PremiumContactItem(name: String, phone: String) {
+private fun PremiumContactItem(
+    name: String,
+    phone: String,
+    onClick: () -> Unit
+) {
     var pressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (pressed) 0.98f else 1f,
@@ -556,6 +584,7 @@ private fun PremiumContactItem(name: String, phone: String) {
 
     GlassCard(
         modifier = Modifier
+            .wrapContentHeight()
             .fillMaxWidth()
             .scale(scale)
             .pointerInput(Unit) {
@@ -564,6 +593,7 @@ private fun PremiumContactItem(name: String, phone: String) {
                         pressed = true
                         tryAwaitRelease()
                         pressed = false
+                        onClick()
                     }
                 )
             },
@@ -573,7 +603,12 @@ private fun PremiumContactItem(name: String, phone: String) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(14.dp),
+                .padding(
+                    16.dp,
+                    18.dp,
+                    16.dp,
+                    14.dp
+                ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
@@ -655,36 +690,6 @@ private fun PremiumEmptyState(text: String) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun GlassCard(
-    modifier: Modifier = Modifier,
-    shape: RoundedCornerShape,
-    shadowElevation: Dp,
-    content: @Composable () -> Unit,
-) {
-    Surface(
-        modifier = modifier,
-        shape = shape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f),
-        tonalElevation = 0.dp,
-        shadowElevation = shadowElevation,
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0.08f),
-                            Color.White.copy(alpha = 0.03f),
-                        )
-                    )
-                )
-        ) {
-            content()
         }
     }
 }

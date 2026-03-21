@@ -16,7 +16,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.collectAsState
-import com.example.warning.domain.model.Stats
 import com.example.warning.presentation.ui.screens.*
 import com.example.warning.presentation.ui.screens.register.SignInScreen
 import com.example.warning.presentation.ui.screens.register.SignInUiState
@@ -184,7 +183,9 @@ fun WarningNavGraph(
 
         // Profil Ekranı
         composable(Routes.PROFILE) {
-            ProfileRoute(navController = navController)
+            ProfileRoute(
+                onContactsClick = {navController.navigate(Routes.CONTACTS)}
+            )
         }
 
         // Ayarlar Ekranı
