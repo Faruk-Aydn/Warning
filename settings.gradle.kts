@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Warning"
+rootProject.name = "yanimda"
 include(":app")
  

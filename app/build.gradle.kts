@@ -11,11 +11,11 @@ plugins {
 
 
 android {
-    namespace = "com.example.warning"
+    namespace = "com.hakankuru.yanimda"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.warning"
+        applicationId = "com.hakankuru.yanimda"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
