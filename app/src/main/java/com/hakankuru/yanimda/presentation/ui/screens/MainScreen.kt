@@ -1,6 +1,7 @@
 package com.hakankuru.yanimda.presentation.ui.screens
 
 import android.Manifest
+import android.R.attr.label
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -59,6 +60,7 @@ import com.hakankuru.yanimda.domain.model.Stats
 import com.hakankuru.yanimda.domain.usecase.EmergencyState
 import com.hakankuru.yanimda.presentation.ui.navigation.Routes
 import com.hakankuru.yanimda.presentation.ui.screens.register.GlassCard
+
 import kotlinx.coroutines.delay
 import kotlin.math.PI
 import kotlin.math.cos
@@ -322,6 +324,7 @@ fun MainScreen(
                                     end = 8.dp,
                                     bottom = 18.dp
                                 ),
+
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Text(

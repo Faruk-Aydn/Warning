@@ -183,7 +183,9 @@ fun WarningNavGraph(
 
         // Profil Ekranı
         composable(Routes.PROFILE) {
-            ProfileRoute(navController = navController)
+            ProfileRoute(
+                onContactsClick = {navController.navigate(Routes.CONTACTS)}
+            )
         }
 
         // Ayarlar Ekranı
