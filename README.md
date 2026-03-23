@@ -1,4 +1,4 @@
-# Warning - Acil Durum Uygulaması
+# Warning - Acil Durum Uygulaması  (v1.0.1)
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.0-blue.svg)](https://kotlinlang.org/)
 [![Android](https://img.shields.io/badge/Android-26%2B-green.svg)](https://www.android.com/)
@@ -531,88 +531,110 @@ Proje şu anda temel test yapılandırmasına sahiptir:
 ./gradlew check
 ```
 
-**Not**: Test coverage henüz tam değil. Gelecekte test coverage artırılmalıdır.
+# 🗒️ Project Status & Roadmap (v1.0.1)
 
-## Known Issues & Limitations
+Bu doküman, uygulamanın v1.0.1 sürümü itibariyle mevcut teknik durumunu, bilinen kısıtlamaları ve gelecek planlarını yansıtmaktadır.
 
-1. **Backend URL**
-   - Retrofit base URL şu an emulator için yapılandırılmış
-   - Production için Firebase Functions URL'i güncellenmeli (`AppModule.kt`)
+---
 
-2. **ProGuard**
-   - Release build'de ProGuard devre dışı
-   - Production'a geçmeden önce ProGuard kuralları eklenmeli
+## 🛠 Changes in Version 1.0.1
+### ✔ Completed
+* **Backend Configuration:** Production backend URL yapılandırması güncellendi.
+* **UI/UX:** Temel arayüz ve kullanıcı deneyimi iyileştirmeleri yapıldı.
 
-3. **Database Migration**
-   - `fallbackToDestructiveMigration(true)` kullanılıyor (geliştirme aşamasında)
-   - Production için proper migration stratejisi uygulanmalı
+---
 
-4. **Error Handling**
-   - Bazı hata mesajları standardize edilmemiş
-   - Network hataları için kullanıcı dostu mesajlar geliştirilmeli
+## ⚠️ Known Issues & Limitations
 
-5. **Test Coverage**
-   - Unit test coverage düşük
-   - ViewModel ve UseCase'ler için testler yazılmalı
+### 1. UI Touch Sensitivity
+* Bazı ekranlarda butonlar dokunmaya fazla hassas davranmaktadır.
+* Scroll işlemi sırasında buton üzerinden başlanırsa istenmeden click tetiklenebilmektedir.
+* Compose gesture yönetimi iyileştirilmelidir.
 
-6. **Offline Support**
-   - Room database mevcut ancak offline-first stratejisi tam uygulanmamış
-   - Firestore offline persistence etkinleştirilebilir
+### 2. History Data Synchronization
+* History ekranında gösterilen veriler her zaman doğru şekilde çekilmemektedir.
+* Firestore ve Room arasındaki veri senkronizasyonu kontrol edilmelidir.
+* Mapper veya repository katmanında eksik veya hatalı veri dönüşümü olabilir.
 
+### 3. History Detail Screen Eksikliği
+* History kayıtları için detay ekranı henüz bulunmamaktadır.
+* Gelecekte her kayıt için: **Tarih ve saat bilgisi** ile **Gönderilen konumun harita üzerinde gösterimi (Google Maps)** eklenecektir.
 
-## Future Improvements
+### 4. User Tarafından Düzenlenemeyen Alanlar
+Backend’de mevcut olmasına rağmen UI üzerinden henüz düzenlenemeyen alanlar (Bu alanlar için profil ve kişi düzenleme ekranları genişletilecektir):
+* **Contact:** `specialMessage`, `isLocationSend`
+* **Profile:** `emergencyMessage`
 
-1. **Konum Servisi Entegrasyonu**
-   - Google Play Services Location API entegrasyonu
-   - Gerçek zamanlı konum takibi
-   - Konum geçmişi saklama
+### 5. Database Migration Strategy
+* Şu anda `fallbackToDestructiveMigration(true)` kullanılmaktadır.
+* Bu ayar, veritabanı şema değişikliklerinde kullanıcı verilerinin silinmesine neden olabilir.
+* Production için **proper migration** stratejisi uygulanmalıdır.
 
-2. **Offline-First Architecture**
-   - Firestore offline persistence etkinleştirme
-   - Conflict resolution stratejisi
-   - Sync status göstergesi
+### 6. Error Handling
+* Bazı hata mesajları henüz standardize edilmemiştir.
+* Network hataları için kullanıcı dostu mesajlar geliştirilecektir.
 
-3. **Test Coverage Artırma**
-   - ViewModel unit testleri
-   - UseCase testleri
-   - Repository testleri (Mock)
-   - UI testleri (Compose Testing)
+### 7. Test Coverage
+* Unit test coverage düşüktür.
+* ViewModel ve UseCase katmanları için testler eksiktir.
 
-4. **Error Handling İyileştirmeleri**
-   - Centralized error handling
-   - User-friendly error messages
-   - Retry mekanizmaları
+### 8. Offline Support
+* Room veritabanı kullanılmasına rağmen tam anlamıyla **offline-first** mimari uygulanmamıştır.
+* Firestore offline persistence henüz aktif değildir.
 
-5. **Performance Optimizations**
-   - Image caching stratejisi
-   - Lazy loading for lists
-   - Database query optimizations
+---
 
-6. **Security Enhancements**
-   - ProGuard/R8 rules
-   - Certificate pinning (OkHttp)
-   - Sensitive data encryption
+## 🚀 Planned Improvements
 
-7. **Analytics & Monitoring**
-   - Firebase Crashlytics entegrasyonu
-   - Custom event tracking
-   - Performance monitoring
+### 1. History Feature Geliştirmeleri
+- [ ] History verilerinin daha güvenilir şekilde çekilmesi
+- [ ] History detay ekranının eklenmesi
+- [ ] Google Maps entegrasyonu ile konumun harita üzerinde gösterimi
+- [ ] Tarih ve saat bazlı sıralama ve filtreleme
 
-8. **UI/UX Improvements**
-   - Dark mode desteği
-   - Accessibility improvements
-   - Animations and transitions
+### 2. UI Interaction Fixes
+- [ ] Scroll ve click çakışmalarının giderilmesi
+- [x] Temel UI/UX iyileştirmeleri
+- [ ] Daha stabil gesture yönetimi
+- [ ] Kullanıcı deneyimi iyileştirmeleri
 
-9. **Modularization**
-   - Feature-based modules
-   - Core module extraction
-   - Shared resources module
+### 3. User Editable Fields
+- [ ] Contact özel mesaj düzenleme desteği
+- [ ] Konum gönderme tercihlerinin UI üzerinden yönetimi
+- [ ] Emergency message düzenleme ekranının genişletilmesi
 
-10. **CI/CD Pipeline**
-    - GitHub Actions veya GitLab CI
-    - Automated testing
-    - Automated deployment
+### 4. Performance Improvements
+- [ ] Büyük listelerde performans optimizasyonu
+- [ ] Gereksiz recompositionların azaltılması
+- [ ] Room sorgularının optimize edilmesi
 
+### 5. Basic Security Improvements
+- [ ] Release build için **R8 / ProGuard** yapılandırmasının aktif edilmesi
+- [ ] Uygulama içindeki hassas verilerin daha güvenli şekilde saklanması
+
+### 6. Crash & Usage Monitoring
+- [ ] Firebase Crashlytics entegrasyonu ile uygulama çökme kayıtlarının izlenmesi
+- [ ] Kullanıcı davranışlarını anlamak için temel Firebase Analytics event’lerinin eklenmesi
+
+### 7. Test Coverage Artırma
+- [ ] ViewModel unit testleri
+- [ ] UseCase testleri
+- [ ] Repository katmanı için mock tabanlı testler
+- [ ] Compose UI testleri
+
+### 8. Backend Configuration
+- [x] Production backend URL yapılandırması tamamlandı
+
+---
+
+## ❌ Removed from Roadmap
+Aşağıdaki planlar mevcut proje kapsamı dışında bırakılmıştır:
+* **Modularization** (feature-based module yapısı)
+* **CI/CD pipeline** entegrasyonu
+
+---
+
+> **Not:** Bu README, uygulamanın 1.0.1 sürümü itibariyle mevcut durumunu yansıtmaktadır. Geliştirme sürecinde yeni sürümlerle birlikte bu doküman güncellenmeye devam edecektir.
 ---
 
 ## Lisans
