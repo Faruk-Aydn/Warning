@@ -22,6 +22,8 @@ interface EmergencyHistoryRepository {
      */
 
     suspend fun getAllMessagesForUser(userId: String): Flow<List<EmergencyMessage>>
+
+    suspend fun clearEmergencyHistory()
 }
 
 

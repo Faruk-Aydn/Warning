@@ -6,7 +6,10 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.warning.domain.repository.FirebaseRepository
 import com.example.warning.domain.repository.ThemeRepository
+import com.example.warning.domain.repository.ProfileRepository
+import com.example.warning.domain.repository.EmergencyHistoryRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -18,6 +21,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
+    private val profileRepository: ProfileRepository,
+    private val firebaseRepository: FirebaseRepository,
+    private val emergencyHistoryRepository: EmergencyHistoryRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -31,8 +37,16 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun logout(onLogout: () -> Unit) {
-        FirebaseAuth.getInstance().signOut()
-        onLogout()
+        viewModelScope.launch {
+            FirebaseAuth.getInstance().signOut()
+            firebaseRepository.stopUserListener()
+            firebaseRepository.stopContactListener()
+            firebaseRepository.stopLinkedListener()
+            firebaseRepository.stopEmergencyHistoryListener()
+            profileRepository.clearAllData()
+            emergencyHistoryRepository.clearEmergencyHistory()
+            onLogout()
+        }
     }
 
     fun openAppSystemSettings() {

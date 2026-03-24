@@ -3,6 +3,7 @@ package com.example.warning.presentation.ui.screens
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,13 +44,12 @@ fun EmergencyHistoryScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    var userId by remember { mutableStateOf<String?>(null) }
+    val profile by authViewModel.getCurrentUserProfile().collectAsState(initial = null)
+    val userId = profile?.id
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = uiState.isLoading)
 
-    LaunchedEffect(Unit) {
-        val profile = authViewModel.isLoggedIn()
-        userId = profile?.id ?: profile?.phoneNumber
-        userId?.let { viewModel.loadHistory(it) }
+    LaunchedEffect(userId) {
+        userId?.let { viewModel.refreshHistory(it) }
     }
 
     LaunchedEffect(uiState.errorMessage) {
@@ -745,10 +745,15 @@ private fun GlassCard(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
                         )
                     )
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                    shape = shape
                 )
         ) {
             content()

@@ -33,6 +33,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 
 import androidx.compose.foundation.clickable
 
@@ -71,6 +72,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 
 import androidx.compose.ui.draw.clip
 
@@ -584,84 +586,58 @@ fun MainScreen(
 
 
 
+                            Text(
+                                text = "İstatistikler",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+
                             Row(
-
                                 modifier = Modifier.fillMaxWidth(),
-
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
-
                             ) {
-
                                 StatCard(
-
                                     icon = Icons.AutoMirrored.Filled.Send,
-
                                     value = stats.sentCount.toString(),
-
                                     label = "Gönderilen",
-
                                     color = MaterialTheme.colorScheme.tertiary,
-
-                                    modifier = Modifier.weight(1f)
-
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { onDrawerDestinationClick(Routes.emergencyHistory("SENT")) }
                                 )
 
                                 StatCard(
-
                                     icon = Icons.AutoMirrored.Filled.CallReceived,
-
                                     value = stats.receivedCount.toString(),
-
                                     label = "Alınan",
-
                                     color = MaterialTheme.colorScheme.secondary,
-
-                                    modifier = Modifier.weight(1f)
-
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { onDrawerDestinationClick(Routes.emergencyHistory("RECEIVED")) }
                                 )
-
                             }
-
-
 
                             Spacer(modifier = Modifier.height(12.dp))
 
-
-
                             Row(
-
                                 modifier = Modifier.fillMaxWidth(),
-
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
-
                             ) {
 
                                 StatCard(
-
                                     icon = Icons.Default.Group,
-
                                     value = "$contactCount",
-
                                     label = "Bağlantı",
-
                                     color = MaterialTheme.colorScheme.primary,
-
-                                    modifier = Modifier.weight(1f)
-
+                                    modifier = Modifier.weight(1f),
+                                    onClick = onContactsClick
                                 )
 
                                 StatCard(
-
                                     icon = Icons.Default.Schedule,
-
                                     value = stats.lastMessageTime,
-
                                     label = "Son Mesaj",
-
                                     color = MaterialTheme.colorScheme.tertiary,
-
-                                    modifier = Modifier.weight(1f)
-
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { onDrawerDestinationClick(Routes.emergencyHistory("ALL")) }
                                 )
 
                             }
@@ -717,15 +693,10 @@ fun MainScreen(
                             ) {
 
                                 QuickActionButton(
-
                                     icon = Icons.AutoMirrored.Filled.List,
-
                                     text = "Mesaj Geçmişi",
-
-                                    onClick = { onDrawerDestinationClick(Routes.EMERGENCY_HISTORY) },
-
+                                    onClick = { onDrawerDestinationClick(Routes.emergencyHistory("ALL")) },
                                     modifier = Modifier.weight(1f)
-
                                 )
 
                                 QuickActionButton(
@@ -962,10 +933,15 @@ private fun GlassCard(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
                         )
                     )
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                    shape = shape
                 )
         ) {
             content()
@@ -1508,7 +1484,7 @@ private fun RightSideDrawerContent(
 
                     onClose()
 
-                    onDestinationClick(Routes.EMERGENCY_HISTORY)
+                    onDestinationClick(Routes.emergencyHistory("ALL"))
 
                 }
 
@@ -1581,53 +1557,32 @@ private fun DrawerMenuItem(
 @Composable
 
 private fun StatCard(
-
     icon: androidx.compose.ui.graphics.vector.ImageVector,
-
     value: String,
-
     label: String,
-
     color: Color,
-
-    modifier: Modifier = Modifier
-
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null
 ) {
-
     var pressed by remember { mutableStateOf(false) }
 
     val scale by animateFloatAsState(
-
         targetValue = if (pressed) 0.95f else 1f,
-
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
-
     )
 
-
-
     Surface(
-
         modifier = modifier
-
             .scale(scale)
-
             .pointerInput(Unit) {
-
                 detectTapGestures(
-
                     onPress = {
-
                         pressed = true
-
                         tryAwaitRelease()
-
                         pressed = false
-
-                    }
-
+                    },
+                    onTap = { onClick?.invoke() }
                 )
-
             },
 
         shape = RoundedCornerShape(20.dp),

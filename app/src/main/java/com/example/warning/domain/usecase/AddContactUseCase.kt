@@ -24,8 +24,8 @@ class AddContactUseCase @Inject constructor(
     suspend fun execute(phone: String, country: String): Flow<AddContactResult> = flow {
         emit(AddContactResult.Loading)
 
-        val exists = firebaseRepository.isRegistered(phone)
-        if (!exists) {
+        val targetUser = firebaseRepository.getUser(phone)
+        if (targetUser == null) {
             emit(AddContactResult.NotFound())
             return@flow
         }
@@ -34,7 +34,7 @@ class AddContactUseCase @Inject constructor(
         Log.d("AddContactUseCase", "getCurrentUserOnce() result: $owner")
         if (owner == null) {
             Log.e("AddContactUseCase", "Mevcut kullanıcı bulunamadı - getCurrentUserOnce() null döndü")
-            emit(AddContactResult.Error("Mevcut kullanıcı bulunamadı"))
+            emit(AddContactResult.Error("Mevcut kullanıcı profil verisi Room DB'de bulunamadı."))
             return@flow
         }
         
@@ -51,8 +51,8 @@ class AddContactUseCase @Inject constructor(
             id = "", // Firestore tarafı id oluşturacak
             phone = phone,
             country = country,
-            name = "waiting request",
-            profilePhoto = null,
+            name = targetUser.name,
+            profilePhoto = targetUser.profilePhoto,
             ownerProfilePhoto = owner.profilePhoto,
             ownerPhone = owner.phoneNumber,
             ownerCountry = owner.country,

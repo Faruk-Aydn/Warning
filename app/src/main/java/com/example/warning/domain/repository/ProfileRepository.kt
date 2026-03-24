@@ -17,4 +17,5 @@ interface ProfileRepository{
     suspend fun insertContact(contactEntity: com.example.warning.data.local.entity.ContactEntity)
     suspend fun getCurrentUserOnce(): Profile?
     suspend fun getContactOnce(): List<Contact>
+    suspend fun clearAllData()
 }

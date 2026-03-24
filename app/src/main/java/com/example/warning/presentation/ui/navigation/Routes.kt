@@ -18,5 +18,6 @@ object Routes {
     const val NOTIFICATIONS = "notifications"
 
     // Acil durum geçmişi
-    const val EMERGENCY_HISTORY = "emergencyHistory"
+    const val EMERGENCY_HISTORY_ROUTE = "emergencyHistory?filterType={filterType}"
+    fun emergencyHistory(filterType: String = "ALL") = "emergencyHistory?filterType=$filterType"
 }

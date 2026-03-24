@@ -18,7 +18,7 @@ import com.example.warning.presentation.ui.screens.ContactLinkedScreen
 import com.example.warning.presentation.ui.screens.EmergencyHistoryScreen
 import com.example.warning.presentation.ui.screens.MainScreen
 import com.example.warning.presentation.ui.screens.ProfileScreen
-import com.example.warning.presentation.ui.screens.Routes
+import com.example.warning.presentation.ui.navigation.Routes
 import com.example.warning.presentation.ui.screens.SettingsScreen
 import com.example.warning.presentation.ui.screens.SplashScreen
 import com.example.warning.presentation.ui.screens.register.SignInScreen

@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.collectAsState
 import com.example.warning.domain.model.Stats
@@ -336,7 +338,15 @@ fun WarningNavGraph(
         }
 
         // Acil Durum Geçmişi
-        composable(Routes.EMERGENCY_HISTORY) {
+        composable(
+            route = Routes.EMERGENCY_HISTORY_ROUTE,
+            arguments = listOf(
+                navArgument("filterType") {
+                    type = NavType.StringType
+                    defaultValue = "ALL"
+                }
+            )
+        ) {
             EmergencyHistoryScreen(navController = navController)
         }
     }

@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -43,7 +44,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.warning.domain.model.Profile
-import com.example.warning.presentation.ui.screens.Routes
+import com.example.warning.presentation.ui.navigation.Routes
 import com.example.warning.presentation.viewModel.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -96,9 +97,9 @@ fun SignUpScreen(
 
     LaunchedEffect(state) {
         if (state is UserRegistrationState.RegistrationSuccess) {
-            navController.navigate("main") {
+            navController.navigate(Routes.MAIN) {
                 launchSingleTop = true
-                popUpTo(Routes.SignUp) { inclusive = true }
+                popUpTo(0) { inclusive = true }
             }
         }
     }
@@ -290,9 +291,9 @@ fun SignUpScreen(
                 // Sign In Link
                 PremiumSignInLink(
                     onClick = {
-                        navController.navigate("SignIn") {
+                        navController.navigate(Routes.SIGN_IN) {
                             launchSingleTop = true
-                            popUpTo(Routes.SignUp) { inclusive = true }
+                            popUpTo(Routes.SIGN_UP) { inclusive = true }
                         }
                     }
                 )
@@ -999,10 +1000,15 @@ private fun GlassCard(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
                         )
                     )
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                    shape = shape
                 )
         ) {
             content()

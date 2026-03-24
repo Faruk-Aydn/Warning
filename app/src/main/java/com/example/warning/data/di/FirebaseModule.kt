@@ -31,7 +31,7 @@ object FirebaseModule {
             FirebaseAuth {
         val auth = FirebaseAuth.getInstance()
         if (BuildConfig.DEBUG) {
-            auth.useEmulator("10.0.2.2", 9099)
+            auth.useEmulator("10.14.10.105", 9099)
             auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
         }
         return auth
@@ -43,7 +43,7 @@ object FirebaseModule {
             FirebaseFirestore {
         val firestore = FirebaseFirestore.getInstance()
         if (BuildConfig.DEBUG) {
-            firestore.useEmulator("10.0.2.2", 8080)
+            firestore.useEmulator("10.14.10.105", 8080)
         }
         return firestore
     }

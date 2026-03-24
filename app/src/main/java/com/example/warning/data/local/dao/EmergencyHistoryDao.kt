@@ -22,6 +22,9 @@ interface EmergencyHistoryDao {
     @Delete
     suspend fun deleteIncoming(entity: IncomingEmergencyEntity)
 
+    @Query("DELETE FROM incoming_emergency")
+    suspend fun clearIncoming()
+
 
     // --- OUTGOING (GİDENLER) ---
     @Query("SELECT * FROM outgoing_emergency ORDER BY date DESC")
@@ -32,4 +35,7 @@ interface EmergencyHistoryDao {
 
     @Delete
     suspend fun deleteOutgoing(entity: OutgoingEmergencyEntity)
+
+    @Query("DELETE FROM outgoing_emergency")
+    suspend fun clearOutgoing()
 }

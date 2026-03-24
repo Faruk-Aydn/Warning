@@ -18,6 +18,19 @@ import com.google.android.play.core.integrity.ad
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import kotlin.contracts.Returns
+import java.text.SimpleDateFormat
+import java.util.Locale
+
+fun parseEmergencyDate(timestampStr: String?): Long {
+    if (timestampStr.isNullOrEmpty()) return System.currentTimeMillis()
+    return try {
+        val cleanStr = timestampStr.substringBefore(" (")
+        val format = SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss 'GMT'Z", Locale.ENGLISH)
+        format.parse(cleanStr)?.time ?: System.currentTimeMillis()
+    } catch (e: Exception) {
+        System.currentTimeMillis()
+    }
+}
 
 // Entity -> DTO
  // gerek yok gibi
@@ -31,7 +44,7 @@ fun EmergencyHistoryDto.toIncomingEntity(): IncomingEmergencyEntity {
         messageContent = this.messageContent,
         latitude = this.latitude,
         longitude = this.longitude,
-        date = this.timestamp?.time ?: System.currentTimeMillis()
+        date = parseEmergencyDate(this.timestamp)
     )
 }
 
@@ -42,11 +55,11 @@ fun EmergencyHistoryDto.toOutgoingEntity(): OutgoingEmergencyEntity {
         receiverId = this.receiverId,
         receiverName = this.receiverName,
         messageContent = this.messageContent,
-        isLocationSent = this.locationSent,
+        isLocationSent = this.hasLocation,
         status = this.status,
         success = this.success,
         error = this.error,
-        date = this.timestamp?.time ?: System.currentTimeMillis()
+        date = parseEmergencyDate(this.timestamp)
     )
 }
 // ENTITY -> DOMAIN
