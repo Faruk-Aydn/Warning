@@ -11,6 +11,8 @@ data class OutgoingEmergencyEntity(
     val receiverName: String,
     val messageContent: String,
     val isLocationSent: Boolean,
+    val latitude: Double?, // Ekledik, JS'de kaydediliyor
+    val longitude: Double?, // Ekledik, JS'de kaydediliyor
     val status: String, // "sent", "failed"
     val success: Boolean,
     val error: String?,
