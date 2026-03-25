@@ -23,8 +23,8 @@ fun EmergencyHistoryDto.toIncomingEntity(): IncomingEmergencyEntity {
         senderId = this.senderId,
         senderName = this.senderName ?: "Bilinmiyor",
         messageContent = this.messageContent,
-        latitude = this.latitude,
-        longitude = this.longitude,
+        latitude = this.location?.lat,
+        longitude = this.location?.lng,
         date = this.timestamp?.time ?: System.currentTimeMillis()
     )
 }
@@ -40,7 +40,9 @@ fun EmergencyHistoryDto.toOutgoingEntity(): OutgoingEmergencyEntity {
         status = this.status,
         success = this.success,
         error = this.error,
-        date = this.timestamp?.time ?: System.currentTimeMillis()
+        date = this.timestamp?.time ?: System.currentTimeMillis(),
+        latitude = location?.lat,
+        longitude = location?.lng
     )
 }
 // ENTITY -> DOMAIN

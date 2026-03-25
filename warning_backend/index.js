@@ -36,18 +36,21 @@ exports.sendEmergency = onRequest({cors: true}, async (req, res) => {
 
     for (const doc of contactsSnapshot.docs) {
       const contact = doc.data();
-      const msg = contact.specialMessage || "Yardım edin!";
+      const msg =
+        contact.specialMessage || sData.emergencyMessage || "Yardım edin!";
       const hasLoc = contact.isLocationSend === true && latitude && longitude;
       const finalLoc = hasLoc ? {
         lat: latitude, lng: longitude} : {lat: 0, lng: 0};
 
       const hRef = db.collection("emergencyHistory").doc();
       batch.set(hRef, {
-        senderUid: senderId,
+        senderId: senderId,
         senderName: sName,
-        receiverUid: contact.addedId || "N/A",
+        receiverId: contact.addedId || "N/A",
         receiverPhone: contact.phone || "Bilinmiyor",
-        message: msg,
+        receiverName: contact.name || "Bilinmiyor",
+        messageContent: msg,
+        locationSent: contact.isLocationSend,
         location: finalLoc,
         timestamp: Timestamp.now(),
         status: "sent",

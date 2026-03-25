@@ -11,12 +11,17 @@ data class EmergencyHistoryDto(
     val receiverName: String = "",
     val messageContent: String = "",
     val locationSent: Boolean = false,
-    val latitude: Double? = null,
-    val longitude: Double? = null,
+    val location: FireLocation? = null,
     val status: String = "", // "sent", "failed", "attempted"
     val success: Boolean = false,
     val error: String? = null,
 
     @ServerTimestamp
     val timestamp: Date? = null // Firestore Timestamp
+)
+
+// Firestore'daki iç içe geçmiş 'location' objesini karşılamak için
+data class FireLocation(
+    val lat: Double = 0.0,
+    val lng: Double = 0.0
 )
