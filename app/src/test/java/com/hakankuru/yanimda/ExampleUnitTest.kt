@@ -1,4 +1,4 @@
-package com.example.warning
+package com.hakankuru.yanimda
 
 import org.junit.Test
 

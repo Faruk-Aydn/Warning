@@ -3,6 +3,7 @@ package com.hakankuru.yanimda.presentation.ui.screens.register
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -14,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -83,18 +85,20 @@ fun SignInScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 24.dp),
+                .padding(vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             // Logo/Hero Section
             PremiumSignInHero()
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Content Card
             GlassCard(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                shadowElevation = 10.dp
             ) {
                 AnimatedContent(
                     targetState = state.step,
@@ -230,9 +234,17 @@ private fun EnterPhoneContent(
     onRequestCodeClick: () -> Unit
 ) {
     Column(
-        // Yatay padding 30.dp yaparak giriş alanlarını iyice merkeze aldık
-        modifier = Modifier.padding(30.dp, vertical = 28.dp), // 24'ten 28'e çıkardık
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+
+        modifier = Modifier.padding(
+            PaddingValues(
+                start = 28.dp,
+                end = 28.dp,
+                top = 32.dp,
+                bottom = 28.dp
+            )
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+
     ) {
         Text(
             text = "Telefon Numaranız",
@@ -240,45 +252,47 @@ private fun EnterPhoneContent(
                 fontWeight = FontWeight.Bold
             ),
             color = MaterialTheme.colorScheme.onSurface,
+            // Başlığın kartın üst sınırına çok yapışmaması için margin eklendi
             modifier = Modifier
-                .padding(
-                    top = 20.dp, // Üstten margin artırıldı (8'den 20'ye)
-                    start = 2.dp
-                )
+                .padding(top = 8.dp)
 
         )
 
         Text(
             text = "SMS ile doğrulama kodu göndereceğiz.",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            // Altındaki TextField ikonuyla tam hizalanması için start padding
-            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp) // Soldan tık içeride, hizalı
+            modifier = Modifier.padding(start = 16.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-//      Dropdown, Input ve Button alanları artık Column padding'i sayesinde daha içeride duracak
-        PremiumCountryDropdown(
-            selectedCode = state.selectedCountryCode,
-            expanded = state.expanded,
-            onExpandedChange = onExpandedChange,
-            onCountrySelected = onCountrySelected
-        )
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Country Code Dropdown
+            PremiumCountryDropdown(
+                selectedCode = state.selectedCountryCode,
+                expanded = state.expanded,
+                onExpandedChange = onExpandedChange,
+                onCountrySelected = onCountrySelected
+            )
 
-        // Phone Number Input
-        PremiumPhoneInput(
-            phone = state.phoneNumber,
-            onPhoneChange = onPhoneNumberChange
-        )
+            // Phone Number Input
+            PremiumPhoneInput(
+                phone = state.phoneNumber,
+                onPhoneChange = onPhoneNumberChange
+            )
 
-        Spacer(modifier = Modifier.height(12.dp)) // Kartın en altında da biraz nefes alma alanı
+            Spacer(modifier = Modifier.height(8.dp))
 
-        // Submit Button
-        PremiumButton(
-            text = "Kod Gönder",
-            icon = Icons.Default.Send,
-            onClick = onRequestCodeClick,
-            enabled = state.phoneNumber.length >= 10
-        )
+            // Submit Button
+            PremiumButton(
+                text = "Kod Gönder",
+                icon = Icons.Default.Send,
+                onClick = onRequestCodeClick,
+                enabled = state.phoneNumber.length >= 10
+            )
+        }
     }
 }
 
@@ -800,6 +814,43 @@ private fun ErrorCard(message: String) {
         }
     }
 }
+
+@Composable
+private fun GlassCard(
+    modifier: Modifier = Modifier,
+    shape: RoundedCornerShape,
+    shadowElevation: androidx.compose.ui.unit.Dp,
+    content: @Composable () -> Unit,
+) {
+    Surface(
+        modifier = modifier,
+        shape = shape,
+        color = Color.Transparent, // Tamamen şeffaf taban
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp // Etrafa gölge yayılmasını önlemek için 0
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(shape)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
+                        )
+                    )
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                    shape = shape
+                )
+        ) {
+            content()
+        }
+    }
+}
+
 
 // Preview için sahte veri ve fonksiyon
 @Preview(showBackground = false)

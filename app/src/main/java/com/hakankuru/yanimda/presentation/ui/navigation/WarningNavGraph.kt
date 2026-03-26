@@ -14,8 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.collectAsState
+import ccom.hakankuru.yanimda.presentation.ui.screens.MainScreen
+import com.hakankuru.yanimda.domain.usecase.AddContactResult
+import com.hakankuru.yanimda.domain.usecase.ContactActionResult
+import com.hakankuru.yanimda.domain.usecase.LinkedActionResult
 import com.hakankuru.yanimda.presentation.ui.screens.*
 import com.hakankuru.yanimda.presentation.ui.screens.register.SignInScreen
 import com.hakankuru.yanimda.presentation.ui.screens.register.SignInUiState
@@ -183,9 +189,7 @@ fun WarningNavGraph(
 
         // Profil Ekranı
         composable(Routes.PROFILE) {
-            ProfileRoute(
-                onContactsClick = {navController.navigate(Routes.CONTACTS)}
-            )
+            ProfileRoute(navController = navController)
         }
 
         // Ayarlar Ekranı
@@ -213,11 +217,11 @@ fun WarningNavGraph(
             // Hata / başarı mesajlarını merkezi olarak yönet
             LaunchedEffect(actionState.lastResult) {
                 when (val r = actionState.lastResult) {
-                    is com.hakankuru.yanimda.domain.usecase.ContactActionResult.Success -> {
+                    is ContactActionResult.Success -> {
                         Toast.makeText(context, "İşlem başarılı", Toast.LENGTH_SHORT).show()
                         contactListenerViewModel.loadContact()
                     }
-                    is com.hakankuru.yanimda.domain.usecase.ContactActionResult.Error -> {
+                    is ContactActionResult.Error -> {
                         Toast.makeText(context, r.message, Toast.LENGTH_SHORT).show()
                     }
                     else -> {}
@@ -226,11 +230,11 @@ fun WarningNavGraph(
 
             LaunchedEffect(linkedActionState.lastResult) {
                 when (val r = linkedActionState.lastResult) {
-                    is com.hakankuru.yanimda.domain.usecase.LinkedActionResult.Success -> {
+                    is LinkedActionResult.Success -> {
                         Toast.makeText(context, "İşlem başarılı", Toast.LENGTH_SHORT).show()
                         contactListenerViewModel.loadLinked()
                     }
-                    is com.hakankuru.yanimda.domain.usecase.LinkedActionResult.Error -> {
+                    is LinkedActionResult.Error -> {
                         Toast.makeText(context, r.message, Toast.LENGTH_SHORT).show()
                     }
                     else -> {}
@@ -280,13 +284,13 @@ fun WarningNavGraph(
             LaunchedEffect(Unit) {
                 contactViewModel.addContactState.collect { state ->
                     when (state) {
-                        is com.hakankuru.yanimda.domain.usecase.AddContactResult.Success -> {
+                        is AddContactResult.Success -> {
                             Toast.makeText(context, "Kişi eklendi", Toast.LENGTH_SHORT).show()
                         }
-                        is com.hakankuru.yanimda.domain.usecase.AddContactResult.Error -> {
+                        is AddContactResult.Error -> {
                             Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
                         }
-                        is com.hakankuru.yanimda.domain.usecase.AddContactResult.NotFound -> {
+                        is AddContactResult.NotFound -> {
                             Toast.makeText(context, "Kullanıcı bulunamadı", Toast.LENGTH_SHORT).show()
                         }
                         else -> {}
@@ -337,7 +341,15 @@ fun WarningNavGraph(
         }
 
         // Acil Durum Geçmişi
-        composable(Routes.EMERGENCY_HISTORY) {
+        composable(
+            route = Routes.EMERGENCY_HISTORY_ROUTE,
+            arguments = listOf(
+                navArgument("filterType") {
+                    type = NavType.StringType
+                    defaultValue = "ALL"
+                }
+            )
+        ) {
             EmergencyHistoryScreen(navController = navController)
         }
     }

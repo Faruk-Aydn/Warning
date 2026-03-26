@@ -55,5 +55,3 @@ class LinkedActionsUseCase @Inject constructor(
         emit(LinkedActionResult.Success)
     }
 }
-
-

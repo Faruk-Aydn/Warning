@@ -3,6 +3,8 @@ package com.hakankuru.yanimda.presentation.ui.screens
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -14,15 +16,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.PI
 
 data class AddContactUiState(
     val country: String = "+90",
@@ -55,19 +63,28 @@ fun AddContactScreen(
         initialValue = 0f,
         targetValue = 1000f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 15000, easing = LinearEasing),
+            animation = tween(durationMillis = 8000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
 
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val animatedBrush = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.18f),
-            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.12f),
-            MaterialTheme.colorScheme.background,
-        ),
+        colors = if (isDark) {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+            )
+        } else {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f),
+            )
+        },
         start = Offset(gradientOffset, gradientOffset),
-        end = Offset(gradientOffset + 600f, gradientOffset + 600f)
+        end = Offset(gradientOffset + 1200f, gradientOffset + 1200f)
     )
 
     Scaffold(
@@ -162,35 +179,27 @@ private fun PremiumAddContactTopBar(
             )
         },
         navigationIcon = {
-            Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.surface,
-                tonalElevation = 3.dp,
+            IconButton(
+                onClick = onBack,
                 modifier = Modifier.padding(start = 8.dp)
             ) {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+                Icon(
+                    Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
         },
         actions = {
-            Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.surface,
-                tonalElevation = 3.dp,
+            IconButton(
+                onClick = onNavigateHome,
                 modifier = Modifier.padding(end = 8.dp)
             ) {
-                IconButton(onClick = onNavigateHome) {
-                    Icon(
-                        Icons.Default.Home,
-                        contentDescription = "Home",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+                Icon(
+                    Icons.Default.Home,
+                    contentDescription = "Home",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -683,19 +692,25 @@ private fun GlassCard(
     Surface(
         modifier = modifier,
         shape = shape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f),
+        color = Color.Transparent, // Tamamen şeffaf taban
         tonalElevation = 0.dp,
-        shadowElevation = shadowElevation,
+        shadowElevation = 0.dp // Etrafa gölge yayılmasını önlemek için 0
     ) {
         Box(
             modifier = Modifier
+                .clip(shape) // İçindeki gradient arka planı da aynı köşelere yuvarlar
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color.White.copy(alpha = 0.08f),
-                            Color.White.copy(alpha = 0.03f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
                         )
                     )
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                    shape = shape
                 )
         ) {
             content()

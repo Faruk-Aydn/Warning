@@ -1,7 +1,10 @@
 package com.hakankuru.yanimda.presentation.ui.screens
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,42 +18,45 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.hakankuru.yanimda.presentation.ui.screens.register.GlassCard
 import com.hakankuru.yanimda.presentation.viewModel.ProfileScreenViewModel
 import com.hakankuru.yanimda.presentation.viewModel.ProfileUiState
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.PI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileRoute(
+    navController: NavController,
     viewModel: ProfileScreenViewModel = hiltViewModel(),
-    onContactsClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    ProfileScreen(
-        uiState = uiState,
-        onContactsClick = onContactsClick
-    )
+    ProfileScreen(navController = navController, uiState = uiState)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
+    navController: NavController,
     uiState: ProfileUiState,
-    onContactsClick: () -> Unit
 ) {
     val profile = uiState.profile
     val contacts = uiState.contacts
@@ -62,19 +68,28 @@ fun ProfileScreen(
         initialValue = 0f,
         targetValue = 1000f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 15000, easing = LinearEasing),
+            animation = tween(durationMillis = 8000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
 
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val animatedBrush = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f),
-            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.12f),
-            MaterialTheme.colorScheme.background,
-        ),
+        colors = if (isDark) {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+            )
+        } else {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f),
+            )
+        },
         start = Offset(gradientOffset, gradientOffset),
-        end = Offset(gradientOffset + 600f, gradientOffset + 600f)
+        end = Offset(gradientOffset + 1200f, gradientOffset + 1200f)
     )
 
     Scaffold(
@@ -163,10 +178,7 @@ fun ProfileScreen(
                                 contentPadding = PaddingValues(horizontal = 4.dp)
                             ) {
                                 items(linked) { link ->
-                                    PremiumLinkedAccountCard(
-                                        phone = link.phoneNumber,
-                                        name = link.name
-                                        )
+                                    PremiumLinkedAccountCard(phone = link.phoneNumber)
                                 }
                             }
                         }
@@ -184,10 +196,7 @@ fun ProfileScreen(
                         items(contacts) { contact ->
                             PremiumContactItem(
                                 name = contact.name,
-                                phone = contact.phoneNumber,
-                                onClick = {
-                                    onContactsClick()
-                                }
+                                phone = contact.phoneNumber
                             )
                         }
                     } else {
@@ -210,24 +219,20 @@ fun ProfileScreen(
 @Composable
 private fun PremiumProfileHeader(name: String, country: String, phone: String) {
     GlassCard(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        shadowElevation = 16.dp
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    start= 16.dp,
-                    top= 40.dp,
-                    end = 16.dp,
-                    bottom = 24.dp
-                )
-            ,
-            verticalArrangement = Arrangement.Top,
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Animated Profile Circle
             AnimatedProfileCircle(initial = name.take(1).uppercase())
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 text = name,
@@ -373,7 +378,6 @@ private fun PremiumPermissionBadge(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(containerColor)
                 .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
@@ -399,50 +403,37 @@ private fun PremiumEmergencyCard(message: String) {
         shape = RoundedCornerShape(20.dp),
         shadowElevation = 12.dp
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f),
-                            MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.15f)
-                        )
-                    )
-                )
+        Row(
+            modifier = Modifier.padding(18.dp),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            Row(
-                modifier = Modifier.padding(18.dp),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.spacedBy(14.dp)
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f),
+                tonalElevation = 4.dp
             ) {
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.errorContainer,
-                    tonalElevation = 4.dp
-                ) {
-                    Icon(
-                        Icons.Default.Info,
-                        null,
-                        tint = MaterialTheme.colorScheme.onErrorContainer,
-                        modifier = Modifier.padding(10.dp)
-                    )
-                }
-                Column {
-                    Text(
-                        "Acil Durum Mesajı",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        message,
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+                Icon(
+                    Icons.Default.Info,
+                    null,
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
+            Column {
+                Text(
+                    "Acil Durum Mesajı",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    message,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
         }
     }
@@ -456,7 +447,7 @@ private fun PremiumSectionTitle(title: String, icon: ImageVector) {
     ) {
         Surface(
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.primaryContainer,
+            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
             tonalElevation = 2.dp
         ) {
             Icon(
@@ -480,10 +471,7 @@ private fun PremiumSectionTitle(title: String, icon: ImageVector) {
 }
 
 @Composable
-private fun PremiumLinkedAccountCard(
-    phone: String,
-    name: String
-) {
+private fun PremiumLinkedAccountCard(phone: String) {
     var pressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (pressed) 0.95f else 1f,
@@ -492,8 +480,7 @@ private fun PremiumLinkedAccountCard(
 
     GlassCard(
         modifier = Modifier
-            .width(150.dp)
-            .wrapContentHeight()
+            .width(180.dp)
             .scale(scale)
             .pointerInput(Unit) {
                 detectTapGestures(
@@ -504,79 +491,47 @@ private fun PremiumLinkedAccountCard(
                     }
                 )
             },
-        shape = RoundedCornerShape(20.dp),
-        shadowElevation = 8.dp
+        shape = RoundedCornerShape(16.dp),
+        shadowElevation = 10.dp
     ) {
-        Box(
-            modifier = Modifier
-                .padding(
-                    start= 16.dp,
-                    top= 16.dp,
-                    end = 0.dp,
-                    bottom = 8.dp
-                )
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.6f),
-                            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f)
-                        )
-                    )
-                )
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.Start
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.Start
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f),
+                tonalElevation = 2.dp
             ) {
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f),
-                    tonalElevation = 2.dp
-                ) {
-                    Icon(
-                        Icons.Default.Share,
-                        null,
-                        tint = MaterialTheme.colorScheme.onTertiaryContainer,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    "Bağlı Hesap",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = phone,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                Icon(
+                    Icons.Default.Share,
+                    null,
+                    tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                    modifier = Modifier.padding(8.dp)
                 )
             }
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                "Bağlı Hesap",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = phone,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
 
 @Composable
-private fun PremiumContactItem(
-    name: String,
-    phone: String,
-    onClick: () -> Unit
-) {
+private fun PremiumContactItem(name: String, phone: String) {
     var pressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (pressed) 0.98f else 1f,
@@ -585,7 +540,6 @@ private fun PremiumContactItem(
 
     GlassCard(
         modifier = Modifier
-            .wrapContentHeight()
             .fillMaxWidth()
             .scale(scale)
             .pointerInput(Unit) {
@@ -594,7 +548,6 @@ private fun PremiumContactItem(
                         pressed = true
                         tryAwaitRelease()
                         pressed = false
-                        onClick()
                     }
                 )
             },
@@ -604,37 +557,27 @@ private fun PremiumContactItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    16.dp,
-                    18.dp,
-                    16.dp,
-                    14.dp
-                ),
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Avatar with gradient
-            Box(
+            // Avatar with primary scheme styling
+            Surface(
                 modifier = Modifier
                     .size(48.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.secondaryContainer,
-                                MaterialTheme.colorScheme.tertiaryContainer
-                            )
-                        )
-                    ),
-                contentAlignment = Alignment.Center
+                    .clip(CircleShape),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+                shape = CircleShape
             ) {
-                Text(
-                    text = name.take(1).uppercase(),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        text = name.take(1).uppercase(),
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
 
             Column(modifier = Modifier.weight(1f)) {
@@ -691,6 +634,42 @@ private fun PremiumEmptyState(text: String) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun GlassCard(
+    modifier: Modifier = Modifier,
+    shape: RoundedCornerShape,
+    shadowElevation: Dp,
+    content: @Composable () -> Unit,
+) {
+    Surface(
+        modifier = modifier,
+        shape = shape,
+        color = Color.Transparent, // Tamamen şeffaf taban
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp // Etrafa gölge yayılmasını önlemek için 0
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(shape) // İçindeki gradient arka planı da aynı köşelere yuvarlar
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
+                        )
+                    )
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                    shape = shape
+                )
+        ) {
+            content()
         }
     }
 }

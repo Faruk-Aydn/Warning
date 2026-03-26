@@ -1,9 +1,8 @@
-package com.hakankuru.yanimda.presentation.ui.screens
+package ccom.hakankuru.yanimda.presentation.ui.screens
 
-import android.Manifest
-import android.R.attr.label
+
+
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -19,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -38,6 +38,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
@@ -46,10 +47,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -59,15 +59,16 @@ import com.hakankuru.yanimda.domain.model.Profile
 import com.hakankuru.yanimda.domain.model.Stats
 import com.hakankuru.yanimda.domain.usecase.EmergencyState
 import com.hakankuru.yanimda.presentation.ui.navigation.Routes
-import com.hakankuru.yanimda.presentation.ui.screens.register.GlassCard
-
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
 @OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
+
 fun MainScreen(
     profile: Profile?,
     contactCount: Int,
@@ -86,12 +87,12 @@ fun MainScreen(
     fun checkLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED ||
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(
                     context,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
     }
 
     fun isLocationServiceEnabled(): Boolean {
@@ -112,9 +113,9 @@ fun MainScreen(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         val fineLocationGranted =
-            permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+            permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] ?: false
         val coarseLocationGranted =
-            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+            permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
         hasLocationPermission = fineLocationGranted || coarseLocationGranted
 
         if (hasLocationPermission) {
@@ -134,21 +135,30 @@ fun MainScreen(
     val infiniteTransition = rememberInfiniteTransition()
     val gradientOffset by infiniteTransition.animateFloat(
         initialValue = 0f,
-        targetValue = 900f,
+        targetValue = 1000f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 12000, easing = LinearEasing),
+            animation = tween(durationMillis = 8000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
 
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val animatedBrush = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
-            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.10f),
-            MaterialTheme.colorScheme.background,
-        ),
+        colors = if (isDark) {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+            )
+        } else {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f),
+            )
+        },
         start = Offset(gradientOffset, gradientOffset),
-        end = Offset(gradientOffset + 520f, gradientOffset + 520f)
+        end = Offset(gradientOffset + 1200f, gradientOffset + 1200f)
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -165,7 +175,9 @@ fun MainScreen(
                         ) {
                             Surface(
                                 shape = CircleShape,
-                                color = MaterialTheme.colorScheme.surface,
+
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+
                                 tonalElevation = 3.dp
                             ) {
                                 IconButton(onClick = onNotificationsClick) {
@@ -181,7 +193,9 @@ fun MainScreen(
                     actions = {
                         Surface(
                             shape = CircleShape,
-                            color = MaterialTheme.colorScheme.surface,
+
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+
                             tonalElevation = 3.dp,
                             modifier = Modifier.padding(end = 10.dp)
                         ) {
@@ -211,11 +225,21 @@ fun MainScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
-                    Spacer(modifier = Modifier.size(24.dp))// üstteki boşluk
-                    GlassCard {
+
+                    Spacer(modifier = Modifier.size(24.dp))
+
+                    GlassCard(
+
+                        modifier = Modifier.fillMaxWidth(),
+
+                        shape = RoundedCornerShape(24.dp),
+
+                        shadowElevation = 18.dp
+
+                    ) {
 
                         Column(
-                            modifier = Modifier,
+                            modifier = Modifier.padding(top = 15.dp, start = 20.dp, end = 20.dp, bottom = 20.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
@@ -230,36 +254,32 @@ fun MainScreen(
                                 text = "Konumunuzu ve kayıtlı kişilerinizi kullanarak tek dokunuşla acil durum bildirimi gönderin.",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(
-                                    start= 8.dp,
-                                    top= 16.dp,
-                                    end = 8.dp,
-                                    bottom = 16.dp
-                                )
+                                textAlign = TextAlign.Center
                             )
 
-                            Spacer(modifier = Modifier.size(8.dp))
-
-                            PremiumEmergencyButton(onClick = onEmergencyClick)
                             Spacer(modifier = Modifier.size(18.dp))
 
+                            PremiumEmergencyButton(onClick = onEmergencyClick)
                         }
                     }
                     Spacer(modifier = Modifier.size(22.dp))
 
-                    GlassCard{
+                    GlassCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        shadowElevation = 12.dp
+                    ) {
+
                         var isExpanded by rememberSaveable { mutableStateOf(true) }
                         Column(
-                            modifier = Modifier.padding(
-                                start= 8.dp,
-                                top= 16.dp,
-                                end = 8.dp,
-                                bottom = 16.dp
-                            )
+
+                            modifier = Modifier
+
+                                .padding(top = 12.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
+
                                 .clickable { isExpanded = !isExpanded }
                                 .animateContentSize(),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
                                 text = "Hazırlık Durumu",
@@ -268,45 +288,45 @@ fun MainScreen(
                             )
 
                             if (isExpanded) {
-                                PremiumStatusRow(
-                                    title = "Konum",
-                                    subtitle = if (hasLocationPermission && isLocationEnabled) "Açık" else if (!hasLocationPermission) "İzin yok" else "Kapalı",
-                                    isReady = hasLocationPermission && isLocationEnabled,
-                                    actionText = if (hasLocationPermission && isLocationEnabled) "Hazır" else "Kontrol Et",
-                                    onActionClick = {
-                                        if (!hasLocationPermission) {
-                                            locationPermissionLauncher.launch(
-                                                arrayOf(
-                                                    Manifest.permission.ACCESS_FINE_LOCATION,
-                                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    PremiumStatusRow(
+                                        title = "Konum",
+                                        subtitle = if (hasLocationPermission && isLocationEnabled) "Açık" else if (!hasLocationPermission) "İzin yok" else "Kapalı",
+                                        isReady = hasLocationPermission && isLocationEnabled,
+                                        actionText = if (hasLocationPermission && isLocationEnabled) "Hazır" else "Kontrol Et",
+                                        onActionClick = {
+                                            if (!hasLocationPermission) {
+                                                locationPermissionLauncher.launch(
+                                                    arrayOf(
+                                                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+                                                    )
                                                 )
-                                            )
-                                        } else {
-                                            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                                            context.startActivity(intent)
+                                            } else {
+                                                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                                context.startActivity(intent)
+                                            }
                                         }
-                                    }
-                                )
+                                    )
 
-                                PremiumStatusRow(
-                                    title = "Kişiler",
-                                    subtitle = if (contactCount > 0) "Hazır" else "Eksik",
-                                    isReady = contactCount > 0,
-                                    actionText = if (contactCount > 0) "${contactCount} kayıtlı" else "Kişi Ekle",
-                                    onActionClick = onContactsClick
-                                )
+                                    PremiumStatusRow(
+                                        title = "Kişiler",
+                                        subtitle = if (contactCount > 0) "Hazır" else "Eksik",
+                                        isReady = contactCount > 0,
+                                        actionText = if (contactCount > 0) "${contactCount} kayıtlı" else "Kişi Ekle",
+                                        onActionClick = onContactsClick
+                                    )
+                                }
                             }
 
                             Text(
                                 text = "İpucu: Acil mesajın hızlı gitmesi için konum açık ve en az 1 kişi kayıtlı olmalı.",
+                                modifier = Modifier.padding(start = 16.dp),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(
-                                    start= 18.dp,
-                                    top= 4.dp,
-                                    end = 18.dp,
-                                    bottom = 4.dp
-                                )
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -314,38 +334,29 @@ fun MainScreen(
                     Spacer(modifier = Modifier.size(22.dp))
 
                     // İstatistikler Card
-                    GlassCard{
-                        Column(
-                            modifier = Modifier
-//                                .clip(RoundedCornerShape(20.dp))
-                                .padding(
-                                    start= 8.dp,
-                                    top= 18.dp,
-                                    end = 8.dp,
-                                    bottom = 18.dp
-                                ),
+                    GlassCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        shadowElevation = 12.dp
+                    ) {
 
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        Column(
+                            modifier = Modifier.padding(top = 10.dp, start = 20.dp, end = 15.dp, bottom = 20.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
                                 text = "İstatistikler",
-                                modifier = Modifier.padding(
-                                    start= 16.dp,
-                                    top= 1.dp,
-                                    bottom = 4.dp
-                                ),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
+                            Text(
+                                text = "İstatistikler",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+
                             Row(
-                                modifier = Modifier
-                                    .padding(
-                                        start= 18.dp,
-                                        top= 4.dp,
-                                        end = 18.dp,
-                                        bottom = 2.dp
-                                    )
-                                    .fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 StatCard(
@@ -354,31 +365,23 @@ fun MainScreen(
                                     label = "Gönderilen",
                                     color = MaterialTheme.colorScheme.tertiary,
                                     modifier = Modifier.weight(1f),
-                                    onClickHistory = {
-                                        onDrawerDestinationClick(Routes.EMERGENCY_HISTORY)
-                                    }
+                                    onClick = { onDrawerDestinationClick(Routes.emergencyHistory("SENT")) }
                                 )
+
                                 StatCard(
                                     icon = Icons.AutoMirrored.Filled.CallReceived,
                                     value = stats.receivedCount.toString(),
                                     label = "Alınan",
                                     color = MaterialTheme.colorScheme.secondary,
                                     modifier = Modifier.weight(1f),
-                                    onClickHistory = {
-                                        onDrawerDestinationClick(Routes.EMERGENCY_HISTORY)
-                                    }
+                                    onClick = { onDrawerDestinationClick(Routes.emergencyHistory("RECEIVED")) }
                                 )
                             }
 
+                            Spacer(modifier = Modifier.height(12.dp))
+
                             Row(
-                                modifier = Modifier
-                                    .padding(
-                                        start= 18.dp,
-                                        top= 4.dp,
-                                        end = 18.dp,
-                                        bottom = 2.dp
-                                    )
-                                    .fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 StatCard(
@@ -387,9 +390,7 @@ fun MainScreen(
                                     label = "Bağlantı",
                                     color = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.weight(1f),
-                                    onClickHistory = {
-                                        onContactsClick()
-                                    }
+                                    onClick = onContactsClick
                                 )
                                 StatCard(
                                     icon = Icons.Default.Schedule,
@@ -397,9 +398,7 @@ fun MainScreen(
                                     label = "Son Mesaj",
                                     color = MaterialTheme.colorScheme.tertiary,
                                     modifier = Modifier.weight(1f),
-                                    onClickHistory = {
-                                        onDrawerDestinationClick(Routes.EMERGENCY_HISTORY)
-                                    }
+                                    onClick = { onDrawerDestinationClick(Routes.emergencyHistory("ALL")) }
                                 )
                             }
                         }
@@ -408,43 +407,33 @@ fun MainScreen(
                     Spacer(modifier = Modifier.size(22.dp))
 
                     // Hızlı İşlemler
-                    GlassCard{
+                    GlassCard(
+
+                        modifier = Modifier.fillMaxWidth(),
+
+                        shape = RoundedCornerShape(15.dp),
+
+                        shadowElevation = 12.dp
+
+                    ) {
                         Column(
-                            modifier = Modifier.padding(
-                                start= 8.dp,
-                                top= 16.dp,
-                                end = 8.dp,
-                                bottom = 16.dp
-                            ),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                            modifier = Modifier.padding(top = 15.dp, start = 20.dp, end = 20.dp, bottom = 20.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
-                                modifier = Modifier.padding(
-                                    start= 16.dp,
-                                    top= 1.dp,
-                                    end = 3.dp,
-                                    bottom = 1.dp
-                                ),
                                 text = "Hızlı İşlemler",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
 
                             Row(
-                                modifier = Modifier
-                                    .padding(
-                                        start= 18.dp,
-                                        top= 4.dp,
-                                        end = 18.dp,
-                                        bottom = 2.dp
-                                    )
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
                                 QuickActionButton(
                                     icon = Icons.AutoMirrored.Filled.List,
                                     text = "Mesaj Geçmişi",
-                                    onClick = { onDrawerDestinationClick(Routes.EMERGENCY_HISTORY) },
+                                    onClick = { onDrawerDestinationClick(Routes.emergencyHistory("ALL")) },
                                     modifier = Modifier.weight(1f)
                                 )
                                 QuickActionButton(
@@ -555,6 +544,42 @@ private fun Modifier.glow(
 )
 
 @Composable
+private fun GlassCard(
+    modifier: Modifier = Modifier,
+    shape: RoundedCornerShape = RoundedCornerShape(24.dp),
+    shadowElevation: androidx.compose.ui.unit.Dp = 8.dp,
+    content: @Composable () -> Unit
+) {
+    Surface(
+        modifier = modifier,
+        shape = shape,
+        color = Color.Transparent, // Tamamen şeffaf taban
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp // Etrafa gölge yayılmasını önlemek için 0
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(shape)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
+                        )
+                    )
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                    shape = shape
+                )
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
 private fun PremiumStatusRow(
     title: String,
     subtitle: String,
@@ -578,12 +603,6 @@ private fun PremiumStatusRow(
         color = MaterialTheme.colorScheme.surfaceVariant,
         tonalElevation = 0.dp,
         modifier = Modifier
-            .padding(
-                start= 18.dp,
-                top= 4.dp,
-                end = 18.dp,
-                bottom = 4.dp
-            )
             .fillMaxWidth()
             .scale(scale)
             .pointerInput(Unit) {
@@ -602,7 +621,7 @@ private fun PremiumStatusRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+                .padding(horizontal = 16.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -734,7 +753,7 @@ private fun PremiumEmergencyButton(onClick: () -> Unit) {
                 imageVector = Icons.Default.Warning,
                 contentDescription = "Acil",
                 tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(54.dp)
+                modifier = Modifier.size(36.dp) // Adjusted size from 48.dp
             )
         }
     }
@@ -750,7 +769,6 @@ private fun RightSideDrawerContent(
         modifier = Modifier
             .fillMaxHeight()
             .widthIn(min = 280.dp, max = 320.dp)
-            .background(MaterialTheme.colorScheme.surface)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
@@ -759,14 +777,27 @@ private fun RightSideDrawerContent(
             topEnd = CornerSize(0.dp),
             bottomEnd = CornerSize(0.dp)
         ),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 6.dp
+        color = Color.Transparent, // Şeffaf taban
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(24.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.96f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.99f)
+                        )
+                    )
+                )
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(24.dp)
+            ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -814,8 +845,10 @@ private fun RightSideDrawerContent(
                 }
             }
 
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            Spacer(modifier = Modifier.size(16.dp))
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
 
             DrawerMenuItem(
                 label = "Profil",
@@ -838,12 +871,15 @@ private fun RightSideDrawerContent(
                 icon = Icons.AutoMirrored.Filled.List,
                 onClick = {
                     onClose()
-                    onDestinationClick(Routes.EMERGENCY_HISTORY)
+                    onDestinationClick(Routes.emergencyHistory("ALL"))
                 }
             )
 
             Spacer(modifier = Modifier.weight(1f))
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
 
             DrawerMenuItem(
                 label = "Ayarlar",
@@ -852,7 +888,8 @@ private fun RightSideDrawerContent(
                     onClose()
                     onDestinationClick(Routes.SETTINGS)
                 }
-            )
+                )
+            }
         }
     }
 }
@@ -860,41 +897,57 @@ private fun RightSideDrawerContent(
 @Composable
 private fun DrawerMenuItem(
     label: String,
-    icon: ImageVector,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     onClick: () -> Unit
 ) {
-    Row(
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onClick() },
+        color = Color.Transparent
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = label,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.size(16.dp))
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        Row(
+            modifier = Modifier
+                .padding(vertical = 12.dp, horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = label,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.size(16.dp))
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 
+
+
 @Composable
+
 private fun StatCard(
-    icon: ImageVector,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     value: String,
     label: String,
     color: Color,
     modifier: Modifier = Modifier,
-    onClickHistory: () -> Unit
+    onClick: (() -> Unit)? = null
 ) {
     var pressed by remember { mutableStateOf(false) }
+
     val scale by animateFloatAsState(
         targetValue = if (pressed) 0.95f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
@@ -909,11 +962,11 @@ private fun StatCard(
                         pressed = true
                         tryAwaitRelease()
                         pressed = false
-                        onClickHistory()
-                    }
+                    },
+                    onTap = { onClick?.invoke() }
                 )
             },
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
         tonalElevation = 2.dp
     ) {
@@ -936,7 +989,7 @@ private fun StatCard(
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                 ),
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -951,7 +1004,7 @@ private fun StatCard(
 
 @Composable
 private fun QuickActionButton(
-    icon: ImageVector,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -975,7 +1028,7 @@ private fun QuickActionButton(
                     onTap = { onClick() }
                 )
             },
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
         tonalElevation = 2.dp
     ) {
@@ -998,7 +1051,7 @@ private fun QuickActionButton(
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelLarge.copy(
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold
                 ),
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1

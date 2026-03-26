@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+import androidx.lifecycle.SavedStateHandle
+import kotlin.collections.filter
 
 
 data class EmergencyHistoryUiState(
@@ -36,10 +37,14 @@ enum class MessageFilter {
 @HiltViewModel
 class EmergencyHistoryViewModel @Inject constructor(
     private val emergencyHistoryRepository: EmergencyHistoryRepository,
-    private val firebaseRepository: FirebaseRepository
+    private val firebaseRepository: FirebaseRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(EmergencyHistoryUiState())
+    private val initialFilterString: String = savedStateHandle["filterType"] ?: "ALL"
+    private val initialFilter = try { MessageFilter.valueOf(initialFilterString) } catch (e: Exception) { MessageFilter.ALL }
+
+    private val _uiState = MutableStateFlow(EmergencyHistoryUiState(filter = initialFilter))
     val uiState: StateFlow<EmergencyHistoryUiState> = _uiState
 
     fun refreshHistory(userId: String) {

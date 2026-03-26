@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hakankuru.yanimda.domain.model.Contact
+import com.hakankuru.yanimda.domain.model.Linked
+import com.hakankuru.yanimda.domain.model.Profile
 import com.hakankuru.yanimda.domain.usecase.ProfileUseCases
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.lifecycle.HiltViewModel

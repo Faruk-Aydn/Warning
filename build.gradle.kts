@@ -7,5 +7,4 @@ plugins {
     alias(libs.plugins.google.services) apply false
     // ... diğer plugin'leriniz
     id("io.gitlab.arturbosch.detekt") version "1.23.6" // En güncel sürümü kontrol edin
-
 }

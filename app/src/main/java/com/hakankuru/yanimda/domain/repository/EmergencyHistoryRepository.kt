@@ -1,10 +1,7 @@
 package com.hakankuru.yanimda.domain.repository
 
 import com.hakankuru.yanimda.domain.model.EmergencyMessage
-
 import kotlinx.coroutines.flow.Flow
-
-
 
 /**
  * Acil durum mesaj geçmişini okumak için domain seviye repository.
@@ -22,6 +19,6 @@ interface EmergencyHistoryRepository {
      */
 
     suspend fun getAllMessagesForUser(userId: String): Flow<List<EmergencyMessage>>
+
+    suspend fun clearEmergencyHistory()
 }
-
-

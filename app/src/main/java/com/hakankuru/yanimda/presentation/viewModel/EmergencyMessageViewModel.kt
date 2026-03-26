@@ -1,4 +1,4 @@
-package com.hakankuru.yanimda.presentation.viewModel
+package ccom.hakankuru.yanimda.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,11 +1,17 @@
 package com.hakankuru.yanimda.presentation.ui.screens
 
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.pm.PackageManager
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -13,21 +19,24 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hakankuru.yanimda.presentation.viewModel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    viewModel: com.hakankuru.yanimda.presentation.viewModel.SettingsViewModel = hiltViewModel(),
+    viewModel: SettingsViewModel = hiltViewModel(),
     onLogout: () -> Unit = {}
 ) {
     val isDarkTheme by viewModel.isDarkTheme.collectAsState(initial = false)
@@ -37,8 +46,8 @@ fun SettingsScreen(
         mutableStateOf(
             androidx.core.content.ContextCompat.checkSelfPermission(
                 context,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
         )
     }
 
@@ -86,19 +95,28 @@ fun SettingsScreen(
         initialValue = 0f,
         targetValue = 1000f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 15000, easing = LinearEasing),
+            animation = tween(durationMillis = 8000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
 
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val animatedBrush = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.15f),
-            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.10f),
-            MaterialTheme.colorScheme.background,
-        ),
+        colors = if (isDark) {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+            )
+        } else {
+            listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f),
+            )
+        },
         start = Offset(gradientOffset, gradientOffset),
-        end = Offset(gradientOffset + 600f, gradientOffset + 600f)
+        end = Offset(gradientOffset + 1200f, gradientOffset + 1200f)
     )
 
     Scaffold(
@@ -116,6 +134,7 @@ fun SettingsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -202,7 +221,7 @@ fun SettingsScreen(
                     onClick = { /* Açıklama dialog'u */ }
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 // Logout Button
                 PremiumLogoutButton(
@@ -545,8 +564,8 @@ private fun PremiumLogoutButton(onClick: () -> Unit) {
                 .background(
                     Brush.horizontalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.error,
-                            MaterialTheme.colorScheme.errorContainer
+                            MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
+                            MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.8f)
                         )
                     )
                 ),
@@ -636,19 +655,25 @@ private fun GlassCard(
     Surface(
         modifier = modifier,
         shape = shape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f),
+        color = Color.Transparent, // Tamamen şeffaf taban
         tonalElevation = 0.dp,
-        shadowElevation = shadowElevation,
+        shadowElevation = 0.dp // Etrafa gölge yayılmasını önlemek için 0
     ) {
         Box(
             modifier = Modifier
+                .clip(shape) // İçindeki gradient arka planı da aynı köşelere yuvarlar
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color.White.copy(alpha = 0.08f),
-                            Color.White.copy(alpha = 0.03f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
                         )
                     )
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                    shape = shape
                 )
         ) {
             content()

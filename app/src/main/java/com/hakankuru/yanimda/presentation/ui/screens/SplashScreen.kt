@@ -20,24 +20,16 @@ import kotlinx.coroutines.delay
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
+import com.hakankuru.yanimda.domain.model.Profile
+import com.hakankuru.yanimda.presentation.ui.navigation.Routes
 import com.hakankuru.yanimda.presentation.viewModel.AuthViewModel
 import com.hakankuru.yanimda.presentation.viewModel.ContactListenerViewmodel
 import com.hakankuru.yanimda.presentation.viewModel.ProfileListenerViewModel
 
-// Basit route sabitleri (NavGraph'teki route isimleri ile eşleşmeli)
-object Routes {
-    const val Splash = "splash"
-    const val Main = "main"
-    const val SignIn = "signIn"
-    const val SignUp = "signUp"
-    const val Settings = "settings"
-    const val Contacts = "contacts"
-    const val Profile= "profile"
-    const val AddContact ="addContact"
-    const val EmergencyHistory = "emergencyHistory"
-}
 
 /**
  * SplashScreen
@@ -77,8 +69,8 @@ fun SplashScreen(
 
     // Geçiş mantığı (kısa süre sonra yönlendirir)
     LaunchedEffect(Unit) {
-        val isLoggedIn = viewModel.isLoggedIn()// TODO: Replace with real check from ViewModel/Repository
-        Log.i("splash", "isLoggedIn: ${isLoggedIn?.phoneNumber}")
+        val currentUserPhone = viewModel.getCurrentUserPhone() // Check real Firebase session
+        Log.i("splash", "isLoggedIn: $currentUserPhone")
         // ---------- Burada GERÇEK kontrolü yapmalısınız ----------
         // Önerilen uygulama (mimari):
         // 1) ViewModel (AuthViewModel gibi) oluşturun.
@@ -96,23 +88,23 @@ fun SplashScreen(
         // Bu satırı gerçek kontrol ile değiştirin (ör. authRepository.isUserLoggedIn() suspend çağrısı)
 
         // ----- Yönlendirme -----
-        if (isLoggedIn != null) {
+        if (currentUserPhone != null) {
             // Kullanıcı zaten giriş yapmış, hemen token'ı kontrol et ve gerekirse güncelle.
             userview.checkAndRefreshFCMToken()
 
-            userview.startUserListener(isLoggedIn.phoneNumber)
-            contactview.startContactListener(isLoggedIn.phoneNumber)
+            userview.startUserListener(currentUserPhone)
+            contactview.startContactListener(currentUserPhone)
             // Eğer giriş yapılmışsa Main ekranına git.
             // popUpTo ile splash'i backstack'ten kaldırıyoruz, böylece geri tuşu splash'e dönmez.
-            navController.navigate(Routes.Main) {
+            navController.navigate(Routes.MAIN) {
                 launchSingleTop = true
-                popUpTo(Routes.Splash) { inclusive = true }
+                popUpTo(Routes.SPLASH) { inclusive = true }
             }
         } else {
             // Giriş yapılmamışsa SignIn ekranına yönlendir.
-            navController.navigate(Routes.SignIn) {
+            navController.navigate(Routes.SIGN_IN) {
                 launchSingleTop = true
-                popUpTo(Routes.Splash) { inclusive = true }
+                popUpTo(Routes.SPLASH) { inclusive = true }
             }
         }
     }

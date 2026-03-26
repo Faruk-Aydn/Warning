@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +22,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -33,6 +36,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -40,8 +44,9 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.hakankuru.yanimda.domain.model.Profile
-import com.hakankuru.yanimda.presentation.ui.screens.Routes
+import com.hakankuru.yanimda.presentation.ui.navigation.Routes
 import com.hakankuru.yanimda.presentation.viewModel.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -92,9 +97,9 @@ fun SignUpScreen(
 
     LaunchedEffect(state) {
         if (state is UserRegistrationState.RegistrationSuccess) {
-            navController.navigate("main") {
+            navController.navigate(Routes.MAIN) {
                 launchSingleTop = true
-                popUpTo(Routes.SignUp) { inclusive = true }
+                popUpTo(0) { inclusive = true }
             }
         }
     }
@@ -154,6 +159,8 @@ fun SignUpScreen(
                 // Main Content Card
                 GlassCard(
                     modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    shadowElevation = 16.dp
                 ) {
                     AnimatedContent(
                         targetState = verificationStep,
@@ -220,7 +227,7 @@ fun SignUpScreen(
                                                             }
                                                         }
                                                     } catch (e: Exception) {
-                                                        snackbarHostState.showSnackbar("Bir hata oluştu${e}")
+                                                        snackbarHostState.showSnackbar("Bir hata oluştu")
                                                     }
                                                 }
                                             }
@@ -284,9 +291,9 @@ fun SignUpScreen(
                 // Sign In Link
                 PremiumSignInLink(
                     onClick = {
-                        navController.navigate("SignIn") {
+                        navController.navigate(Routes.SIGN_IN) {
                             launchSingleTop = true
-                            popUpTo(Routes.SignUp) { inclusive = true }
+                            popUpTo(Routes.SIGN_UP) { inclusive = true }
                         }
                     }
                 )
@@ -387,29 +394,39 @@ private fun EnterPhoneContent(
     onSubmit: () -> Unit
 ) {
     Column(
-        // Yatay padding 24'ten 30'a çıkarıldı (Daha lüks bir hava için)
-        modifier = Modifier.padding(horizontal = 30.dp, vertical = 28.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        modifier = Modifier.padding(
+            PaddingValues(
+                start = 28.dp,
+                end = 28.dp,
+                top = 32.dp,
+                bottom = 28.dp
+            )
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
             text = "Bilgileriniz",
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(top = 20.dp, start = 2.dp) // hizalamayı buraya da verdik
+            color = MaterialTheme.colorScheme.onSurface
         )
 
-        PremiumNameInput(name = name, onNameChange = onNameChange)
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            PremiumNameInput(name = name, onNameChange = onNameChange)
 
-        PremiumCountryDropdown(
-            selectedCode = selectedCountry,
-            expanded = countryExpanded,
-            onExpandedChange = onCountryExpandedChange,
-            onCountrySelected = onCountrySelected
-        )
+            PremiumCountryDropdown(
+                selectedCode = selectedCountry,
+                expanded = countryExpanded,
+                onExpandedChange = onCountryExpandedChange,
+                onCountrySelected = onCountrySelected
+            )
 
-        PremiumPhoneInput(phone = phone, onPhoneChange = onPhoneChange)
+            PremiumPhoneInput(phone = phone, onPhoneChange = onPhoneChange)
+        }
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
@@ -421,31 +438,36 @@ private fun EnterPhoneContent(
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        PremiumPermissionRow(
-            icon = Icons.Default.LocationOn,
-            title = "Konum İzni",
-            subtitle = "Acil durumda konumunuzu paylaşın",
-            checked = locationPermission,
-            onCheckedChange = onLocationPermissionChange
-        )
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            PremiumPermissionRow(
+                icon = Icons.Default.LocationOn,
+                title = "Konum İzni",
+                subtitle = "Acil durumda konumunuzu paylaşın",
+                checked = locationPermission,
+                onCheckedChange = onLocationPermissionChange
+            )
 
-        PremiumPermissionRow(
-            icon = Icons.Default.Contacts,
-            title = "Rehber Erişimi",
-            subtitle = "Kişilerinizi senkronize edin",
-            checked = contactPermission,
-            onCheckedChange = onContactPermissionChange
-        )
+            PremiumPermissionRow(
+                icon = Icons.Default.Contacts,
+                title = "Rehber Erişimi",
+                subtitle = "Kişilerinizi senkronize edin",
+                checked = contactPermission,
+                onCheckedChange = onContactPermissionChange
+            )
 
-        Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        PremiumButton(
-            text = "Devam Et",
-            icon = Icons.Default.ArrowForward,
-            onClick = onSubmit,
-            enabled = !isLoading && name.isNotBlank() && phone.length == 10,
-            isLoading = isLoading
-        )
+            PremiumButton(
+                text = "Devam Et",
+                icon = Icons.Default.ArrowForward,
+                onClick = onSubmit,
+                enabled = !isLoading && name.isNotBlank() && phone.length == 10,
+                isLoading = isLoading
+            )
+        }
     }
 }
 
@@ -958,7 +980,41 @@ private fun PremiumTextButton(
     }
 }
 
-
+@Composable
+private fun GlassCard(
+    modifier: Modifier = Modifier,
+    shape: RoundedCornerShape = RoundedCornerShape(24.dp),
+    shadowElevation: Dp = 8.dp,
+    content: @Composable () -> Unit
+) {
+    Surface(
+        modifier = modifier,
+        shape = shape,
+        color = Color.Transparent, // Tamamen şeffaf taban
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp // Etrafa gölge yayılmasını önlemek için 0
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(shape)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
+                        )
+                    )
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                    shape = shape
+                )
+        ) {
+            content()
+        }
+    }
+}
 
 @Composable
 private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier {
@@ -972,6 +1028,7 @@ private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier {
 fun SignUpScreenPreview() {
     MaterialTheme {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            // Stateless olan içeriği preview ediyoruz
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -981,6 +1038,7 @@ fun SignUpScreenPreview() {
                 PremiumSignUpHero()
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // GlassCard ve içeriği manuel olarak simüle ediyoruz
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(24.dp),

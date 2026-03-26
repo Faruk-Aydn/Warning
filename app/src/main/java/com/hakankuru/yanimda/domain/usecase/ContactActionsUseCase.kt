@@ -39,5 +39,3 @@ class ContactActionsUseCase @Inject constructor(
         emit(ContactActionResult.Success)
     }
 }
-
-
