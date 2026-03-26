@@ -50,6 +50,4 @@ class ProfileUseCases @Inject constructor(
     fun stopLinkedListener(){
         firebaseRepo.stopLinkedListener()
     }
-
-
 }

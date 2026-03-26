@@ -15,7 +15,6 @@ data class EmergencyHistoryEntity(
     val longitude: Double?,
     val status: String,
     val date: Long, // Room için Timestamp -> Long dönüşümü
-
-    // Bu kaydın o anki kullanıcı için ne ifade ettiğini belirten alanlar
+    // buna ne gerek varmış mk
     val isIncoming: Boolean // True ise bana gelmiştir (Receiver benim), False ise ben göndermişimdir (Sender benim)
 )

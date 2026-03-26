@@ -464,7 +464,7 @@ Uygulama aşağıdaki Android izinlerini kullanır:
 
 2. **Firebase Yapılandırması**
     - Firebase Console'dan yeni bir proje oluşturun
-    - Android uygulaması ekleyin (`com.example.warning` package name ile)
+    - Android uygulaması ekleyin (`com.hakankuru.name` package name ile)
     - `google-services.json` dosyasını indirin
     - Dosyayı `app/` klasörüne kopyalayın
     - **Not**: Projede zaten bir `google-services.json` dosyası var, ancak kendi Firebase projeniz için güncellemeniz gerekebilir
