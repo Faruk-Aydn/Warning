@@ -166,15 +166,3 @@ fun UserDto.toEntity(): ProfileEntity{
         fcmToken = fcmToken
     )
 }
-fun UserDto.toDomain(): Profile {
-    return Profile(
-        id = id,
-        phoneNumber = phoneNumber ?: "",
-        country = country ?: "",
-        name = name ?: "",
-        profilePhoto = profilePhoto,
-        emergencyMessage = emergencyMessage,
-        locationPermission = isLocationPermission ?: false,
-        fcmToken = fcmToken // YENİ: DTO'dan Domain'e
-    )
-}
