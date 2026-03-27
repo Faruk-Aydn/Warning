@@ -7,8 +7,12 @@ data class EmergencyHistoryDto(
     var id: String = "", // Firestore Document ID
     val senderId: String = "",
     val senderName: String? = null, // index.js içinde log'a eklenmemiş ama eklenebilir, şimdilik opsiyonel
+    val senderPhone: String? = null,
+    val senderCountry: String? = null,
     val receiverId: String = "",
     val receiverName: String = "",
+    val receiverPhone: String? = null,
+    val receiverCountry: String? = null,
     val messageContent: String = "",
     val locationSent: Boolean = false,
     val location: FireLocation? = null,

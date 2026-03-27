@@ -208,12 +208,17 @@ private fun DetailCard(message: EmergencyMessage) {
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = "Gelen Numara / ID",
+                            text = "Gönderen Numara",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                        val numText = if (message.senderCountry != null && message.senderPhone != null) {
+                            "${message.senderCountry} ${message.senderPhone}"
+                        } else {
+                            message.senderId
+                        }
                         Text(
-                            text = message.senderId,
+                            text = numText,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface
                         )

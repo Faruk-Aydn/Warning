@@ -9,6 +9,10 @@ data class OutgoingEmergencyEntity(
     val id: String, // Firestore ID
     val receiverId: String, // Kime gitti?
     val receiverName: String,
+    val senderPhone: String?,
+    val senderCountry: String?,
+    val receiverPhone: String?,
+    val receiverCountry: String?,
     val messageContent: String,
     val isLocationSent: Boolean,
     val latitude: Double?, // Ekledik, JS'de kaydediliyor

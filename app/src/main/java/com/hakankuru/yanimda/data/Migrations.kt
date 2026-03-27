@@ -87,3 +87,19 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
         database.execSQL("ALTER TABLE incoming_emergency ADD COLUMN isLocationSent INTEGER NOT NULL DEFAULT 0")
     }
 }
+
+val MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // incoming_emergency tablosuna yeni alanlar
+        database.execSQL("ALTER TABLE incoming_emergency ADD COLUMN senderPhone TEXT")
+        database.execSQL("ALTER TABLE incoming_emergency ADD COLUMN senderCountry TEXT")
+        database.execSQL("ALTER TABLE incoming_emergency ADD COLUMN receiverPhone TEXT")
+        database.execSQL("ALTER TABLE incoming_emergency ADD COLUMN receiverCountry TEXT")
+
+        // outgoing_emergency tablosuna yeni alanlar
+        database.execSQL("ALTER TABLE outgoing_emergency ADD COLUMN senderPhone TEXT")
+        database.execSQL("ALTER TABLE outgoing_emergency ADD COLUMN senderCountry TEXT")
+        database.execSQL("ALTER TABLE outgoing_emergency ADD COLUMN receiverPhone TEXT")
+        database.execSQL("ALTER TABLE outgoing_emergency ADD COLUMN receiverCountry TEXT")
+    }
+}

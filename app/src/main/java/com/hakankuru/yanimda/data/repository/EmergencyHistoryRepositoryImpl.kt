@@ -52,8 +52,12 @@ private fun IncomingEmergencyEntity.toDomain(currentUserId: String): EmergencyMe
         id = id,
         senderId = senderId,
         senderName = senderName ?: "",
+        senderPhone = senderPhone,
+        senderCountry = senderCountry,
         receiverId = currentUserId,
         receiverName = "", // Şimdilik boş, gerekirse Room'a eklenir
+        receiverPhone = receiverPhone,
+        receiverCountry = receiverCountry,
         messageContent = messageContent,
         hasLocation = isLocationSent,
         locationText = locationText,
@@ -77,8 +81,12 @@ private fun OutgoingEmergencyEntity.toDomain(currentUserId: String): EmergencyMe
         id = id,
         senderId = currentUserId,
         senderName = "", // Şimdilik boş, gerekirse Room'a eklenir
+        senderPhone = senderPhone,
+        senderCountry = senderCountry,
         receiverId = receiverId,
         receiverName = receiverName,
+        receiverPhone = receiverPhone,
+        receiverCountry = receiverCountry,
         messageContent = messageContent,
         hasLocation = isLocationSent,
         locationText = null, // Sadece flag var, metin yok

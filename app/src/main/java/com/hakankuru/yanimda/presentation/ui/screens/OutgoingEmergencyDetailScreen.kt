@@ -244,12 +244,17 @@ private fun OutgoingDetailCard(message: EmergencyMessage) {
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = "Giden Numara / ID",
+                            text = "Alıcı Numara",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                        val numText = if (message.receiverCountry != null && message.receiverPhone != null) {
+                            "+${message.receiverCountry} ${message.receiverPhone}"
+                        } else {
+                            message.receiverId
+                        }
                         Text(
-                            text = message.receiverId,
+                            text = numText,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface
                         )

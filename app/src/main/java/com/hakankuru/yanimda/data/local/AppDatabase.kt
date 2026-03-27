@@ -21,7 +21,7 @@ import com.hakankuru.yanimda.data.local.entity.ProfileEntity
         IncomingEmergencyEntity::class,
         OutgoingEmergencyEntity::class
                ],
-    version = 7
+    version = 8
 )
 @TypeConverters()
 abstract class AppDatabase : RoomDatabase() {
