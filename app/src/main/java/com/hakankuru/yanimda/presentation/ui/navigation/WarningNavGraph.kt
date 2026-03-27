@@ -18,7 +18,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.NavType
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.collectAsState
-import ccom.hakankuru.yanimda.presentation.ui.screens.MainScreen
+import com.hakankuru.yanimda.presentation.ui.screens.MainScreen
 import com.hakankuru.yanimda.domain.usecase.AddContactResult
 import com.hakankuru.yanimda.domain.usecase.ContactActionResult
 import com.hakankuru.yanimda.domain.usecase.LinkedActionResult

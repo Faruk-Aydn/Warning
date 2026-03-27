@@ -1,4 +1,4 @@
-package ccom.hakankuru.yanimda.presentation.ui.screens
+package com.hakankuru.yanimda.presentation.ui.screens
 
 
 
@@ -344,11 +344,6 @@ fun MainScreen(
                             modifier = Modifier.padding(top = 10.dp, start = 20.dp, end = 15.dp, bottom = 20.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Text(
-                                text = "İstatistikler",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
                             Text(
                                 text = "İstatistikler",
                                 style = MaterialTheme.typography.titleMedium,

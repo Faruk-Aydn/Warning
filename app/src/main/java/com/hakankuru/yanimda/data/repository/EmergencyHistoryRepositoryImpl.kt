@@ -26,6 +26,11 @@ class EmergencyHistoryRepositoryImpl @Inject constructor(
                 .sortedByDescending { it.timestampMillis }
         }
     }
+
+    override suspend fun clearEmergencyHistory() {
+        dao.clearIncoming()
+        dao.clearOutgoing()
+    }
 }
 
 private fun IncomingEmergencyEntity.toDomain(currentUserId: String): EmergencyMessage {
