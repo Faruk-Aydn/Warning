@@ -42,7 +42,48 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
 }
 val MIGRATION_4_5 = object : Migration(4, 5) {
     override fun migrate(database: SupportSQLiteDatabase) {
-        // profile tablosuna fcmToken sütununu ekle
-        database.execSQL("ALTER TABLE contacts DELETE COLUMN fcmToken TEXT")
+        // outgoing_emergency tablosuna latitude/longitude sütunları ekle
+        database.execSQL("ALTER TABLE outgoing_emergency ADD COLUMN latitude REAL")
+        database.execSQL("ALTER TABLE outgoing_emergency ADD COLUMN longitude REAL")
+    }
+}
+
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // incoming_emergency tablosu ilk kez oluşturuluyor
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS incoming_emergency (
+                id TEXT NOT NULL PRIMARY KEY,
+                senderId TEXT NOT NULL,
+                senderName TEXT,
+                messageContent TEXT NOT NULL,
+                latitude REAL,
+                longitude REAL,
+                date INTEGER NOT NULL
+            )
+        """.trimIndent())
+        // outgoing_emergency tablosu ilk kez oluşturuluyor
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS outgoing_emergency (
+                id TEXT NOT NULL PRIMARY KEY,
+                receiverId TEXT NOT NULL,
+                receiverName TEXT NOT NULL,
+                messageContent TEXT NOT NULL,
+                isLocationSent INTEGER NOT NULL,
+                latitude REAL,
+                longitude REAL,
+                status TEXT NOT NULL,
+                success INTEGER NOT NULL,
+                error TEXT,
+                date INTEGER NOT NULL
+            )
+        """.trimIndent())
+    }
+}
+
+val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // incoming_emergency tablosuna isLocationSent sütunu ekleniyor
+        database.execSQL("ALTER TABLE incoming_emergency ADD COLUMN isLocationSent INTEGER NOT NULL DEFAULT 0")
     }
 }

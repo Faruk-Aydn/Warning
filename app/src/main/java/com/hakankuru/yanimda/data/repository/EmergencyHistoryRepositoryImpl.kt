@@ -34,8 +34,7 @@ class EmergencyHistoryRepositoryImpl @Inject constructor(
 }
 
 private fun IncomingEmergencyEntity.toDomain(currentUserId: String): EmergencyMessage {
-    val hasLocation = latitude != null && longitude != null
-    val locationText = if (hasLocation) {
+    val locationText = if (isLocationSent && latitude != null && longitude != null) {
         "${latitude},${longitude}"
     } else {
         null
@@ -48,7 +47,7 @@ private fun IncomingEmergencyEntity.toDomain(currentUserId: String): EmergencyMe
         receiverId = currentUserId,
         receiverName = "", // Şimdilik boş, gerekirse Room'a eklenir
         messageContent = messageContent,
-        hasLocation = hasLocation,
+        hasLocation = isLocationSent,
         locationText = locationText,
         status = EmergencyMessageStatus.DELIVERED,
         isSuccess = true,

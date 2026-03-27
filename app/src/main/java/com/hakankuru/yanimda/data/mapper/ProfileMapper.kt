@@ -25,7 +25,8 @@ fun EmergencyHistoryDto.toIncomingEntity(): IncomingEmergencyEntity {
         messageContent = this.messageContent,
         latitude = this.location?.lat,
         longitude = this.location?.lng,
-        date = this.timestamp?.time ?: System.currentTimeMillis()
+        date = this.timestamp?.time ?: System.currentTimeMillis(),
+        isLocationSent = this.locationSent
     )
 }
 
