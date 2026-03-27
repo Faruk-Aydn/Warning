@@ -48,10 +48,11 @@ android {
 }
 
 dependencies {
-     // google-maps-compose -> google.maps.compose
+    // google-maps-compose -> google.maps.compose
     // google-play-services-maps -> google.play.services.maps
     // libs... üzerinden değil, direkt adres üzerinden ekleyelim
     implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.maps.android:maps-compose:4.3.3")
 
     // Konum servisleri için (Opsiyonel ama önerilir)
     implementation("com.google.android.gms:play-services-location:21.3.0")

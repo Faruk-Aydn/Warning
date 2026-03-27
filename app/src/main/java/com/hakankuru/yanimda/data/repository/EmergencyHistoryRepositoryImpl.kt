@@ -27,6 +27,14 @@ class EmergencyHistoryRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getIncomingMessageById(id: String, currentUserId: String): EmergencyMessage? {
+        return dao.getIncomingById(id)?.toDomain(currentUserId)
+    }
+
+    override suspend fun getOutgoingMessageById(id: String, currentUserId: String): EmergencyMessage? {
+        return dao.getOutgoingById(id)?.toDomain(currentUserId)
+    }
+
     override suspend fun clearEmergencyHistory() {
         dao.clearIncoming()
         dao.clearOutgoing()
@@ -53,6 +61,8 @@ private fun IncomingEmergencyEntity.toDomain(currentUserId: String): EmergencyMe
         isSuccess = true,
         error = null,
         timestampMillis = date,
+        latitude = latitude,
+        longitude = longitude
     )
 }
 
@@ -76,5 +86,7 @@ private fun OutgoingEmergencyEntity.toDomain(currentUserId: String): EmergencyMe
         isSuccess = success,
         error = error,
         timestampMillis = date,
+        latitude = latitude,
+        longitude = longitude
     )
 }

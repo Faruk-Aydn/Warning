@@ -56,7 +56,7 @@ class EmergencyHistorySyncManager @Inject constructor(
 
         // 2. GELENLER (Incoming Tablosuna Yazılacak)
         if (receivedListener == null) {
-            receivedListener = firestore.collection("emergency_history")
+            receivedListener = firestore.collection("emergencyHistory")
                 .whereEqualTo("receiverId", userId)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) return@addSnapshotListener

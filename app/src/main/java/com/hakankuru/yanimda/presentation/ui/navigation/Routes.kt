@@ -20,4 +20,10 @@ object Routes {
     // Acil durum geçmişi
     const val EMERGENCY_HISTORY_ROUTE = "emergencyHistory?filterType={filterType}"
     fun emergencyHistory(filterType: String = "ALL") = "emergencyHistory?filterType=$filterType"
+
+    const val INCOMING_DETAIL = "incomingDetail/{messageId}/{currentUserId}"
+    fun incomingDetail(messageId: String, currentUserId: String) = "incomingDetail/$messageId/$currentUserId"
+
+    const val OUTGOING_DETAIL = "outgoingDetail/{messageId}/{currentUserId}"
+    fun outgoingDetail(messageId: String, currentUserId: String) = "outgoingDetail/$messageId/$currentUserId"
 }

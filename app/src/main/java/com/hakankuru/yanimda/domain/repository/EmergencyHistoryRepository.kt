@@ -20,5 +20,9 @@ interface EmergencyHistoryRepository {
 
     suspend fun getAllMessagesForUser(userId: String): Flow<List<EmergencyMessage>>
 
+    suspend fun getIncomingMessageById(id: String, currentUserId: String): EmergencyMessage?
+    
+    suspend fun getOutgoingMessageById(id: String, currentUserId: String): EmergencyMessage?
+
     suspend fun clearEmergencyHistory()
 }

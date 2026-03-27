@@ -34,6 +34,7 @@ import com.hakankuru.yanimda.presentation.viewModel.EmergencyHistoryViewModel
 import com.hakankuru.yanimda.presentation.viewModel.MessageFilter
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.hakankuru.yanimda.presentation.ui.navigation.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -138,7 +139,14 @@ fun EmergencyHistoryScreen(
                     } else {
                         PremiumHistoryList(
                             messages = uiState.messages,
-                            onItemClick = { viewModel.onMessageClick(it) },
+                            onItemClick = { message ->
+                                val route = if (message.senderId == userId) {
+                                    Routes.outgoingDetail(message.id!!, userId!!)
+                                } else {
+                                    Routes.incomingDetail(message.id!!, userId!!)
+                                }
+                                navController.navigate(route)
+                            },
                             currentUserId = userId ?: ""
                         )
                     }

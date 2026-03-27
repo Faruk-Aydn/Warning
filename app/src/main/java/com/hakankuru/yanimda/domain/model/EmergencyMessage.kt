@@ -19,6 +19,8 @@ data class EmergencyMessage(
     val isSuccess: Boolean,
     val error: String?,
     val timestampMillis: Long,
+    val latitude: Double? = null,
+    val longitude: Double? = null
 )
 
 

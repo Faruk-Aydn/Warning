@@ -46,8 +46,11 @@ exports.sendEmergency = onRequest({cors: true}, async (req, res) => {
       batch.set(hRef, {
         senderId: senderId,
         senderName: sName,
-        receiverId: contact.addedId || "N/A",
+        senderPhone: contact.ownerPhone,
+        senderCountry: contact.ownerCountry,
         receiverPhone: contact.phone || "Bilinmiyor",
+        receiverCountry: contact.country,
+        receiverId: contact.addedId || "N/A",
         receiverName: contact.name || "Bilinmiyor",
         messageContent: msg,
         locationSent: contact.isLocationSend,

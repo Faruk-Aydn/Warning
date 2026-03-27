@@ -16,6 +16,9 @@ interface EmergencyHistoryDao {
     @Query("SELECT * FROM incoming_emergency ORDER BY date DESC")
     fun getAllIncoming(): Flow<List<IncomingEmergencyEntity>>
 
+    @Query("SELECT * FROM incoming_emergency WHERE id = :id")
+    suspend fun getIncomingById(id: String): IncomingEmergencyEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertIncoming(entity: IncomingEmergencyEntity)
 
@@ -26,6 +29,9 @@ interface EmergencyHistoryDao {
     // --- OUTGOING (GİDENLER) ---
     @Query("SELECT * FROM outgoing_emergency ORDER BY date DESC")
     fun getAllOutgoing(): Flow<List<OutgoingEmergencyEntity>>
+
+    @Query("SELECT * FROM outgoing_emergency WHERE id = :id")
+    suspend fun getOutgoingById(id: String): OutgoingEmergencyEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOutgoing(entity: OutgoingEmergencyEntity)

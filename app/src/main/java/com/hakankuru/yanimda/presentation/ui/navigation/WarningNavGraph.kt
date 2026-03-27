@@ -352,5 +352,26 @@ fun WarningNavGraph(
         ) {
             EmergencyHistoryScreen(navController = navController)
         }
+        // Gelen Acil Durum Detayı
+        composable(
+            route = Routes.INCOMING_DETAIL,
+            arguments = listOf(
+                navArgument("messageId") { type = NavType.StringType },
+                navArgument("currentUserId") { type = NavType.StringType }
+            )
+        ) {
+            IncomingEmergencyDetailScreen(navController = navController)
+        }
+
+        // Giden Acil Durum Detayı
+        composable(
+            route = Routes.OUTGOING_DETAIL,
+            arguments = listOf(
+                navArgument("messageId") { type = NavType.StringType },
+                navArgument("currentUserId") { type = NavType.StringType }
+            )
+        ) {
+            OutgoingEmergencyDetailScreen(navController = navController)
+        }
     }
 }
