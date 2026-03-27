@@ -1,4 +1,4 @@
-package ccom.hakankuru.yanimda.presentation.ui.screens
+package com.hakankuru.yanimda.presentation.ui.screens
 
 
 

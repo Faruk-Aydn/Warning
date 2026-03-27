@@ -32,4 +32,7 @@ interface ContactDao {
     // 3️⃣ Contact silme
     @Delete
     suspend fun deleteContact(contact: ContactEntity)
+
+    @Query("DELETE FROM contacts")
+    suspend fun clearContacts()
 }

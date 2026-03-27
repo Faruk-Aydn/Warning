@@ -54,5 +54,11 @@ class ProfileRepositoryImpl @Inject constructor(
     override suspend fun getContactOnce(): List<Contact> {
         return contactDao.getAllContactsOnce().map { it.toDomain() }
     }
+
+    override suspend fun clearAllData() {
+        profileDao.clearProfile()
+        linkedDao.clearAll()
+        contactDao.clearContacts()
+    }
 }
 

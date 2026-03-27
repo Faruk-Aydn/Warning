@@ -32,4 +32,10 @@ interface EmergencyHistoryDao {
 
     @Delete
     suspend fun deleteOutgoing(entity: OutgoingEmergencyEntity)
+
+    @Query("DELETE FROM incoming_emergency")
+    suspend fun clearIncoming()
+
+    @Query("DELETE FROM outgoing_emergency")
+    suspend fun clearOutgoing()
 }
