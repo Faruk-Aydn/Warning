@@ -5,6 +5,9 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,7 +40,8 @@ data class SignInUiState(
     val step: VerificationStep = VerificationStep.EnterPhone,
     val smsCode: String = "",
     val errorMessage: String? = null,
-    val timeLeft: Int = 120
+    val timeLeft: Int = 120,
+    val isLoading: Boolean = false
 )
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -290,7 +294,8 @@ private fun EnterPhoneContent(
                 text = "Kod Gönder",
                 icon = Icons.Default.Send,
                 onClick = onRequestCodeClick,
-                enabled = state.phoneNumber.length >= 10
+                enabled = state.phoneNumber.length >= 10,
+                isLoading = state.isLoading
             )
         }
     }
@@ -392,7 +397,8 @@ private fun EnterCodeContent(
             text = "Doğrula",
             icon = Icons.Default.CheckCircle,
             onClick = onVerifyClick,
-            enabled = state.smsCode.length == 6
+            enabled = state.smsCode.length == 6,
+            isLoading = state.isLoading
         )
     }
 }
@@ -667,12 +673,15 @@ private fun PremiumButton(
     text: String,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     onClick: () -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    isLoading: Boolean = false
 ) {
-    var pressed by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
-        targetValue = if (pressed) 0.95f else 1f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
+        targetValue = if (isPressed) 0.95f else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = "button_scale"
     )
 
     Surface(
@@ -680,42 +689,45 @@ private fun PremiumButton(
             .fillMaxWidth()
             .height(56.dp)
             .scale(scale)
-            .pointerInput(enabled) {
-                if (enabled) {
-                    detectTapGestures(
-                        onPress = {
-                            pressed = true
-                            tryAwaitRelease()
-                            pressed = false
-                        },
-                        onTap = { onClick() }
-                    )
-                }
-            },
+            .clickable(
+                enabled = enabled && !isLoading,
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            ),
         shape = RoundedCornerShape(16.dp),
-        color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-        shadowElevation = if (enabled) 8.dp else 0.dp
+        color = if (enabled && !isLoading) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+        shadowElevation = if (enabled && !isLoading) 8.dp else 0.dp
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    icon,
-                    contentDescription = null,
-                    tint = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    strokeWidth = 3.dp
                 )
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        icon,
+                        contentDescription = null,
+                        tint = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(
+                        text = text,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }

@@ -83,6 +83,19 @@ fun WarningNavGraph(
                 }
             }
 
+            // Observe verification state to trigger navigation
+            LaunchedEffect(verificationViewModel.isVerified) {
+                if (verificationViewModel.isVerified == true) {
+                    profileListenerViewModel.startUserListener(phoneNumber)
+                    contactListenerViewModel.startContactListener(phoneNumber)
+                    navController.navigate(Routes.MAIN) {
+                        popUpTo(Routes.SIGN_IN) { inclusive = true }
+                    }
+                } else if (verificationViewModel.isVerified == false) {
+                    errorMessage = verificationViewModel.errorMessage
+                }
+            }
+
             SignInScreen(
                 state = SignInUiState(
                     expanded = countryExpanded,
@@ -91,14 +104,14 @@ fun WarningNavGraph(
                     step = step,
                     smsCode = smsCode,
                     errorMessage = errorMessage,
-                    timeLeft = timeLeft
+                    timeLeft = timeLeft,
+                    isLoading = verificationViewModel.isLoading
                 ),
                 onExpandedChange = { countryExpanded = it },
                 onCountrySelected = { selectedCountryCode = it },
                 onPhoneNumberChange = { phoneNumber = it },
                 onRequestCodeClick = {
                     if (phoneNumber.length != 10) {
-                        // Basit validasyon hatası – ekran state'i üzerinden gösterilir
                         errorMessage = "Telefon numarası 10 hane olmalı"
                     } else {
                         scope.launch {
@@ -124,18 +137,6 @@ fun WarningNavGraph(
                 onSmsCodeChange = { smsCode = it },
                 onVerifyClick = {
                     verificationViewModel.verifyCode(smsCode)
-                    if (verificationViewModel.isVerified == true) {
-                        // Kullanıcı ve kişi dinleyicilerini başlat
-                        profileListenerViewModel.startUserListener(phoneNumber)
-                        contactListenerViewModel.startContactListener(phoneNumber)
-
-                        // Başarılı giriş sonrası ana ekrana yönlendir
-                        navController.navigate(Routes.MAIN) {
-                            popUpTo(Routes.SIGN_IN) { inclusive = true }
-                        }
-                    } else {
-                        errorMessage = verificationViewModel.errorMessage
-                    }
                 },
                 onResendClick = {
                     verificationViewModel.sendVerificationCode(
@@ -179,7 +180,7 @@ fun WarningNavGraph(
                 contactCount = contacts.size,
                 stats = stats,
                 emergencyState = emergencyState,
-                onNotificationsClick = { navController.navigate(Routes.NOTIFICATIONS) },
+                onNotificationsClick = { navController.navigate(Routes.emergencyHistory("ALL")) },
                 onContactsClick = { navController.navigate(Routes.CONTACTS) },
                 onDrawerDestinationClick = { route -> navController.navigate(route) },
                 onEmergencyClick = { emergencyViewModel.sendEmergencyMessage() },
