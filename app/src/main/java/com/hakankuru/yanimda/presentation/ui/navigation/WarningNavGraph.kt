@@ -197,8 +197,15 @@ fun WarningNavGraph(
         composable(Routes.SETTINGS) {
             SettingsScreen(
                 onLogout = {
+                    // ✅ FIX: Logout sonrası SignIn'e yönlendir, back stack'i temizle
                     navController.navigate(Routes.SIGN_IN) {
-                        popUpTo(0)
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onDeleteAccount = {
+                    // Hesap silme sonrası da SignIn'e yönlendir
+                    navController.navigate(Routes.SIGN_IN) {
+                        popUpTo(0) { inclusive = true }
                     }
                 }
             )
